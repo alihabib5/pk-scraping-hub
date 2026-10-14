@@ -1,0 +1,75 @@
+@import "tailwindcss";
+
+/**
+ * Editorial palette: a warm paper canvas, deep navy ink, and gold reserved for
+ * accents. Navy carries every primary action; gold is punctuation.
+ */
+@theme {
+  --color-ink-950: #061224;
+  --color-ink-900: #0b1f3a;
+  --color-ink-800: #14304f;
+  --color-ink-700: #1f4269;
+  --color-ink-600: #325a83;
+  --color-ink-500: #55779b;
+  --color-ink-400: #8399b3;
+  --color-ink-300: #b3c2d2;
+  --color-ink-200: #d6dfe8;
+  --color-ink-100: #e9eff4;
+  --color-ink-50: #f4f7fa;
+
+  --color-gold-700: #7d5620;
+  --color-gold-600: #99692a;
+  --color-gold-500: #b9873c;
+  --color-gold-400: #d2a55c;
+  --color-gold-300: #e4c48e;
+  --color-gold-200: #f0dcbb;
+  --color-gold-100: #f7edda;
+  --color-gold-50: #fcf8f0;
+
+  --color-paper: #faf9f6;
+  --color-paper-dim: #f3f1ec;
+}
+
+@theme inline {
+  --font-sans: var(--font-sans);
+  --font-display: var(--font-serif);
+}
+
+html {
+  color-scheme: light;
+  height: 100%;
+}
+
+body {
+  min-height: 100%;
+  color: var(--color-ink-900);
+  background-color: var(--color-paper);
+}
+
+.font-display {
+  font-family: var(--font-serif), ui-serif, Georgia, serif;
+  font-variation-settings: "opsz" 40;
+  letter-spacing: -0.015em;
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+@keyframes status-pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.45;
+    transform: scale(0.88);
+  }
+}
+.status-pulse {
+  animation: status-pulse 1.8s ease-in-out infinite;
+}
