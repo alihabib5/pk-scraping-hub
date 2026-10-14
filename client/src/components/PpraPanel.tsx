@@ -28,7 +28,7 @@ export default function PpraPanel() {
   const [status, setStatus] = useState("ALL");
   const [city, setCity] = useState("");
 
-  const [applyClosingFilter, setApplyClosingFilter] = useState(true);
+  const [closingRunwayDays, setClosingRunwayDays] = useState<number | null>(7);
   const [pausing, setPausing] = useState(false);
 
   const { run, error, starting, setError, launch, applyStatus, hasSession, reset } =
@@ -56,7 +56,7 @@ export default function PpraPanel() {
           city: city.trim() || null,
         },
         {
-          apply_closing_filter: applyClosingFilter,
+          closing_runway_days: closingRunwayDays,
         },
         livePreview
       )
@@ -231,17 +231,30 @@ export default function PpraPanel() {
           />
         </div>
 
-        <div className="mt-4 border-t border-ink-100 pt-4">
-          <label className="inline-flex items-center gap-2 cursor-pointer text-xs font-medium text-ink-700">
-            <input
-              type="checkbox"
-              checked={applyClosingFilter}
-              onChange={(e) => setApplyClosingFilter(e.target.checked)}
-              disabled={isRunning}
-              className="h-4 w-4 rounded border-ink-300 text-emerald-600 focus:ring-emerald-500"
-            />
-            Apply 7-day runway closing filter (drop tenders closing in &lt; 7 days)
+        <div className="mt-4 border-t border-ink-100 pt-4 flex items-center gap-3">
+          <label className="text-xs font-medium text-ink-700 shrink-0">
+            Min. days until closing
           </label>
+          <input
+            type="number"
+            min={0}
+            max={365}
+            value={closingRunwayDays ?? ""}
+            onChange={(e) => {
+              const v = e.target.value;
+              setClosingRunwayDays(v === "" ? null : Math.max(0, parseInt(v, 10)));
+            }}
+            disabled={isRunning}
+            placeholder="disabled"
+            className="w-24 rounded-lg border border-ink-200 bg-white px-3 py-1.5 text-xs text-ink-800 focus:border-ink-400 focus:outline-none"
+          />
+          <span className="text-xs text-ink-500">
+            {closingRunwayDays === null
+              ? "Filter off — all tenders included"
+              : closingRunwayDays === 0
+              ? "All tenders (0-day minimum)"
+              : `Skip tenders closing in < ${closingRunwayDays} day${closingRunwayDays !== 1 ? "s" : ""}`}
+          </span>
         </div>
       </Card>
 

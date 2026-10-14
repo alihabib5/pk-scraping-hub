@@ -23,9 +23,20 @@ class PpraFilters(BaseModel):
 
 
 class PpraOptions(BaseModel):
-    apply_closing_filter: bool = True
+    apply_closing_filter: bool | None = None
+    closing_runway_days: int | None = Field(default=None, ge=0, le=365)
     deep_detail: bool = False
     delay_ms: int | None = None
+
+    def get_runway_days(self) -> int | None:
+        """Returns effective closing runway days (0..365), or None if disabled."""
+        if self.closing_runway_days is not None:
+            return self.closing_runway_days
+        if self.apply_closing_filter is True:
+            return 7
+        if self.apply_closing_filter is False:
+            return None
+        return 7
 
 
 class PpraScrapeRequest(BaseModel):

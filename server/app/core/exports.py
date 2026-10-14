@@ -20,9 +20,10 @@ import logging
 import shutil
 import tempfile
 import zipfile
-from datetime import date
+from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Any
+from zoneinfo import ZoneInfo
 
 from app.config import settings
 from app.core.filenames import sanitize_filename
@@ -103,25 +104,26 @@ def excel_name(run: dict[str, Any]) -> str:
     # BidNet names its sheet after the niche, matching the copy inside the
     # session ZIP — a bare-sheet fallback download shouldn't arrive under a
     # different name than the one in the bundle.
-    if scraper == "bidnet" and run.get("niche_label"):
-        from app.scrapers.bidnet import storage
 
-        return storage.excel_filename(
-            run["niche_label"], run.get("niche") or "", run.get("niche_slug")
-        )
-    label = {
-        "septa": f"Septa_({search or 'all open quotes'})",
-        "wisconsin": f"Wisconsin_({search or 'all current solicitations'})",
-        "sam": f"SAM_({search or 'all active solicitations'})",
-        "unison": f"Unison_({(run.get('filter_by') or 'all requests').strip()})",
-        "ridemetro": f"RideMetro_Bids ({run.get('label') or run['run_id']})",
-        "northdakota": f"NorthDakota_({search or 'all public solicitations'})",
-        "bidnet": f"Bidnetdirect_({search or 'all solicitations'})",
-        "myflorida_sweep": f"MyFlorida_Sweep_({search or 'all statuses'})",
-        "emma": f"EMMA_({search or 'all public solicitations'})",
-        "philadelphia": f"Philadelphia_({search or 'all open bids'})",
-        "ppra": f"PPRA_({search or 'all active tenders'})",
-    }.get(scraper, f"{scraper}_{run['run_id']}")
+    if scraper == "ppra":
+        started = run.get("started_at")
+        dt = None
+        if started:
+            if isinstance(started, str):
+                try:
+                    dt = datetime.fromisoformat(started)
+                except Exception:
+                    pass
+            elif isinstance(started, datetime):
+                dt = started
+        if not dt:
+            dt = datetime.now(timezone.utc)
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=timezone.utc)
+        pkt_dt = dt.astimezone(ZoneInfo("Asia/Karachi"))
+        return f"PPRA_Tenders_{pkt_dt.strftime('%Y-%m-%d_%H%M')}.xlsx"
+
+    label = {}.get(scraper, f"{scraper}_{run['run_id']}")
     return sanitize_filename(label, max_length=150) + ".xlsx"
 
 
@@ -393,7 +395,8 @@ def archive_run(run_id: str) -> str | None:
     stem = settings.archive_root / (sanitize_filename(label, max_length=140) + f" [{run_id}]")
 
     if is_excel_only(run):
-        return _archive_excel(run_id, run, folder, stem.with_suffix(".xlsx"))
+        out = settings.archive_root / excel_name(run)
+        return _archive_excel(run_id, run, folder, out)
 
     out = stem.with_suffix(".zip")
     try:

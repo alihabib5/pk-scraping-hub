@@ -120,9 +120,12 @@ EXCEL_COLUMNS: list[tuple[str, str]] = [
     ("department", "Department / Office"),
     ("city", "City"),
     ("status", "Status"),
-    ("advertised_on", "Advertised"),
-    ("closing_at", "Closing (PKT)"),
+    ("advertised_on", "Advertised Date"),
+    ("closing_date", "Closing Date"),
+    ("closing_time", "Closing Time (PKT)"),
+    ("days_left", "Days Left"),
     ("detail_url", "Link"),
     ("change_status", "Change"),
+    ("scraped_at", "Scraped At (PKT)"),
 ]
 

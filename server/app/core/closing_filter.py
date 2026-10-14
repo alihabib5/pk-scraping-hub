@@ -89,17 +89,18 @@ def days_until_close(raw: Any, today: date | None = None) -> int | None:
     return (parsed - (today or date.today())).days
 
 
-def keeps(raw: Any, today: date | None = None) -> bool:
+def keeps(raw: Any, today: date | None = None, min_days: int = MIN_DAYS_UNTIL_CLOSE) -> bool:
     """True if this bid should be kept: an unreadable date (can't disprove) or a
-    date at least MIN_DAYS_UNTIL_CLOSE days out."""
+    date at least min_days days out."""
     days = days_until_close(raw, today)
-    return days is None or days >= MIN_DAYS_UNTIL_CLOSE
+    return days is None or days >= min_days
 
 
 def filter_records(
     records: Iterable[dict[str, Any]],
     get_close: Callable[[dict[str, Any]], Any],
     today: date | None = None,
+    min_days: int = MIN_DAYS_UNTIL_CLOSE,
 ) -> tuple[list[dict[str, Any]], int, int]:
     """Split records by the close-date rule.
 
@@ -116,7 +117,7 @@ def filter_records(
         if days is None:
             unreadable += 1
             kept.append(rec)
-        elif days >= MIN_DAYS_UNTIL_CLOSE:
+        elif days >= min_days:
             kept.append(rec)
         else:
             skipped += 1

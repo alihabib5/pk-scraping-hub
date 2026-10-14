@@ -147,12 +147,14 @@ def format_excel_headers(
     header_row: int = 1,
     autofit: bool = True,
     freeze: bool = True,
+    auto_filter: bool = False,
 ) -> None:
     """The one call a finished sheet needs: style its header row and fit its
     columns.
 
     `freeze` pins the header row so it stays visible while scrolling; pass False
     for a sheet whose headers repeat (there is no single row to pin).
+    `auto_filter` adds Excel auto-filtering dropdowns across the header row.
     """
     if sheet.max_row >= header_row:
         style_header_row(sheet, header_row)
@@ -160,6 +162,10 @@ def format_excel_headers(
         autofit_columns(sheet)
     if freeze:
         sheet.freeze_panes = sheet.cell(row=header_row + 1, column=1).coordinate
+    if auto_filter and sheet.max_row >= header_row:
+        first_col = get_column_letter(1)
+        last_col = get_column_letter(sheet.max_column)
+        sheet.auto_filter.ref = f"{first_col}{header_row}:{last_col}{sheet.max_row}"
 
 
 # -- whole sheets ------------------------------------------------------------
@@ -205,6 +211,7 @@ def write_table(
     rows: Iterable[Sequence[Any]],
     freeze: bool = True,
     row_style: Callable[[Sequence[Any]], str | None] | None = None,
+    auto_filter: bool = False,
 ) -> int:
     """Write a header row and `rows` beneath it, formatted. Returns the row count.
 
@@ -236,7 +243,7 @@ def write_table(
         tinted[style] = tinted.get(style, 0) + 1
     # After the body, so the header keeps its own fill: a style function that
     # matched every row would otherwise leave the header tinted too.
-    format_excel_headers(sheet, freeze=freeze)
+    format_excel_headers(sheet, freeze=freeze, auto_filter=auto_filter)
     if tinted:
         logger.info(
             "%d of %d row(s) tinted (%s)", sum(tinted.values()), written,

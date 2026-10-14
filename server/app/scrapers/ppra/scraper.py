@@ -14,7 +14,7 @@ from selenium.webdriver.support.ui import Select
 from app.config import settings
 from app.core import run_manager
 from app.core.base_scraper import BaseScraper, StopRequested
-from app.core.closing_filter import MIN_DAYS_UNTIL_CLOSE, days_until_close
+from app.core.closing_filter import days_until_close
 from app.core.exports import archive_run
 from app.scrapers.ppra import export, repository
 from app.scrapers.ppra.parsers import parse_listing, parse_options, parse_total
@@ -169,14 +169,15 @@ class PpraScraper(BaseScraper):
             page_records = parse_listing(self.driver.page_source, base_url=base_url)
 
             # Apply close date filter if requested
+            runway = self.options.get_runway_days()
             filtered_records = []
             for rec in page_records:
-                if self.options.apply_closing_filter:
+                if runway is not None:
                     days = days_until_close(rec.get("closing_at"))
                     if days is None:
                         self._kept_unverified += 1
                         filtered_records.append(rec)
-                    elif days >= MIN_DAYS_UNTIL_CLOSE:
+                    elif days >= runway:
                         filtered_records.append(rec)
                     else:
                         self._skipped_closing += 1
