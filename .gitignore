@@ -62,3 +62,11 @@ Thumbs.db
 *.swp
 *.swo
 
+# MD Files 
+Architecture.md
+Code Style.md
+Database Design.md
+Design System.md
+Project Plan.md
+
+
