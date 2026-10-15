@@ -8,13 +8,16 @@
 
 **PK-Hub** is a dedicated procurement intelligence platform engineered for businesses, contractors, and market analysts tracking public sector opportunities across Pakistan. Rather than manually navigating paginated, dynamic government portals, PK-Hub automates the entire ingestion lifecycle:
 
-- **Filterable Discovery**: Search active tenders by organization, sector, category, tender type, procedure, or keyword.
-- **7-Day Closing Runway Guard**: Automatically flags or prioritizes tenders closing at least 7 days out, preventing wasted bids on expiring opportunities.
+- **Filterable Discovery**: Search active tenders by organization, sector, category, tender type, procedure, or keyword across Pakistan federal procurement.
+- **Configurable Closing Runway Guard**: Automatically filters out tenders closing soon (configurable runway days, default 7 days), preventing wasted bids on expiring opportunities.
 - **Live Scraper Console**: Full operational control over active scrapes with **Start**, **Pause**, **Resume**, **Stop**, and **Refresh**.
 - **Live Visual Monitor**: Broadcasts real-time screenshots from the headless browser session directly into the dashboard.
 - **Live-Streaming Results Grid**: Tenders appear in the interactive data table in real-time as they are extracted page-by-page.
-- **Styled Excel Workbooks**: Automatically compiles structured `.xlsx` workbooks with color-coded status highlights, formatted dates, and deep links to tender dossiers.
+- **Publication-Grade Excel Workbooks**: Compiles structured `.xlsx` workbooks with color-coded status highlights, formulas (`=MAX(0, J{row}-TODAY())`), PKT timezone dates/times, and direct hyperlinks.
 - **Historical Audit & Resumable Runs**: Run checkpoints and metadata persist to PostgreSQL so past jobs can be re-inspected or downloaded at any time.
+
+> [!NOTE]
+> **Pakistan Procurement Only**: This platform is strictly tailored for Pakistani procurement (PPRA Pakistan / EPMS). 
 
 ---
 
