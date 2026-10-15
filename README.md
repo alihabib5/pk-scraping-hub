@@ -19,6 +19,9 @@
 > [!NOTE]
 > **Pakistan Procurement Only**: This platform is strictly tailored for Pakistani procurement (PPRA Pakistan / EPMS). 
 
+> [!NOTE]
+> **Pakistan Procurement Only**: This platform is strictly tailored for Pakistani procurement (PPRA Pakistan / EPMS). All foreign or legacy US portal integrations (BidNet, MyFloridaMarketPlace, RideMetro, Texas SmartBuy, etc.) have been completely excluded.
+
 ---
 
 ## 2. Technology Stack
