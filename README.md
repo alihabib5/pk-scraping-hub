@@ -17,10 +17,9 @@
 - **Historical Audit & Resumable Runs**: Run checkpoints and metadata persist to PostgreSQL so past jobs can be re-inspected or downloaded at any time.
 
 > [!NOTE]
-> **Pakistan Procurement Only**: This platform is strictly tailored for Pakistani procurement (PPRA Pakistan / EPMS). 
+> **Pakistan Procurement Only**: This platform is strictly tailored for Pakistani Public procurement
 
-> [!NOTE]
-> **Pakistan Procurement Only**: This platform is strictly tailored for Pakistani procurement (PPRA Pakistan / EPMS). All foreign or legacy US portal integrations (BidNet, MyFloridaMarketPlace, RideMetro, Texas SmartBuy, etc.) have been completely excluded.
+
 
 ---
 
