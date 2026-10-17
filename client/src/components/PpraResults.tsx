@@ -1,38 +1,49 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { listPpraBids } from "@/lib/api";
+import { listPpraBids, type PpraBid } from "@/lib/api";
 
-export default function PpraResults({
-  runId,
-  initialBids = [],
-}: {
-  runId?: string;
-  initialBids?: any[];
-}) {
-  const [bids, setBids] = useState<any[]>(initialBids);
+const PAGE_SIZE = 500;
+
+/** The tenders a run has saved, streamed in as the scraper writes them. */
+export default function PpraResults({ runId }: { runId: string }) {
+  const [bids, setBids] = useState<PpraBid[]>([]);
   const [filterQuery, setFilterQuery] = useState("");
 
   useEffect(() => {
-    if (!runId) return;
-
     let active = true;
     let lastId = 0;
+    let busy = false;
 
     const poll = async () => {
+      // A large run can take longer than one interval to page through.
+      if (busy) return;
+      busy = true;
       try {
-        const res = await listPpraBids({ run_id: runId, after_id: lastId, limit: 100 });
-        if (!active) return;
-        if (res.bids && res.bids.length > 0) {
+        const fresh: PpraBid[] = [];
+        // Page forward from the cursor until caught up, so reopening a finished
+        // run with thousands of rows loads all of them, not just one page.
+        for (let page = 0; page < 50; page++) {
+          const res = await listPpraBids({ run_id: runId, after_id: lastId, limit: PAGE_SIZE });
+          if (!active) return;
+          const rows = res.bids ?? [];
+          if (rows.length === 0) break;
+          fresh.push(...rows);
+          lastId = Math.max(lastId, ...rows.map((b) => b.id));
+          if (rows.length < PAGE_SIZE) break;
+        }
+        if (fresh.length > 0) {
           setBids((prev) => {
             const existingIds = new Set(prev.map((b) => b.id));
-            const newBids = res.bids.filter((b) => !existingIds.has(b.id));
+            // Rows arrive oldest-first; the table shows newest on top.
+            const newBids = fresh.filter((b) => !existingIds.has(b.id)).reverse();
             return [...newBids, ...prev];
           });
-          lastId = Math.max(...res.bids.map((b) => b.id));
         }
-      } catch (err) {
+      } catch {
         // Silently tolerate transient polling error
+      } finally {
+        busy = false;
       }
     };
 
@@ -93,19 +104,19 @@ export default function PpraResults({
             {displayed.length === 0 ? (
               <tr>
                 <td colSpan={7} className="p-8 text-center text-ink-400">
-                  No tenders collected yet. Start a scrape above to begin streaming rows.
+                  No tenders saved for this run yet.
                 </td>
               </tr>
             ) : (
               displayed.map((b) => (
-                <tr key={b.id || b.tender_no} className="hover:bg-ink-50/40">
+                <tr key={b.id} className="hover:bg-ink-50/40">
                   <td className="whitespace-nowrap px-3 py-2.5 font-mono font-medium text-ink-900">
                     {b.tender_no}
                   </td>
                   <td className="max-w-xs truncate px-3 py-2.5" title={b.title}>
                     {b.title}
                   </td>
-                  <td className="max-w-xs truncate px-3 py-2.5 text-ink-600" title={b.organization}>
+                  <td className="max-w-xs truncate px-3 py-2.5 text-ink-600" title={b.organization ?? undefined}>
                     {b.organization || "—"}
                   </td>
                   <td className="whitespace-nowrap px-3 py-2.5 text-ink-500">

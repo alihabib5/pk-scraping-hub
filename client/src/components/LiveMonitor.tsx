@@ -10,13 +10,11 @@ import { stepLabel } from "@/components/RunStatus";
 /**
  * Live preview of an in-flight scrape.
  *
- * Renders nothing until a run is actively going (pending/running) — so the
- * button only exists WHILE scraping, never before or after. Clicking it opens a
- * modal that monitors the run in real time: current step, live counts, and a
- * growing event log built from the run status the parent is already polling.
- * For SAM (which exposes a live screenshot endpoint) the modal also streams the
- * browser view. When the run finishes/fails/stops the component unmounts, which
- * hides the button and closes the modal automatically.
+ * Renders nothing unless a run is active — so the button only exists WHILE
+ * scraping. Clicking it opens a modal that streams the browser view and shows
+ * the current step, live counts, and a growing event log built from the run
+ * status the engine is already polling. When the run finishes the component
+ * unmounts, which hides the button and closes the modal automatically.
  */
 export default function LiveMonitor({ run, portal }: { run: RunStatus | null; portal: Portal }) {
   // Which run's preview the user opened. Deriving "open" from the run id (rather
@@ -158,9 +156,12 @@ function LiveMonitorModal({
         </header>
 
         <div className="grid grid-cols-3 divide-x divide-ink-100 border-b border-ink-100 text-center">
-          <Stat label="Bids found" value={run.bids_found} />
-          <Stat label="Processed" value={run.bids_processed} />
-          <Stat label="Documents" value={run.documents_downloaded} />
+          <Stat label="Tenders found" value={run.bids_found} />
+          <Stat label="Saved" value={run.bids_processed} />
+          <Stat
+            label="Pages"
+            value={run.total_pages ? `${run.current_page ?? 0} / ${run.total_pages}` : "—"}
+          />
         </div>
 
         <div className="flex-1 overflow-y-auto p-5">
@@ -212,11 +213,11 @@ function LiveMonitorModal({
   );
 }
 
-function Stat({ label, value }: { label: string; value: number }) {
+function Stat({ label, value }: { label: string; value: string | number }) {
   return (
     <div className="px-4 py-3">
       <div className="text-xs font-medium text-ink-500">{label}</div>
-      <div className="tabular mt-0.5 text-xl font-semibold text-ink-900">{value}</div>
+      <div className="tabular-nums mt-0.5 text-xl font-semibold text-ink-900">{value}</div>
     </div>
   );
 }

@@ -1,16 +1,20 @@
 """Pydantic schemas for the PPRA scraper API."""
 
-from datetime import date, datetime
-from typing import Any
-
 from pydantic import BaseModel, Field
+
+from app.core.closing_filter import MIN_DAYS_UNTIL_CLOSE
 
 
 class PpraFilters(BaseModel):
+    """The search form. Dropdown fields carry the site's option ids (see
+    `filters.get_filter_options`); names from older runs are still accepted."""
+
     keyword: str | None = None
     tender_number: str | None = None
     closing_date: str | None = None
     tender_type: str | None = "ALL"
+    # Procurements / Disposals / Framework Agreements — the site's "By Method".
+    tender_method: str | None = None
     category: str | None = "ALL"
     sector: str | None = "ALL"
     nature: str | None = "ALL"
@@ -25,56 +29,16 @@ class PpraFilters(BaseModel):
 class PpraOptions(BaseModel):
     apply_closing_filter: bool | None = None
     closing_runway_days: int | None = Field(default=None, ge=0, le=365)
-    deep_detail: bool = False
     delay_ms: int | None = None
 
     def get_runway_days(self) -> int | None:
         """Returns effective closing runway days (0..365), or None if disabled."""
         if self.closing_runway_days is not None:
             return self.closing_runway_days
-        if self.apply_closing_filter is True:
-            return 7
-        if self.apply_closing_filter is False:
-            return None
-        return 7
+        return None if self.apply_closing_filter is False else MIN_DAYS_UNTIL_CLOSE
 
 
 class PpraScrapeRequest(BaseModel):
     filters: PpraFilters = Field(default_factory=PpraFilters)
     options: PpraOptions = Field(default_factory=PpraOptions)
     live_preview: bool = False
-
-
-class PpraBidOut(BaseModel):
-    id: int
-    run_id: str
-    page_no: int
-    position: int
-    tender_no: str
-    title: str
-    description: str | None = None
-    sector: str | None = None
-    tender_ref_no: str | None = None
-    tender_type: str | None = None
-    category: str | None = None
-    nature: str | None = None
-    organization: str | None = None
-    department: str | None = None
-    city: str | None = None
-    country: str | None = None
-    status: str | None = None
-    advertised_on: str | None = None
-    closing_at: str | None = None
-    detail_url: str | None = None
-    invoice_url: str | None = None
-    change_status: str
-    diff: dict[str, Any] | None = None
-    scraped_at: str | None = None
-
-
-class PpraFilterOptionOut(BaseModel):
-    kind: str
-    value: str
-    label: str
-    sort_order: int = 0
-

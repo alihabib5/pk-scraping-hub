@@ -1,36 +1,18 @@
-"""The hub's one Excel look, shared by every portal's export.
+"""The workbook look: a navy header row in bold white, centred, bordered, with
+columns wide enough that nothing is cut off.
 
-Every portal writes its own sheet — different columns, different sheet counts,
-some with extra per-row tinting or agency banners — but they all present the
-same way: a navy header row in bold white, centred, bordered, with columns wide
-enough that nothing is cut off. That styling lives here so it is described once
-and cannot drift portal to portal.
-
-Typical use, for a portal whose sheet is a plain header row plus data rows:
-
-    from app.core import excel_style
-
-    workbook, sheet = excel_style.new_workbook("BidNet Bids")
-    excel_style.write_table(sheet, headers, rows)
-    workbook.save(str(out_path))
-
-`write_table` appends the header row and the data rows, then formats. A portal
-that builds its rows in an unusual shape (EMMA's dynamic detail columns, SAM's
-decision tinting, RideMetro's repeating per-agency blocks) appends its own rows
-and calls `format_excel_headers` / `style_header_row` / `autofit_columns`
-directly — the pieces compose, so no portal has to restate the look to get an
-extra behaviour.
+    workbook, sheet = excel_style.new_workbook("PPRA Tenders")
+    ...append rows...
+    excel_style.format_excel_headers(sheet, auto_filter=True)
 
 Nothing here touches values other than to make them writable: control characters
 Excel rejects are stripped, and a cell over Excel's hard 32,767-character limit
-is truncated with a marker. Everything else — dates, numbers, blanks — is passed
-through as the portal produced it.
+is truncated with a marker.
 """
 
 from __future__ import annotations
 
-import logging
-from typing import Any, Callable, Iterable, Sequence
+from typing import Any
 
 from openpyxl import Workbook
 from openpyxl.cell.cell import ILLEGAL_CHARACTERS_RE
@@ -38,12 +20,9 @@ from openpyxl.styles import Alignment, Border, Font, PatternFill, Side
 from openpyxl.utils import get_column_letter
 from openpyxl.worksheet.worksheet import Worksheet
 
-logger = logging.getLogger(__name__)
-
 # -- the standard ------------------------------------------------------------
 
-#: Header fill — Office's "Blue, Accent 1, Darker 50%". One colour for every
-#: portal's header row; change it here and every export follows.
+#: Header fill — Office's "Blue, Accent 1, Darker 50%".
 HEADER_COLOR = "1F4E78"
 #: Thin cell rule, light enough not to compete with the text.
 BORDER_COLOR = "D5DDE5"
@@ -100,9 +79,7 @@ def style_header_row(
 ) -> None:
     """Apply the standard header look to one row of `sheet`.
 
-    Defaults to row 1 across every column that row uses — the shape of a plain
-    export. `row` / `first_column` / `last_column` are for sheets that repeat
-    headers further down (RideMetro writes one header row per agency block).
+    Defaults to row 1 across every column that row uses.
     """
     last_column = last_column or sheet.max_column
     for column in range(first_column, last_column + 1):
@@ -178,75 +155,3 @@ def new_workbook(title: str) -> tuple[Workbook, Worksheet]:
     sheet = workbook.active
     sheet.title = title
     return workbook, sheet
-
-
-#: How a row can be tinted, by what the tint *means* rather than by its colour.
-#: A caller returns one of these names and the palette is decided here, so two
-#: portals cannot end up with two different reds for the same idea.
-#:
-#: Pastel fills with dark type: saturated colour across twenty columns makes the
-#: text harder to read, and the point of the tint is to let someone skim the
-#: sheet rather than to decorate it. Nothing is defined for "clean" — an
-#: in-scope row is left exactly as written, which is what makes the tinted ones
-#: stand out at all.
-ROW_STYLES: dict[str, tuple[PatternFill, Font]] = {
-    # Out of scope — the matrix rejected it, or it sits in an excluded niche.
-    "reject": (PatternFill("solid", fgColor="FADBD8"), Font(color="78281F", bold=True)),
-    # Undecided — a person still has to look at this one.
-    "review": (PatternFill("solid", fgColor="FCF3CF"), Font(color="7D6608", bold=True)),
-    # Out of scope, in the client's own hand. Pure red rather than the pastel
-    # above, and that is the point: MFMP's criteria document specifies FFFF0000
-    # because it is the fill the client already applies by hand when they strike
-    # a bid off a sheet. A softer red would be a different mark from theirs, and
-    # the sheet is meant to arrive looking like the one they would have made.
-    # The type goes white because black on saturated red is barely readable
-    # across twenty columns.
-    "client_reject": (PatternFill("solid", fgColor="FFFF0000"), Font(color="FFFFFF", bold=True)),
-}
-
-
-def write_table(
-    sheet: Worksheet,
-    headers: Sequence[Any],
-    rows: Iterable[Sequence[Any]],
-    freeze: bool = True,
-    row_style: Callable[[Sequence[Any]], str | None] | None = None,
-    auto_filter: bool = False,
-) -> int:
-    """Write a header row and `rows` beneath it, formatted. Returns the row count.
-
-    This is the whole body of a plain portal export: the caller decides the
-    columns and produces the values, and everything about how the result looks
-    is decided here.
-
-    `row_style` is an optional function over a row's values returning a key of
-    `ROW_STYLES` — or None to leave the row clean. It lets a portal tint by what
-    a row *means* (out of scope, needs a person) without deciding what colour
-    that is. Omitted, nothing is tinted and the output is what it was before.
-    """
-    sheet.append([sanitize_cell(header) for header in headers])
-    written = 0
-    tinted: dict[str, int] = {}
-    for row in rows:
-        values = [sanitize_cell(value) for value in row]
-        sheet.append(values)
-        written += 1
-        style = row_style(values) if row_style is not None else None
-        if style is None:
-            continue
-        fill, font = ROW_STYLES[style]
-        # `sheet.max_row` rather than a counter: append() is what decides where
-        # the row landed, and reading it back cannot drift from that.
-        for cell in sheet[sheet.max_row]:
-            cell.fill = fill
-            cell.font = font
-        tinted[style] = tinted.get(style, 0) + 1
-    # After the body, so the header keeps its own fill: a style function that
-    # matched every row would otherwise leave the header tinted too.
-    format_excel_headers(sheet, freeze=freeze, auto_filter=auto_filter)
-    if tinted:
-        logger.info(
-            "%d of %d row(s) tinted (%s)", sum(tinted.values()), written,
-            ", ".join(f"{count} {name}" for name, count in sorted(tinted.items())),
-        )
-    return written

@@ -1,6 +1,6 @@
 """Where scrape runs actually execute: one pool, one cap, one queue.
 
-Every portal's endpoint hands its run to `submit`, which puts it on a dedicated
+The scrape endpoints hand each run to `submit`, which puts it on a dedicated
 thread pool and returns immediately. Two things follow from that pool being
 *dedicated*:
 

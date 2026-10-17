@@ -1,30 +1,24 @@
-"""Shared close-date filter used by every portal.
+"""Close-date parsing and the runway rule.
 
-The rule, applied uniformly across portals: keep only bids whose closing date is
-still at least MIN_DAYS_UNTIL_CLOSE days away, so there is enough runway to
-prepare and submit. A bid we can confirm closes sooner is dropped; a bid whose
-close date we cannot read is KEPT (we can't prove it fails the rule) and counted,
-so a drop is never silent.
+Keep only tenders whose closing date is still at least N days away, so there is
+enough runway to prepare and submit. A tender we can confirm closes sooner is
+dropped; one whose close date we cannot read is KEPT (we can't prove it fails
+the rule) and counted, so a drop is never silent.
 
-Every portal names and formats its closing date differently (Close Date, Closing
-Date, Due Date/Time, Date Offers Due, End Date…), so `parse_close_date` is
-deliberately permissive: it tries a list of explicit formats first, then falls
-back to a robust dateutil parse — but only when the text actually contains a
-4-digit year, so a stray number never parses into a bogus "past" date that would
-wrongly drop a bid.
+`parse_close_date` is deliberately permissive: it tries a list of explicit
+formats first, then falls back to a robust dateutil parse — but only when the
+text actually contains a 4-digit year, so a stray number never parses into a
+bogus "past" date that would wrongly drop a tender.
 """
 
 from __future__ import annotations
 
-import logging
 import re
 import warnings
 from datetime import date, datetime
-from typing import Any, Callable, Iterable
+from typing import Any
 
-logger = logging.getLogger(__name__)
-
-# Keep only bids closing at least this many days out. One definition, every portal.
+# The default runway, in days, when a run doesn't set its own.
 MIN_DAYS_UNTIL_CLOSE = 7
 
 # Explicit formats tried first (fast, unambiguous), against the whole string and
@@ -87,38 +81,3 @@ def days_until_close(raw: Any, today: date | None = None) -> int | None:
     if parsed is None:
         return None
     return (parsed - (today or date.today())).days
-
-
-def keeps(raw: Any, today: date | None = None, min_days: int = MIN_DAYS_UNTIL_CLOSE) -> bool:
-    """True if this bid should be kept: an unreadable date (can't disprove) or a
-    date at least min_days days out."""
-    days = days_until_close(raw, today)
-    return days is None or days >= min_days
-
-
-def filter_records(
-    records: Iterable[dict[str, Any]],
-    get_close: Callable[[dict[str, Any]], Any],
-    today: date | None = None,
-    min_days: int = MIN_DAYS_UNTIL_CLOSE,
-) -> tuple[list[dict[str, Any]], int, int]:
-    """Split records by the close-date rule.
-
-    `get_close(record)` returns that record's raw close-date value. Returns
-    (kept, skipped_closing_soon, kept_unreadable): the surviving records, how many
-    were dropped for closing too soon, and how many were kept despite an
-    unreadable close date.
-    """
-    kept: list[dict[str, Any]] = []
-    skipped = 0
-    unreadable = 0
-    for rec in records:
-        days = days_until_close(get_close(rec), today)
-        if days is None:
-            unreadable += 1
-            kept.append(rec)
-        elif days >= min_days:
-            kept.append(rec)
-        else:
-            skipped += 1
-    return kept, skipped, unreadable

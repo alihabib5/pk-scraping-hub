@@ -1,82 +1,150 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import RunStatusPanel from "@/components/RunStatus";
 import PpraResults from "@/components/PpraResults";
-import { Card, ErrorBanner, Field, LaunchBar, StartButton } from "@/components/ui";
+import {
+  Card,
+  ErrorBanner,
+  Field,
+  LaunchBar,
+  SearchSelect,
+  SelectField,
+  StartButton,
+} from "@/components/ui";
 import LiveMonitor from "@/components/LiveMonitor";
 import StopButton from "@/components/StopButton";
 import RefreshButton from "@/components/RefreshButton";
 import ScraperControls from "@/components/ScraperControls";
 import SessionActivity from "@/components/SessionActivity";
 import { usePortalSession } from "@/lib/usePortalSession";
-import { isRunActive, startPpraScrape, pauseRun, resumeRun } from "@/lib/api";
+import { formatTimestamp } from "@/lib/runs";
+import {
+  getPpraFilters,
+  isRunActive,
+  refreshPpraFilters,
+  startPpraScrape,
+  type PpraFilterOptions,
+} from "@/lib/api";
+
+/** The dropdowns, by the search form field each one fills. Values are the
+ *  site's option ids — the only thing its search accepts. */
+type Dropdown =
+  | "tender_type"
+  | "tender_method"
+  | "category"
+  | "sector"
+  | "nature"
+  | "organization"
+  | "country"
+  | "status";
+
+/** Which of the site's option lists feeds each dropdown. */
+const OPTION_KIND: Record<Dropdown, string> = {
+  tender_type: "tender_type",
+  tender_method: "tender_method",
+  category: "procurement_category",
+  sector: "sector",
+  nature: "tender_nature",
+  organization: "organization",
+  country: "country",
+  status: "status",
+};
+
+const NO_SELECTION: Record<Dropdown, string> = {
+  tender_type: "",
+  tender_method: "",
+  category: "",
+  sector: "",
+  nature: "",
+  organization: "",
+  country: "",
+  status: "",
+};
 
 export default function PpraPanel() {
   const [keyword, setKeyword] = useState("");
   const [tenderNumber, setTenderNumber] = useState("");
   const [closingDate, setClosingDate] = useState("");
-  const [tenderType, setTenderType] = useState("ALL");
-  const [category, setCategory] = useState("ALL");
-  const [sector, setSector] = useState("ALL");
-  const [nature, setNature] = useState("ALL");
-  const [organization, setOrganization] = useState("");
-  const [country, setCountry] = useState("Pakistan");
   const [advertiseFrom, setAdvertiseFrom] = useState("");
   const [advertiseTo, setAdvertiseTo] = useState("");
-  const [status, setStatus] = useState("ALL");
   const [city, setCity] = useState("");
-
+  const [selected, setSelected] = useState(NO_SELECTION);
   const [closingRunwayDays, setClosingRunwayDays] = useState<number | null>(7);
-  const [pausing, setPausing] = useState(false);
+
+  const [lists, setLists] = useState<PpraFilterOptions | null>(null);
+  const [refreshingLists, setRefreshingLists] = useState(false);
 
   const { run, error, starting, setError, launch, applyStatus, hasSession, reset } =
     usePortalSession("ppra");
 
   const isRunning = isRunActive(run);
-  const isPaused = run?.status === "paused";
 
-  const handleStart = (livePreview = false) =>
+  useEffect(() => {
+    let cancelled = false;
+    getPpraFilters()
+      .then((next) => {
+        if (!cancelled) setLists(next);
+      })
+      .catch((e) => {
+        if (!cancelled) setError(`Could not load the filter lists — is the API running? (${(e as Error).message})`);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [setError]);
+
+  const reloadLists = async () => {
+    setRefreshingLists(true);
+    try {
+      setLists(await refreshPpraFilters());
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setRefreshingLists(false);
+    }
+  };
+
+  const options = (field: Dropdown) => lists?.options[OPTION_KIND[field]] ?? [];
+  const choose = (field: Dropdown) => (value: string) => setSelected((s) => ({ ...s, [field]: value }));
+  const dropdown = (field: Dropdown, label: string, placeholder: string) => (
+    <SelectField
+      label={label}
+      value={selected[field]}
+      options={options(field)}
+      onChange={choose(field)}
+      disabled={isRunning}
+      placeholder={placeholder}
+    />
+  );
+
+  const handleStart = () =>
     launch(() =>
       startPpraScrape(
         {
           keyword: keyword.trim() || null,
           tender_number: tenderNumber.trim() || null,
-          closing_date: closingDate.trim() || null,
-          tender_type: tenderType !== "ALL" ? tenderType : null,
-          category: category !== "ALL" ? category : null,
-          sector: sector !== "ALL" ? sector : null,
-          nature: nature !== "ALL" ? nature : null,
-          organization: organization.trim() || null,
-          country: country.trim() || null,
-          advertise_from: advertiseFrom.trim() || null,
-          advertise_to: advertiseTo.trim() || null,
-          status: status !== "ALL" ? status : null,
+          closing_date: closingDate || null,
+          tender_type: selected.tender_type || null,
+          tender_method: selected.tender_method || null,
+          category: selected.category || null,
+          sector: selected.sector || null,
+          nature: selected.nature || null,
+          organization: selected.organization || null,
+          country: selected.country || null,
+          advertise_from: advertiseFrom || null,
+          advertise_to: advertiseTo || null,
+          status: selected.status || null,
           city: city.trim() || null,
         },
         {
+          // An empty box means "filter off"; null days alone would fall back to 7.
+          apply_closing_filter: closingRunwayDays !== null,
           closing_runway_days: closingRunwayDays,
         },
-        livePreview
-      )
+      ),
     );
-
-  const handleTogglePause = async () => {
-    if (!run) return;
-    setPausing(true);
-    try {
-      if (isPaused) {
-        await resumeRun(run.run_id);
-      } else {
-        await pauseRun(run.run_id);
-      }
-    } catch (err: any) {
-      setError(err?.message || "Failed to toggle pause");
-    } finally {
-      setPausing(false);
-    }
-  };
 
   return (
     <div className="space-y-6">
@@ -85,6 +153,26 @@ export default function PpraPanel() {
       <Card
         title="PPRA Search & Filter Criteria"
         description="Filter active federal tenders published by the Public Procurement Regulatory Authority (epms.ppra.gov.pk)."
+        actions={
+          <div className="flex items-center gap-2 text-xs text-ink-500">
+            <span>
+              {!lists
+                ? "Loading lists…"
+                : lists.refreshed_at
+                  ? `Lists from the site, ${formatTimestamp(lists.refreshed_at)}`
+                  : "Built-in lists"}
+            </span>
+            <button
+              type="button"
+              onClick={reloadLists}
+              disabled={refreshingLists || isRunning}
+              title="Re-read every dropdown from epms.ppra.gov.pk"
+              className="rounded-md px-2 py-1 font-medium text-ink-600 transition hover:bg-ink-50 hover:text-ink-900 disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              {refreshingLists ? "Refreshing…" : "Refresh lists"}
+            </button>
+          </div>
+        }
       >
         <div className="grid gap-4 sm:grid-cols-3">
           <Field
@@ -92,7 +180,7 @@ export default function PpraPanel() {
             value={keyword}
             onChange={setKeyword}
             disabled={isRunning}
-            placeholder="e.g. transformer, software"
+            placeholder="Title, description or tender no"
           />
           <Field
             label="Tender Number"
@@ -107,86 +195,32 @@ export default function PpraPanel() {
             value={closingDate}
             onChange={setClosingDate}
             disabled={isRunning}
-            placeholder="YYYY-MM-DD"
           />
 
-          <div>
-            <label className="block text-xs font-medium text-ink-700">Tender Type</label>
-            <select
-              value={tenderType}
-              onChange={(e) => setTenderType(e.target.value)}
+          {dropdown("tender_type", "Tender Type", "All Types")}
+          {dropdown("tender_method", "Method", "All Methods")}
+          {dropdown("category", "Category", "All Categories")}
+          {dropdown("sector", "Sector", "All Sectors")}
+          {dropdown("nature", "Nature", "All")}
+          {dropdown("status", "Status", "All Statuses")}
+
+          <div className="sm:col-span-2">
+            <SearchSelect
+              label="Organization / Ministry"
+              value={selected.organization}
+              options={options("organization")}
+              onChange={choose("organization")}
               disabled={isRunning}
-              className="mt-1 block w-full rounded-lg border border-ink-200 bg-white px-3 py-2 text-xs text-ink-800 focus:border-ink-400 focus:outline-none"
-            >
-              <option value="ALL">All Types</option>
-              <option value="Tender Notice">Tender Notice</option>
-              <option value="Pre-qualification Notice">Pre-qualification (PQ)</option>
-              <option value="Request for Proposal">Request for Proposal (RFP)</option>
-              <option value="Expression of Interest">Expression of Interest (EOI)</option>
-            </select>
+              placeholder="All Organizations"
+            />
           </div>
-
-          <div>
-            <label className="block text-xs font-medium text-ink-700">Category</label>
-            <select
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              disabled={isRunning}
-              className="mt-1 block w-full rounded-lg border border-ink-200 bg-white px-3 py-2 text-xs text-ink-800 focus:border-ink-400 focus:outline-none"
-            >
-              <option value="ALL">All Categories</option>
-              <option value="Goods">Goods</option>
-              <option value="Works">Works</option>
-              <option value="Consultancy Services">Consultancy Services</option>
-              <option value="Non-consultancy Services">Non-consultancy Services</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-xs font-medium text-ink-700">Sector</label>
-            <select
-              value={sector}
-              onChange={(e) => setSector(e.target.value)}
-              disabled={isRunning}
-              className="mt-1 block w-full rounded-lg border border-ink-200 bg-white px-3 py-2 text-xs text-ink-800 focus:border-ink-400 focus:outline-none"
-            >
-              <option value="ALL">All Sectors</option>
-              <option value="Electrical Items">Electrical Items</option>
-              <option value="Information Technology">Information Technology</option>
-              <option value="Medical Equipment">Medical Equipment</option>
-              <option value="Construction & Works">Construction &amp; Works</option>
-              <option value="Ammunition">Ammunition</option>
-            </select>
-          </div>
-
-          <div>
-            <label className="block text-xs font-medium text-ink-700">Nature</label>
-            <select
-              value={nature}
-              onChange={(e) => setNature(e.target.value)}
-              disabled={isRunning}
-              className="mt-1 block w-full rounded-lg border border-ink-200 bg-white px-3 py-2 text-xs text-ink-800 focus:border-ink-400 focus:outline-none"
-            >
-              <option value="ALL">All</option>
-              <option value="Local">Local</option>
-              <option value="International">International</option>
-            </select>
-          </div>
-
-          <Field
-            label="Organization / Ministry"
-            value={organization}
-            onChange={setOrganization}
-            disabled={isRunning}
-            placeholder="e.g. WAPDA, SNGPL, NHA"
-          />
-
-          <Field
+          <SearchSelect
             label="Country"
-            value={country}
-            onChange={setCountry}
+            value={selected.country}
+            options={options("country")}
+            onChange={choose("country")}
             disabled={isRunning}
-            placeholder="Pakistan"
+            placeholder="All Countries"
           />
 
           <Field
@@ -195,33 +229,14 @@ export default function PpraPanel() {
             value={advertiseFrom}
             onChange={setAdvertiseFrom}
             disabled={isRunning}
-            placeholder="YYYY-MM-DD"
           />
-
           <Field
             label="Advertise Date To"
             type="date"
             value={advertiseTo}
             onChange={setAdvertiseTo}
             disabled={isRunning}
-            placeholder="YYYY-MM-DD"
           />
-
-          <div>
-            <label className="block text-xs font-medium text-ink-700">Status</label>
-            <select
-              value={status}
-              onChange={(e) => setStatus(e.target.value)}
-              disabled={isRunning}
-              className="mt-1 block w-full rounded-lg border border-ink-200 bg-white px-3 py-2 text-xs text-ink-800 focus:border-ink-400 focus:outline-none"
-            >
-              <option value="ALL">All Statuses</option>
-              <option value="Published">Published</option>
-              <option value="Published Corrigendum">Published Corrigendum</option>
-              <option value="Cancelled">Cancelled</option>
-            </select>
-          </div>
-
           <Field
             label="City"
             value={city}
@@ -231,10 +246,8 @@ export default function PpraPanel() {
           />
         </div>
 
-        <div className="mt-4 border-t border-ink-100 pt-4 flex items-center gap-3">
-          <label className="text-xs font-medium text-ink-700 shrink-0">
-            Min. days until closing
-          </label>
+        <div className="mt-4 flex items-center gap-3 border-t border-ink-100 pt-4">
+          <label className="shrink-0 text-xs font-medium text-ink-700">Min. days until closing</label>
           <input
             type="number"
             min={0}
@@ -242,44 +255,30 @@ export default function PpraPanel() {
             value={closingRunwayDays ?? ""}
             onChange={(e) => {
               const v = e.target.value;
-              setClosingRunwayDays(v === "" ? null : Math.max(0, parseInt(v, 10)));
+              setClosingRunwayDays(v === "" ? null : Math.min(365, Math.max(0, parseInt(v, 10) || 0)));
             }}
             disabled={isRunning}
-            placeholder="disabled"
+            placeholder="off"
             className="w-24 rounded-lg border border-ink-200 bg-white px-3 py-1.5 text-xs text-ink-800 focus:border-ink-400 focus:outline-none"
           />
           <span className="text-xs text-ink-500">
             {closingRunwayDays === null
               ? "Filter off — all tenders included"
               : closingRunwayDays === 0
-              ? "All tenders (0-day minimum)"
-              : `Skip tenders closing in < ${closingRunwayDays} day${closingRunwayDays !== 1 ? "s" : ""}`}
+                ? "All tenders (0-day minimum)"
+                : `Skip tenders closing in < ${closingRunwayDays} day${closingRunwayDays !== 1 ? "s" : ""}`}
           </span>
         </div>
       </Card>
 
       <LaunchBar summary="PPRA active tenders scraper ready with cooperative pause/resume and live tracking.">
         <div className="flex items-center gap-2">
-          {isRunning && (
-            <button
-              type="button"
-              onClick={handleTogglePause}
-              disabled={pausing}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-amber-300 bg-amber-50 px-3 py-1.5 text-xs font-medium text-amber-800 shadow-sm transition hover:bg-amber-100"
-            >
-              {isPaused ? "▶ Resume" : "⏸ Pause"}
-            </button>
-          )}
           <StopButton run={run} onError={setError} />
           <LiveMonitor run={run} portal="ppra" />
-          <ScraperControls
-            run={run}
-            onError={setError}
-            onStatusChange={applyStatus}
-          />
+          <ScraperControls run={run} onError={setError} onStatusChange={applyStatus} />
           <RefreshButton run={run} hasSession={hasSession} onReset={reset} />
           <StartButton
-            onClick={() => handleStart()}
+            onClick={handleStart}
             disabled={starting || isRunning}
             running={isRunning}
             starting={starting}
@@ -291,8 +290,7 @@ export default function PpraPanel() {
 
       {run && <RunStatusPanel run={run} />}
       <SessionActivity portal="ppra" />
-      {run && <PpraResults runId={run.run_id} initialBids={run.bids} />}
+      {run && <PpraResults key={run.run_id} runId={run.run_id} />}
     </div>
   );
 }
-

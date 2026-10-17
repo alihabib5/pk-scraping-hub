@@ -4,35 +4,21 @@ import logging
 from datetime import date, datetime, time, timezone
 from pathlib import Path
 from typing import Any
-from urllib.parse import urlencode
 from zoneinfo import ZoneInfo
 
 from openpyxl.styles import Font
 from sqlalchemy import select
 
 from app.core import excel_style
+from app.config import settings
 from app.db import SessionLocal
+from app.scrapers.ppra.filters import FIELD_NAMES, build_search_url, filter_labels
 from app.scrapers.ppra.models import PpraBid, PpraRun
+from app.scrapers.ppra.schemas import PpraFilters, PpraOptions
 
 logger = logging.getLogger(__name__)
 
 PKT = ZoneInfo("Asia/Karachi")
-
-# Human-readable labels for PPRA filter IDs
-CATEGORY_MAP = {
-    "1": "Goods",
-    "2": "Works",
-    "3": "Consultancy Services",
-    "4": "Non-consultancy Services",
-}
-
-TENDER_TYPE_MAP = {
-    "1": "Tender Notice",
-    "2": "Pre-qualification Notice",
-    "3": "Request for Proposal",
-    "4": "Expression of Interest",
-}
-
 
 def _to_pkt_naive(dt: datetime | None) -> datetime | None:
     """Convert tz-aware or UTC datetime to naive Pakistan Standard Time (PKT)."""
@@ -44,78 +30,14 @@ def _to_pkt_naive(dt: datetime | None) -> datetime | None:
 
 
 def _format_filters_summary(filters: dict[str, Any]) -> str:
-    """Format stored filter dictionary into clear, human-readable labels."""
-    parts = []
-    if not filters:
-        return "All active tenders (no filters)"
-
-    keyword = filters.get("keyword")
-    if keyword:
-        parts.append(f"Keyword: “{keyword}”")
-
-    tender_no = filters.get("tender_number") or filters.get("tender_no")
-    if tender_no:
-        parts.append(f"Tender No: {tender_no}")
-
-    cat = str(filters.get("category") or filters.get("procurement_category") or "")
-    if cat and cat.upper() != "ALL":
-        parts.append(f"Category: {CATEGORY_MAP.get(cat, cat)}")
-
-    tt = str(filters.get("tender_type") or "")
-    if tt and tt.upper() != "ALL":
-        parts.append(f"Tender Type: {TENDER_TYPE_MAP.get(tt, tt)}")
-
-    sector = filters.get("sector")
-    if sector and sector.upper() != "ALL":
-        parts.append(f"Sector: {sector}")
-
-    org = filters.get("organization")
-    if org and org.upper() != "ALL":
-        parts.append(f"Organization: {org}")
-
-    adv_from = filters.get("advertise_from") or filters.get("advertise_date_from")
-    adv_to = filters.get("advertise_to") or filters.get("advertise_date_to")
+    """The applied filters as `Category: Goods · Sector: Info and Comm Tech · …`."""
+    parts = [f"{FIELD_NAMES[field]}: {label}" for field, label in filter_labels(filters)]
+    adv_from, adv_to = filters.get("advertise_from"), filters.get("advertise_to")
     if adv_from or adv_to:
         parts.append(f"Advertised: {adv_from or 'any'} to {adv_to or 'any'}")
-
-    close_date = filters.get("closing_date")
-    if close_date:
-        parts.append(f"Closing Date: {close_date}")
-
-    city = filters.get("city")
-    if city and city.upper() != "ALL":
-        parts.append(f"City: {city}")
-
+    if filters.get("closing_date"):
+        parts.append(f"Closing Date: {filters['closing_date']}")
     return " · ".join(parts) if parts else "All active tenders"
-
-
-def _build_search_url(filters: dict[str, Any]) -> str:
-    """Reconstruct exact PPRA URL corresponding to the filters used."""
-    base = "https://epms.ppra.gov.pk/public/tenders/active-tenders"
-    if not filters:
-        return base
-    params = {}
-    if filters.get("keyword"):
-        params["keyword"] = filters["keyword"]
-    if filters.get("tender_number") or filters.get("tender_no"):
-        params["tender_no"] = filters.get("tender_number") or filters.get("tender_no")
-    if filters.get("category"):
-        cat = str(filters["category"])
-        params["procurement_category"] = CATEGORY_MAP.get(cat, cat)
-    if filters.get("tender_type"):
-        tt = str(filters["tender_type"])
-        params["tender_type"] = TENDER_TYPE_MAP.get(tt, tt)
-    if filters.get("sector"):
-        params["sector"] = filters["sector"]
-    if filters.get("organization"):
-        params["organization"] = filters["organization"]
-    if filters.get("advertise_from"):
-        params["advertise_date_from"] = filters["advertise_from"]
-    if filters.get("advertise_to"):
-        params["advertise_date_to"] = filters["advertise_to"]
-    if params:
-        return f"{base}?{urlencode(params)}"
-    return base
 
 
 def generate_excel(run_id: str, out_path: str | Path) -> int:
@@ -267,7 +189,16 @@ def generate_excel(run_id: str, out_path: str | Path) -> int:
     summary_sheet.append([excel_style.sanitize_cell(h) for h in summary_headers])
 
     filters_data = run.filters if run and run.filters else {}
-    search_url = _build_search_url(filters_data)
+    portal_url = settings.ppra_base_url.rstrip("/") + settings.ppra_active_tenders_path
+    search_url = build_search_url(PpraFilters(**filters_data), portal_url)
+    runway = PpraOptions(**(run.options if run and run.options else {})).get_runway_days()
+    skipped = run.skipped_closing if run else 0
+    unverified = run.kept_unverified if run else 0
+    closing_guard = (
+        "Off — all tenders kept"
+        if runway is None
+        else f"{runway} days (skipped closing sooner: {skipped}, kept with unreadable date: {unverified})"
+    )
     filters_desc = _format_filters_summary(filters_data)
 
     duration_str = "—"
@@ -282,13 +213,10 @@ def generate_excel(run_id: str, out_path: str | Path) -> int:
         ("Scrape Started (PKT)", run_start_pkt.strftime("%Y-%m-%d %H:%M:%S") if run_start_pkt else "—"),
         ("Scrape Finished (PKT)", run_finish_pkt.strftime("%Y-%m-%d %H:%M:%S") if run_finish_pkt else "—"),
         ("Duration", duration_str),
-        ("Source Portal", "https://epms.ppra.gov.pk/public/tenders/active-tenders"),
+        ("Source Portal", portal_url),
         ("Search Filters Applied", filters_desc),
         ("Search URL", search_url),
-        (
-            "7-Day Closing Guard",
-            f"Applied (Skipped closing < 7 days: {run.skipped_closing if run else 0}, Kept unverified: {run.kept_unverified if run else 0})",
-        ),
+        ("Closing Guard", closing_guard),
         ("Total Tenders Scraped", len(rows)),
         ("Total Expected on Portal", run.total_expected if (run and run.total_expected) else len(rows)),
         ("New Tenders", run.rows_new if run else len(rows)),

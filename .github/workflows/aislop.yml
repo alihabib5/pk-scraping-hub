@@ -1,0 +1,21 @@
+name: aislop
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  quality-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: aislop — AI Code Quality Gate
+        uses: scanaislop/aislop@v0.18.1
+        with:
+          # Pin the CLI to the same release as the action, instead of whatever is newest on npm.
+          version: "0.18.1"

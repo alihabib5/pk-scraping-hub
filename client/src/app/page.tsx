@@ -51,7 +51,7 @@ export default function HomePage() {
           </h2>
 
           <p className="text-sm md:text-base text-zinc-600 max-w-2xl leading-relaxed mb-8">
-            Scraping Hub watches public procurement portals, runs the searches you care about, collects every matching solicitation with its documents, and hands you a spreadsheet — without anyone clicking through a government website.
+            Scraping Hub runs the PPRA tender searches you care about, collects every matching tender page by page, and hands you a spreadsheet — without anyone clicking through a government website.
           </p>
 
           <div className="flex items-center gap-3">
@@ -77,7 +77,7 @@ export default function HomePage() {
               1 Pakistani portal, one console.
             </h2>
             <p className="text-xs md:text-sm text-zinc-500 max-w-2xl">
-              Each source has its own login, search quirks and export format. Scraping Hub hides all of that behind one interface.
+              PPRA's search filters, paging and closing dates, behind one interface.
             </p>
           </div>
 
@@ -144,7 +144,7 @@ export default function HomePage() {
                 Choose a source and scope
               </h3>
               <p className="text-xs text-zinc-600 leading-relaxed">
-                Pick a portal, then narrow to the niche, keywords, commodity codes or agency you actually bid on. Every filter mirrors the portal's own search.
+                Narrow by keyword, category, sector, organization, city or advertise date. Every filter mirrors the portal's own search.
               </p>
             </div>
 
@@ -154,7 +154,7 @@ export default function HomePage() {
                 The crawler does the reading
               </h3>
               <p className="text-xs text-zinc-600 leading-relaxed">
-                A headless browser signs in, runs each search, pages through the results and downloads the documents attached to every solicitation it finds.
+                A headless browser runs the search on epms.ppra.gov.pk and pages through every result, skipping tenders that close too soon.
               </p>
             </div>
 
@@ -164,7 +164,7 @@ export default function HomePage() {
                 Take away a spreadsheet
               </h3>
               <p className="text-xs text-zinc-600 leading-relaxed">
-                Results land in the database and an Excel workbook, filed under a per-run folder — with the run's full history kept so you can audit what happened.
+                Results land in the database and an Excel workbook named after your filters — with the run's full history kept so you can audit what happened.
               </p>
             </div>
           </div>

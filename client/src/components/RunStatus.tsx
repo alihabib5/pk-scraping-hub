@@ -1,125 +1,52 @@
 "use client";
 
-import {
-  runAttachmentsDownloadUrl,
-  runDownloadUrl,
-  type RunStatus as RunStatusData,
-} from "@/lib/api";
+import { runDownloadUrl, type RunStatus as RunStatusData } from "@/lib/api";
 import { LinkButton, RunBadge } from "@/components/ui";
-import { downloadKind, runAttachmentsDownloadable, runDownloadable, runPartial } from "@/lib/runs";
+import { runDownloadable, runPartial } from "@/lib/runs";
 
 const STEP_LABELS: Record<string, string> = {
   queued: "Queued",
-  logging_in: "Logging in",
-  // MyFlorida
-  opening_advertisements: "Opening Advertisements",
-  opening_advanced_search: "Opening Advanced Search",
-  entering_commodity_codes: "Entering commodity codes",
-  selecting_ad_status: "Selecting ad status",
-  selecting_ad_type: "Selecting ad type",
-  applying_date_window: "Entering the posting-date window",
-  searching: "Running search",
-  collecting_bids: "Collecting bid list",
-  exporting_excel: "Exporting Excel",
-  merging_workbook: "Building the summary sheet",
-  storing_in_db: "Storing bids in database",
-  // RideMetro
-  opening_opportunities: "Opening opportunities list",
-  scraping_project_details: "Scraping project details",
-  generating_excel: "Generating Excel from database",
-  // BidNet
-  filtering_member_agency: "Filtering to Member Agency Bids",
-  applying_filters: "Applying sidebar filters",
-  opening_search: "Opening the solicitation search",
-  harvesting_filter_options: "Reading BidNet's filter options",
-  opening_bid: "Opening solicitation",
-  // North Dakota
-  awaiting_manual_login: "Waiting for you to solve the CAPTCHA in the browser…",
-  // MyFlorida: the portal has emailed/texted a one-time password and the run is
-  // paused until someone types it into the open Chrome window.
-  awaiting_otp: "Waiting for you to enter the one-time password in the browser…",
-  logged_in: "Signed in",
-  opening_solicitations: "Opening Solicitations menu",
-  opening_public_solicitation_request: "Opening Public Solicitation Requests",
-  // SAM / Unison / NAICS
-  scraping: "Scraping",
-  saving: "Saving to database",
-  fetching_naics: "Fetching NAICS codes",
-  scraping_results: "Scraping results grid",
-  // Neutral wording: excel-only portals (see EXCEL_ONLY in lib/runs) package a
-  // bare .xlsx here, so naming ZIP made a finished SEPTA run look like it still
-  // produced one.
-  packaging_results: "Packaging results",
-  saving_excel: "Saving the Excel report",
-  done: "Done",
+  starting: "Starting the browser",
+  opening_site: "Opening epms.ppra.gov.pk",
+  scraping_pages: "Reading the results",
+  packaging_results: "Saving the Excel report",
+  completed: "Done",
   failed: "Failed",
-  stopping: "Stopping…",
   stopped: "Stopped by you",
+  interrupted: "Interrupted by a server restart",
 };
 
 export function stepLabel(step: string): string {
-  if (step.startsWith("downloading_documents:")) return `Downloading documents for bid ${step.split(":")[1]}`;
-  if (step.startsWith("opening_opportunity:")) return `Opening opportunity ${step.split(":")[1]}`;
-  if (step.startsWith("downloading_zip:")) return `Downloading documents (${step.split(":")[1]})`;
-  // The keyword itself can contain no colon, so everything after the first is it.
-  if (step.startsWith("entering_keyword:")) return `Searching title for “${step.slice("entering_keyword:".length)}”`;
+  const page = /^page_(\d+)_of_(\d+)$/.exec(step);
+  if (page) return `Reading page ${page[1]} of ${page[2]}`;
+  if (step.startsWith("queued (")) return `Waiting for a free slot ${step.slice("queued ".length)}`;
   return STEP_LABELS[step] ?? step;
 }
 
-function runSubtitle(run: RunStatusData): string {
-  // A keyword run works through one keyword at a time — show which.
-  if (run.category_label && run.mode === "keywords" && run.keyword) {
-    const progress = run.keyword_progress ? ` ${run.keyword_progress}` : "";
-    return `${run.category_label} · “${run.keyword}”${progress}`;
-  }
-  if (run.category_label) return run.category_label;
-  if (run.scraper === "ppra") return "PPRA Pakistan";
-  return "";
-}
-
 export default function RunStatus({ run }: { run: RunStatusData }) {
-  const inFlight = run.status === "running" || run.status === "pending";
+  const inFlight = run.status === "running" || run.status === "pending" || run.status === "queued";
   // Parked, not finished. It gets its own line rather than the spinner: an
   // animation on a run that is deliberately doing nothing reads as a hang.
   const parked = run.status === "paused";
-  const subtitle = runSubtitle(run);
   const download = runDownloadable(run);
-  const excelOnly = downloadKind(run.scraper ?? "") === "excel";
-  const attachments = runAttachmentsDownloadable(run);
   // A stopped run that kept its rows. The panel says so rather than dressing it
-  // up as a finished one: the reviewer is about to open a spreadsheet that is
-  // missing everything after the point they pressed Stop.
+  // up as a finished one: the spreadsheet is missing everything after Stop.
   const partial = runPartial(run);
+  const runway = closingRunway(run);
+  const warnings = run.warnings ?? [];
 
   return (
     <section className="overflow-hidden rounded-xl border border-ink-200 bg-white shadow-sm">
       <header className="flex flex-wrap items-center justify-between gap-3 border-b border-ink-100 px-5 py-3.5">
         <div className="flex min-w-0 items-center gap-2.5">
           <h3 className="text-sm font-semibold text-ink-900">Run status</h3>
-          {subtitle && <span className="truncate text-sm text-ink-500">{subtitle}</span>}
+          {run.search && <span className="truncate text-sm text-ink-500">{run.search}</span>}
         </div>
         <div className="flex items-center gap-2.5">
           <span className="font-mono text-xs text-ink-400">{run.run_id}</span>
           <RunBadge status={run.status} partial={run.partial_results} />
         </div>
       </header>
-
-      {/* The one moment a run needs a person. MyFlorida's login is answered with
-          a one-time password that only the account holder can read, so the run
-          sits and waits — and says so loudly, because a quiet spinner is
-          indistinguishable from a hang and the window times out. */}
-      {run.awaiting_otp && (
-        <div role="alert" className="border-b border-gold-300 bg-gold-50 px-5 py-4">
-          <p className="font-display text-sm text-gold-900">
-            Enter the one-time password in the Chrome window
-          </p>
-          <p className="mt-1 text-xs leading-relaxed text-gold-800">
-            MyFloridaMarketPlace sent a code to the account. Type it into the browser
-            window that opened — the run continues by itself the moment you are signed in
-            {run.otp_wait_seconds ? `, and gives up after ${run.otp_wait_seconds}s` : ""}.
-          </p>
-        </div>
-      )}
 
       {parked && (
         <div className="border-b border-amber-200 bg-amber-50 px-5 py-3.5">
@@ -131,13 +58,12 @@ export default function RunStatus({ run }: { run: RunStatusData }) {
           </div>
           <p className="mt-1.5 text-xs text-amber-800">
             The browser and the slot are still held. Resume from the toolbar above to
-            continue at the next record — nothing is re-collected.
+            continue at the next page — nothing is re-collected.
           </p>
         </div>
       )}
 
-      {/* Live step: the current action, with an indeterminate bar underneath.
-          The backend reports steps, not percentages, so no fake completion %. */}
+      {/* The backend reports steps, not percentages, so no fake completion %. */}
       {inFlight && (
         <div className="border-b border-ink-100 bg-ink-50/70 px-5 py-3.5">
           <div className="flex items-center gap-2.5">
@@ -151,33 +77,29 @@ export default function RunStatus({ run }: { run: RunStatusData }) {
       )}
 
       <div className="grid grid-cols-2 divide-ink-100 sm:grid-cols-4 sm:divide-x">
-        {/* Against the portal's own count when the run knows it (Unison reads
-            it off the listing's "1 - 100 of 115 Buys" line). A run that read
-            fewer than the portal reported is the failure this shows: the number
-            on its own looked like a small listing rather than a short walk. */}
+        <Stat label="Tenders found" value={run.bids_found} />
+        <Stat label="Saved" value={run.bids_processed} />
         <Stat
-          label={run.bids_detected ? "Bids found / detected" : "Bids found"}
-          value={run.bids_detected ? `${run.bids_found} / ${run.bids_detected}` : run.bids_found}
-          muted={!!run.bids_detected && run.bids_found < run.bids_detected}
+          label="Pages"
+          value={run.total_pages ? `${run.current_page ?? 0} / ${run.total_pages}` : "—"}
+          muted={!run.total_pages}
         />
-        <Stat label="Processed" value={run.bids_processed} />
-        <Stat label="Documents" value={run.documents_downloaded} />
         <Stat label="Results" value={run.excel_exported ? "Ready" : "—"} muted={!run.excel_exported} />
       </div>
 
-      {(run.errors.length > 0 || run.no_results || (run.warnings?.length ?? 0) > 0 || run.status === "completed" || run.status === "stopped" || !!run.min_days_until_close) && (
+      {(run.errors.length > 0 || warnings.length > 0 || run.status === "completed" || run.status === "stopped" || runway !== undefined) && (
         <div className="space-y-3 border-t border-ink-100 p-5">
-          {!!run.min_days_until_close && (
+          {runway !== undefined && (
             <ClosingFilterNote
-              minDays={run.min_days_until_close}
-              skipped={run.bids_skipped_closing_soon ?? 0}
-              unreadable={run.bids_kept_unreadable_close ?? 0}
+              minDays={runway}
+              skipped={run.skipped_closing ?? 0}
+              unreadable={run.kept_unverified ?? 0}
             />
           )}
 
           {run.status === "stopped" && (
             <Notice tone="amber" title="Stopped">
-              You stopped this run{run.bids_processed > 0 ? ` after ${run.bids_processed} processed` : ""}. Anything captured before the stop is kept below.
+              You stopped this run{run.bids_processed > 0 ? ` after ${run.bids_processed} saved` : ""}. Anything captured before the stop is kept below.
             </Notice>
           )}
 
@@ -193,20 +115,10 @@ export default function RunStatus({ run }: { run: RunStatusData }) {
             </Notice>
           )}
 
-          {run.no_results && (
-            <Notice tone="amber" title="No matching ads">
-              The search completed successfully — this niche currently has no ads matching your filters.
-            </Notice>
-          )}
-
-          {/* Warnings are non-fatal notices of every kind — a keyword that
-              matched nothing, a filter that wouldn't apply, a list that came
-              back short — so the heading counts them rather than naming one
-              cause. */}
-          {run.warnings && run.warnings.length > 0 && (
-            <Notice tone="amber" title={`${run.warnings.length} ${run.warnings.length === 1 ? "notice" : "notices"}`}>
+          {warnings.length > 0 && (
+            <Notice tone="amber" title={`${warnings.length} ${warnings.length === 1 ? "notice" : "notices"}`}>
               <ul className="max-h-28 space-y-1 overflow-y-auto">
-                {run.warnings.map((warning, i) => (
+                {warnings.map((warning, i) => (
                   <li key={i} className="font-mono text-xs leading-relaxed">
                     {warning}
                   </li>
@@ -226,53 +138,18 @@ export default function RunStatus({ run }: { run: RunStatusData }) {
                   {partial ? "Partial results ready" : "Results ready"}
                 </p>
                 <p className={`text-xs ${partial ? "text-amber-800" : "text-ink-500"}`}>
-                  {partial ? (
-                    <>
-                      You stopped this run, so it covers only what it had found by
-                      then
-                      {typeof run.partial_record_count === "number"
-                        ? ` — ${run.partial_record_count.toLocaleString()} record${
-                            run.partial_record_count === 1 ? "" : "s"
-                          }`
-                        : ""}
-                      . {excelOnly
-                        ? "The Excel report holds them."
-                        : "The ZIP holds them, with any documents downloaded before the stop."}
-                    </>
-                  ) : (
-                    <>
-                      {excelOnly
-                        ? "The cumulative Excel report — this run's complete output."
-                        : "Cumulative Excel report plus every downloaded bid document, bundled as one ZIP."}
-                      {attachments && " The second button carries the bid documents on their own."}
-                    </>
-                  )}
+                  {partial
+                    ? `You stopped this run, so it covers only what it had found by then${
+                        typeof run.partial_record_count === "number"
+                          ? ` — ${run.partial_record_count.toLocaleString()} record${run.partial_record_count === 1 ? "" : "s"}`
+                          : ""
+                      }.`
+                    : "The Excel report — this run's complete output."}
                 </p>
               </div>
-              <div className="flex flex-wrap items-center gap-2">
-                <LinkButton
-                  href={runDownloadUrl(run.run_id)}
-                  variant="primary"
-                  size="sm"
-                  icon={<DownloadIcon />}
-                >
-                  {excelOnly ? "Download Excel" : "Download ZIP"}
-                </LinkButton>
-                {/* Secondary on purpose: the full archive is the deliverable —
-                    the sheet is what indexes the folders this one contains — so
-                    the narrower cut sits beside it rather than competing with
-                    it for the first click. */}
-                {attachments && (
-                  <LinkButton
-                    href={runAttachmentsDownloadUrl(run.run_id)}
-                    variant="secondary"
-                    size="sm"
-                    icon={<DownloadIcon />}
-                  >
-                    Download attachments ZIP
-                  </LinkButton>
-                )}
-              </div>
+              <LinkButton href={runDownloadUrl(run.run_id)} variant="primary" size="sm" icon={<DownloadIcon />}>
+                Download Excel
+              </LinkButton>
             </div>
           )}
         </div>
@@ -281,8 +158,16 @@ export default function RunStatus({ run }: { run: RunStatusData }) {
   );
 }
 
-/** The download arrow, shared by both result buttons so they read as two ways
- *  of taking the same thing rather than two different actions. */
+/** The run's closing-date runway: days, null when the filter was off, or
+ *  undefined while the run's options aren't known. Mirrors the server's
+ *  `PpraOptions.get_runway_days`. */
+function closingRunway(run: RunStatusData): number | null | undefined {
+  const options = run.options;
+  if (!options) return undefined;
+  if (options.closing_runway_days != null) return options.closing_runway_days;
+  return options.apply_closing_filter === false ? null : 7;
+}
+
 function DownloadIcon() {
   return (
     <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden>
@@ -295,7 +180,7 @@ function Stat({ label, value, muted }: { label: string; value: string | number; 
   return (
     <div className="border-b border-ink-100 px-5 py-4 sm:border-b-0">
       <div className="text-xs font-medium text-ink-500">{label}</div>
-      <div className={`tabular mt-1 text-2xl font-semibold ${muted ? "text-ink-300" : "text-ink-900"}`}>{value}</div>
+      <div className={`mt-1 text-2xl font-semibold tabular-nums ${muted ? "text-ink-300" : "text-ink-900"}`}>{value}</div>
     </div>
   );
 }
@@ -322,31 +207,33 @@ function Notice({
   );
 }
 
-/**
- * Informational (not a warning) note explaining the always-on close-date filter:
- * every portal keeps only bids closing at least N days out, so a smaller list is
- * expected. Shown whenever a run recorded the filter (min_days_until_close set).
- */
+/** What the closing-date filter did on this run. */
 function ClosingFilterNote({
   minDays,
   skipped,
   unreadable,
 }: {
-  minDays: number;
+  minDays: number | null;
   skipped: number;
   unreadable: number;
 }) {
   return (
     <div className="rounded-lg border border-ink-200 bg-ink-50 p-3.5">
-      <p className="mb-1 text-xs font-semibold text-ink-700">Closing-date filter · ≥ {minDays} days out</p>
+      <p className="mb-1 text-xs font-semibold text-ink-700">
+        {minDays === null ? "Closing-date filter · off" : `Closing-date filter · ≥ ${minDays} days out`}
+      </p>
       <p className="text-sm text-ink-600">
-        Only bids closing at least {minDays} days from today are kept.
-        {skipped > 0
-          ? ` ${skipped} closing sooner ${skipped === 1 ? "was" : "were"} skipped.`
-          : " None were closing sooner."}
-        {unreadable > 0
-          ? ` ${unreadable} with an unreadable close date ${unreadable === 1 ? "was" : "were"} kept.`
-          : ""}
+        {minDays === null
+          ? "Every tender is kept, whatever its closing date."
+          : `Only tenders closing at least ${minDays} days from today are kept.${
+              skipped > 0
+                ? ` ${skipped} closing sooner ${skipped === 1 ? "was" : "were"} skipped.`
+                : " None were closing sooner."
+            }${
+              unreadable > 0
+                ? ` ${unreadable} with an unreadable close date ${unreadable === 1 ? "was" : "were"} kept.`
+                : ""
+            }`}
       </p>
     </div>
   );
