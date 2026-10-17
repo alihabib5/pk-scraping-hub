@@ -3,14 +3,16 @@
 import hashlib
 import json
 import re
-from datetime import datetime
 from typing import Any
 from urllib.parse import urljoin
-from zoneinfo import ZoneInfo
 
 from bs4 import BeautifulSoup
 
-PKT = ZoneInfo("Asia/Karachi")
+# The search form's dropdowns, by the query parameter each one sets.
+OPTION_KINDS = (
+    "tender_type", "tender_method", "procurement_category", "sector",
+    "tender_nature", "organization", "country", "status",
+)
 
 
 def parse_total(html: str) -> tuple[int, int]:
@@ -245,25 +247,23 @@ def parse_listing(html: str, base_url: str = "https://epms.ppra.gov.pk") -> list
 
 
 def parse_options(html: str) -> dict[str, list[dict[str, str]]]:
-    """Parse dropdown options from the PPRA search form HTML."""
+    """Every dropdown on the active-tenders search form, as {kind: [{value, label}]}.
+
+    `value` is the site's own option id — what the search URL must carry; names
+    are ignored or match nothing. The blank "All …" entry is left out.
+    """
     soup = BeautifulSoup(html, "html.parser")
-    options_by_kind: dict[str, list[dict[str, str]]] = {}
-
-    for select in soup.find_all("select"):
-        name = select.get("name") or select.get("id") or ""
-        kind = name.lower()
-        if not kind:
+    options: dict[str, list[dict[str, str]]] = {}
+    for kind in OPTION_KINDS:
+        select = soup.find("select", attrs={"name": kind})
+        if select is None:
             continue
-
-        opts = []
+        entries = []
         for opt in select.find_all("option"):
-            val = opt.get("value", "").strip()
-            lbl = opt.get_text(strip=True)
-            if val and val != "0" and val.upper() != "ALL":
-                opts.append({"value": val, "label": lbl})
-
-        if opts:
-            options_by_kind[kind] = opts
-
-    return options_by_kind
-
+            value = (opt.get("value") or "").strip()
+            label = " ".join(opt.get_text(" ", strip=True).split())
+            if value and label:
+                entries.append({"value": value, "label": label})
+        if entries:
+            options[kind] = entries
+    return options

@@ -4,7 +4,6 @@ import json
 import logging
 import re
 from datetime import date, datetime, timezone
-from pathlib import Path
 from typing import Any
 
 from dateutil import parser as dt_parser
@@ -196,12 +195,12 @@ def upsert_bids(
 
 
 def append_to_mirror(run_id: str, records: list[dict[str, Any]]) -> None:
-    """Append records to data/ppra/{run_id}/tenders.jsonl if mirroring is active."""
-    if not getattr(settings, "ppra_local_mirror", True):
+    """Append records to <DATA_DIR>/ppra/{run_id}/tenders.jsonl if mirroring is active."""
+    if not settings.ppra_local_mirror:
         return
 
     try:
-        mirror_dir = Path("data/ppra") / run_id
+        mirror_dir = settings.data_root / "ppra" / run_id
         mirror_dir.mkdir(parents=True, exist_ok=True)
         jsonl_path = mirror_dir / "tenders.jsonl"
 

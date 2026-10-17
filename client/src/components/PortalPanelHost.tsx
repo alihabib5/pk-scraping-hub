@@ -2,13 +2,9 @@
 
 import PpraPanel from "@/components/PpraPanel";
 
-export default function PortalPanelHost({
-  portal,
-  visible = true,
-}: {
-  portal?: string | null;
-  visible?: boolean;
-}) {
+/** Renders the portal panel from the console layout, so a running scrape keeps
+ *  its view while the user visits History or Downloads. */
+export default function PortalPanelHost({ visible }: { visible: boolean }) {
   if (!visible) return null;
   return (
     <div className="w-full">

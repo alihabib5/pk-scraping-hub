@@ -6,10 +6,11 @@ import {
   getJobLogs,
   runDownloadUrl,
   stopScrape,
+  type Job,
   type JobLogLine,
   type RunStatus,
 } from "@/lib/api";
-import { useJobsFeed, useSlots, type Job } from "@/lib/sessions";
+import { useJobsFeed, useSlots } from "@/lib/sessions";
 import { LinkButton } from "@/components/ui";
 import { PORTALS } from "@/lib/portals";
 
@@ -157,10 +158,7 @@ function JobRow({
   const queued = job.status === "queued";
   const parked = job.status === "paused";
   const portal = PORTALS.find((p) => p.key === job.scraper);
-  // Whichever field the owning portal fills in — its name for what this run is
-  // working on. Portals differ, so the first that exists wins.
-  const subject =
-    job.account_label ?? job.niche_label ?? job.filter_label ?? job.module ?? job.search ?? "";
+  const subject = job.search ?? "";
 
   return (
     <li className="rounded-lg border border-ink-200 bg-white px-3 py-2">
@@ -174,12 +172,12 @@ function JobRow({
         <span className="text-sm font-medium text-ink-900">{portal?.label ?? job.scraper}</span>
         {subject && <span className="truncate text-xs text-ink-500">{subject}</span>}
         <span className="truncate font-mono text-xs text-ink-500">{job.step}</span>
-        <span className="tabular ml-auto text-xs text-ink-400">
+        <span className="tabular-nums ml-auto text-xs text-ink-400">
           {job.bids_found > 0 && `${job.bids_found} found · `}
           {/* The clock stops for a parked job as well as a queued one — a
               paused run is not spending time on the portal, and a timer that
               kept climbing would read as though it were. */}
-          <Elapsed since={job.started_at} paused={queued || parked} />
+          <Elapsed since={job.started_at} frozen={queued ? "queued" : parked ? "paused" : undefined} />
         </span>
         {/* Parked jobs say so here, but are released from the portal panel's
             toolbar — this row reports, the panel controls. */}
@@ -251,7 +249,6 @@ function LogTail({ runId }: { runId: string }) {
   );
 }
 
-/** Wall-clock time since the run was accepted, ticking once a second. */
 /** A run the user just stopped, with whatever it managed to keep.
  *
  *  Held in this bar rather than left to the history tab because the moment a
@@ -319,7 +316,8 @@ function DownloadArrow() {
   );
 }
 
-function Elapsed({ since, paused }: { since: string; paused?: boolean }) {
+/** Wall-clock time since the run was accepted, ticking once a second. */
+function Elapsed({ since, frozen }: { since: string; frozen?: string }) {
   const [now, setNow] = useState(() => Date.now());
 
   useEffect(() => {
@@ -327,7 +325,7 @@ function Elapsed({ since, paused }: { since: string; paused?: boolean }) {
     return () => clearInterval(timer);
   }, []);
 
-  if (paused) return <>queued</>;
+  if (frozen) return <>{frozen}</>;
   const seconds = Math.max(0, Math.floor((now - new Date(since).getTime()) / 1000));
   const minutes = Math.floor(seconds / 60);
   return <>{minutes > 0 ? `${minutes}m ${seconds % 60}s` : `${seconds}s`}</>;

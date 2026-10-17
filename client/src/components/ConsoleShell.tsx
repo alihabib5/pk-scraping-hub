@@ -11,15 +11,7 @@ import Logo from "@/components/Logo";
 import PortalIcon from "@/components/PortalIcon";
 import { LinkButton } from "@/components/ui";
 import { apiDocsUrl, type Portal } from "@/lib/api";
-import {
-  isPortal,
-  PORTALS,
-  REGIONS,
-  Region,
-  regionForPortal,
-  portalsForRegion,
-  pluralize,
-} from "@/lib/portals";
+import { isPortal, PORTALS, pluralize } from "@/lib/portals";
 import { useActivePortals } from "@/lib/sessions";
 
 const SECTIONS = [
@@ -45,10 +37,6 @@ export default function ConsoleShell({ children }: { children: React.ReactNode }
   const segments = pathname.split("/").filter(Boolean); // ["console", portal, section?]
   const portal = (segments[1] ?? "") as Portal;
   const section = segments[2] ?? "";
-
-  // The active region is derived directly and solely from the URL portal
-  const activeRegion: Region = regionForPortal(portal);
-  const visiblePortals = portalsForRegion(activeRegion);
 
   // Portals with a run in flight, so the rail can say so while you are looking
   // at another one — the point of the whole exercise is that a run you navigated
@@ -94,7 +82,7 @@ export default function ConsoleShell({ children }: { children: React.ReactNode }
               <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
             </span>
             <span className="whitespace-nowrap text-xs font-medium text-ink-600">
-              {pluralize(visiblePortals.length, "source", "sources")}
+              {pluralize(PORTALS.length, "source", "sources")}
             </span>
           </div>
 
@@ -112,20 +100,18 @@ export default function ConsoleShell({ children }: { children: React.ReactNode }
       <SessionEngine />
 
       <div className="flex min-h-0 flex-1">
-        {/* Source rail - top-aligned, only renders the active region's portals */}
+        {/* Source rail */}
         <aside className="sticky top-16 hidden h-[calc(100vh-4rem)] w-64 shrink-0 flex-col border-r border-ink-200/70 bg-white/60 lg:flex">
           <nav className="flex-1 overflow-y-auto p-3" aria-label="Data sources">
             <div className="mb-4">
               <div className="flex items-center justify-between px-3 pb-1 pt-2">
-                <p className="eyebrow text-[10px] uppercase tracking-wider text-ink-400">
-                  {REGIONS[activeRegion].flag} {REGIONS[activeRegion].name}
-                </p>
+                <p className="text-[10px] uppercase tracking-wider text-ink-400">🇵🇰 Pakistan</p>
                 <span className="text-[10px] font-medium text-ink-400">
-                  {visiblePortals.length}
+                  {PORTALS.length}
                 </span>
               </div>
               <ul className="space-y-1">
-                {visiblePortals.map((p) => {
+                {PORTALS.map((p) => {
                   const isActive = p.key === portal;
                   return (
                     <li key={p.key}>
@@ -144,7 +130,7 @@ export default function ConsoleShell({ children }: { children: React.ReactNode }
                             isActive ? p.accent.tile : "bg-ink-50 text-ink-400 ring-ink-100 group-hover:text-ink-600"
                           }`}
                         >
-                          <PortalIcon name={p.icon} />
+                          <PortalIcon />
                         </span>
                         <span className="min-w-0 flex-1">
                           <span className={`block truncate text-sm ${isActive ? "font-semibold text-ink-900" : "font-medium text-ink-700"}`}>
@@ -174,11 +160,11 @@ export default function ConsoleShell({ children }: { children: React.ReactNode }
             <div className="flex items-center justify-between px-5 pt-3">
               <span className="text-xs font-semibold text-ink-700">Pakistan Portals</span>
               <span className="text-xs text-ink-400">
-                {pluralize(visiblePortals.length, "portal", "portals")}
+                {pluralize(PORTALS.length, "portal", "portals")}
               </span>
             </div>
             <nav className="no-scrollbar flex gap-2 overflow-x-auto px-5 py-3" aria-label="Data sources">
-              {visiblePortals.map((p) => {
+              {PORTALS.map((p) => {
                 const isActive = p.key === portal;
                 return (
                   <Link
@@ -211,7 +197,7 @@ export default function ConsoleShell({ children }: { children: React.ReactNode }
                 torn down on navigation; this is not, which is what lets a
                 running scrape keep its view. The section pages (History,
                 Downloads) still come through as children. */}
-            <PortalPanelHost portal={isPortal(portal) ? portal : null} visible={section === ""} />
+            <PortalPanelHost visible={section === "" && isPortal(portal)} />
             {children}
           </main>
 
@@ -222,7 +208,7 @@ export default function ConsoleShell({ children }: { children: React.ReactNode }
 
           <footer className="border-t border-ink-200/70 px-5 py-5 sm:px-8">
             <p className="mx-auto max-w-5xl text-xs text-ink-400">
-              Scraping Hub — automated bid collection for public procurement portals.
+              PK-Hub — automated tender collection from Pakistan's PPRA e-Procurement portal.
             </p>
           </footer>
         </div>

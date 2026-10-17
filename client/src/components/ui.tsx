@@ -1,6 +1,6 @@
 "use client";
 
-import type { AnchorHTMLAttributes, ButtonHTMLAttributes, ReactNode } from "react";
+import { useEffect, useRef, useState, type AnchorHTMLAttributes, type ButtonHTMLAttributes, type ReactNode } from "react";
 
 import type { RunStatus } from "@/lib/api";
 
@@ -9,7 +9,7 @@ import type { RunStatus } from "@/lib/api";
  * on a view; everything else is `secondary` or `ghost`, so a page never has two
  * things competing to be pressed. Gold appears only as accent, never as a fill.
  */
-type Variant = "primary" | "secondary" | "ghost" | "danger" | "warning" | "success" | "onDark";
+type Variant = "primary" | "secondary" | "ghost" | "danger" | "warning" | "success";
 
 const VARIANTS: Record<Variant, string> = {
   primary:
@@ -26,8 +26,6 @@ const VARIANTS: Record<Variant, string> = {
   // move and it should look like the thing to press.
   success:
     "bg-emerald-600 text-white ring-1 ring-emerald-600 shadow-sm hover:bg-emerald-700 hover:ring-emerald-700 disabled:bg-emerald-200 disabled:ring-emerald-200 disabled:shadow-none",
-  onDark:
-    "bg-white/10 text-white ring-1 ring-white/25 backdrop-blur hover:bg-white/20 disabled:text-white/40",
 };
 
 const SIZES = {
@@ -111,16 +109,6 @@ export function Spinner({ className = "h-3.5 w-3.5" }: { className?: string }) {
   return <span className={`${className} animate-spin rounded-full border-2 border-current/30 border-t-current`} />;
 }
 
-/** Uppercase kicker above a heading, with the gold rule that ties the system together. */
-export function Eyebrow({ children }: { children: ReactNode }) {
-  return (
-    <p className="eyebrow flex items-center gap-2 text-gold-600">
-      <span className="h-px w-5 bg-gold-400" aria-hidden />
-      {children}
-    </p>
-  );
-}
-
 export function EmptyState({
   icon,
   title,
@@ -146,7 +134,7 @@ export function EmptyState({
   );
 }
 
-/** Primary call-to-action used to launch a scrape across every portal. */
+/** Primary call-to-action used to launch a scrape. */
 export function StartButton({
   running,
   starting,
@@ -158,20 +146,6 @@ export function StartButton({
     <Button {...props} variant="primary" size="lg" loading={running || starting} icon={<PlayIcon />}>
       {label}
     </Button>
-  );
-}
-
-
-/** Neutral secondary action — the small All / None style controls. */
-export function MiniButton({ children, ...props }: ButtonHTMLAttributes<HTMLButtonElement>) {
-  return (
-    <button
-      type="button"
-      {...props}
-      className="rounded-md px-2 py-1 text-xs font-medium text-ink-500 transition hover:bg-ink-50 hover:text-ink-900 disabled:cursor-not-allowed disabled:opacity-40"
-    >
-      {children}
-    </button>
   );
 }
 
@@ -218,6 +192,10 @@ export function Card({
   );
 }
 
+/** The shared look of every form control. */
+const CONTROL =
+  "w-full rounded-lg border border-ink-200 bg-white px-3 py-2 text-sm text-ink-900 shadow-sm transition placeholder:text-ink-400 focus:border-gold-400 focus:outline-none focus:ring-2 focus:ring-gold-400/25 disabled:cursor-not-allowed disabled:bg-ink-50 disabled:text-ink-400";
+
 /** Text input with a label, matching the form language of the rest of the app. */
 export function Field({
   label,
@@ -245,47 +223,33 @@ export function Field({
         disabled={disabled}
         placeholder={placeholder}
         onChange={(e) => onChange(e.target.value)}
-        className="w-full rounded-lg border border-ink-200 bg-white px-3 py-2 text-sm text-ink-900 shadow-sm transition placeholder:text-ink-400 focus:border-gold-400 focus:outline-none focus:ring-2 focus:ring-gold-400/25 disabled:cursor-not-allowed disabled:bg-ink-50 disabled:text-ink-400"
+        className={CONTROL}
       />
       {hint && <p className="mt-1.5 text-xs text-ink-500">{hint}</p>}
     </div>
   );
 }
 
-/**
- * A labelled dropdown, in the same language as `Field`.
- *
- * For a criterion whose values are a short, fixed list the portal publishes —
- * a status, a category. A field whose list is long or changes (a buyer, an NIGP
- * class) stays a `Field`, because a text box the user types a name into ages
- * better than a hundred options copied out of someone else's page.
- */
+/** A labelled dropdown for a short list. The empty value means "any". */
 export function SelectField({
   label,
-  hint,
   value,
   options,
   onChange,
   disabled,
-  placeholder = "Any",
+  placeholder,
 }: {
   label: string;
-  hint?: string;
   value: string;
   options: { value: string; label: string }[];
   onChange: (v: string) => void;
   disabled?: boolean;
-  placeholder?: string;
+  placeholder: string;
 }) {
   return (
     <div>
       <label className="mb-1.5 block text-xs font-semibold text-ink-700">{label}</label>
-      <select
-        value={value}
-        disabled={disabled}
-        onChange={(e) => onChange(e.target.value)}
-        className="w-full rounded-lg border border-ink-200 bg-white px-3 py-2 text-sm text-ink-900 shadow-sm transition focus:border-gold-400 focus:outline-none focus:ring-2 focus:ring-gold-400/25 disabled:cursor-not-allowed disabled:bg-ink-50 disabled:text-ink-400"
-      >
+      <select value={value} disabled={disabled} onChange={(e) => onChange(e.target.value)} className={CONTROL}>
         <option value="">{placeholder}</option>
         {options.map((option) => (
           <option key={option.value} value={option.value}>
@@ -293,65 +257,170 @@ export function SelectField({
           </option>
         ))}
       </select>
-      {hint && <p className="mt-1.5 text-xs text-ink-500">{hint}</p>}
     </div>
   );
 }
 
+/** How many matches the search picker renders at once; typing narrows the rest. */
+const SEARCH_LIMIT = 80;
+
 /**
- * Mutually exclusive options as one connected control — for a choice that
- * changes what a run does, where a checkbox or a chip row would wrongly imply
- * several can be picked.
- *
- * Real radio inputs underneath, visually hidden. The buttons-styled-as-tabs
- * version looks identical and is unreachable by keyboard or screen reader;
- * this way arrow-key navigation and the group semantics come for free, and the
- * focus ring is carried on the label via `has-[:focus-visible]`.
+ * A labelled, type-to-search picker for a long list (1,200+ organizations).
+ * Shows the chosen label; clicking, focusing or typing opens the list to filter.
+ * The empty value means "any". Arrow keys move, Enter picks, Escape closes.
  */
-export function SegmentedControl<T extends string>({
-  name,
+export function SearchSelect({
+  label,
   value,
   options,
   onChange,
   disabled,
+  placeholder,
 }: {
-  name: string;
-  value: T;
-  options: readonly { value: T; label: string; hint?: string }[];
-  onChange: (value: T) => void;
+  label: string;
+  value: string;
+  options: { value: string; label: string }[];
+  onChange: (v: string) => void;
   disabled?: boolean;
+  placeholder: string;
 }) {
+  const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState("");
+  const [active, setActive] = useState(0);
+  const listRef = useRef<HTMLUListElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const selected = options.find((o) => o.value === value);
+  const q = query.trim().toLowerCase();
+  const matches = q ? options.filter((o) => o.label.toLowerCase().includes(q)) : options;
+  // The "any" choice first, so a selection can always be cleared.
+  const shown = [{ value: "", label: placeholder }, ...matches.slice(0, SEARCH_LIMIT)];
+
+  const openList = (initialQuery = "") => {
+    setOpen(true);
+    setQuery(initialQuery);
+    setActive(0);
+  };
+
+  const pick = (next: string) => {
+    onChange(next);
+    setOpen(false);
+    setQuery("");
+  };
+
+  useEffect(() => {
+    listRef.current?.children[active]?.scrollIntoView({ block: "nearest" });
+  }, [active]);
+
   return (
-    <div role="radiogroup" className="grid gap-2 sm:grid-cols-2">
-      {options.map((option) => {
-        const active = option.value === value;
-        return (
-          <label
-            key={option.value}
-            className={`flex flex-col gap-0.5 rounded-lg border px-4 py-3 transition has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-gold-400/40 ${
-              disabled ? "cursor-not-allowed opacity-60" : "cursor-pointer"
-            } ${
-              active
-                ? "border-gold-400 bg-gold-50 shadow-sm"
-                : "border-ink-200 bg-white hover:border-ink-300 hover:bg-ink-50"
-            }`}
+    <div className="relative">
+      <label className="mb-1.5 block text-xs font-semibold text-ink-700">{label}</label>
+      <div className="relative">
+        <input
+          ref={inputRef}
+          type="text"
+          role="combobox"
+          aria-expanded={open}
+          aria-autocomplete="list"
+          disabled={disabled}
+          value={open ? query : (selected?.label ?? "")}
+          placeholder={open ? `Search ${options.length.toLocaleString()} options…` : placeholder}
+          onFocus={() => openList()}
+          // After a pick the box keeps focus, so focus alone can't reopen it.
+          onClick={() => {
+            if (!open) openList();
+          }}
+          onBlur={() => setOpen(false)}
+          onChange={(e) => {
+            if (open) {
+              setQuery(e.target.value);
+              setActive(0);
+            } else {
+              // Typing into a closed box: the box showed the chosen label, so
+              // keep only what was typed after it.
+              const shownLabel = selected?.label ?? "";
+              const typed = e.target.value;
+              openList(typed.startsWith(shownLabel) ? typed.slice(shownLabel.length) : typed);
+            }
+          }}
+          onKeyDown={(e) => {
+            if (e.key === "ArrowDown") {
+              e.preventDefault();
+              if (!open) openList();
+              else setActive((i) => Math.min(i + 1, shown.length - 1));
+            } else if (e.key === "ArrowUp") {
+              e.preventDefault();
+              setActive((i) => Math.max(i - 1, 0));
+            } else if (e.key === "Enter" && open) {
+              e.preventDefault();
+              pick(shown[active].value);
+            } else if (e.key === "Escape") {
+              setOpen(false);
+            }
+          }}
+          className={`${CONTROL} pr-9`}
+        />
+        <button
+          type="button"
+          tabIndex={-1}
+          aria-label={open ? `Close ${label} list` : `Open ${label} list`}
+          disabled={disabled}
+          // mousedown + preventDefault keeps focus in the box, so closing doesn't blur it.
+          onMouseDown={(e) => {
+            e.preventDefault();
+            if (open) {
+              setOpen(false);
+            } else {
+              inputRef.current?.focus();
+              openList();
+            }
+          }}
+          className="absolute inset-y-0 right-0 flex w-9 items-center justify-center text-ink-400 transition hover:text-ink-700 disabled:cursor-not-allowed disabled:text-ink-300"
+        >
+          <svg
+            viewBox="0 0 16 16"
+            className={`h-4 w-4 transition-transform ${open ? "rotate-180" : ""}`}
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.8"
+            aria-hidden
           >
-            <input
-              type="radio"
-              name={name}
-              value={option.value}
-              checked={active}
-              disabled={disabled}
-              onChange={() => onChange(option.value)}
-              className="sr-only"
-            />
-            <span className={`text-sm font-medium ${active ? "text-gold-700" : "text-ink-900"}`}>
+            <path d="M4 6l4 4 4-4" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        </button>
+      </div>
+      {open && (
+        <ul
+          ref={listRef}
+          role="listbox"
+          className="absolute z-20 mt-1 max-h-64 w-full overflow-y-auto rounded-lg border border-ink-200 bg-white py-1 text-sm shadow-lg"
+        >
+          {shown.map((option, i) => (
+            <li
+              key={option.value || "__any"}
+              role="option"
+              aria-selected={option.value === value}
+              // mousedown, not click: it fires before the input's blur closes the list.
+              onMouseDown={(e) => {
+                e.preventDefault();
+                pick(option.value);
+              }}
+              onMouseEnter={() => setActive(i)}
+              className={`cursor-pointer px-3 py-1.5 ${i === active ? "bg-gold-50 text-ink-900" : "text-ink-700"} ${
+                option.value === "" ? "text-ink-500" : ""
+              }`}
+            >
               {option.label}
-            </span>
-            {option.hint && <span className="text-xs leading-relaxed text-ink-500">{option.hint}</span>}
-          </label>
-        );
-      })}
+            </li>
+          ))}
+          {matches.length > SEARCH_LIMIT && (
+            <li className="px-3 py-1.5 text-xs text-ink-400">
+              {(matches.length - SEARCH_LIMIT).toLocaleString()} more — keep typing to narrow
+            </li>
+          )}
+          {q && matches.length === 0 && <li className="px-3 py-1.5 text-xs text-ink-400">No match</li>}
+        </ul>
+      )}
     </div>
   );
 }
@@ -433,46 +502,6 @@ export function RunBadge({
       {live && <span className="status-pulse h-1.5 w-1.5 rounded-full bg-current" />}
       {showPartial ? "Stopped — partial results" : map.label}
     </span>
-  );
-}
-
-/** Per-row outcome badge shared by every results table. */
-export function DocStatus({ state, title }: { state: "ok" | "partial" | "failed" | "empty"; title?: string }) {
-  const map = {
-    ok: { cls: "border-emerald-200 bg-emerald-50 text-emerald-700", text: "Complete" },
-    partial: { cls: "border-gold-300 bg-gold-50 text-gold-700", text: "Partial" },
-    failed: { cls: "border-red-200 bg-red-50 text-red-700", text: "Failed" },
-    empty: { cls: "border-ink-200 bg-ink-50 text-ink-500", text: "No documents" },
-  }[state];
-  return (
-    <span className={`inline-block whitespace-nowrap rounded-full border px-2 py-0.5 text-xs font-medium ${map.cls}`} title={title}>
-      {map.text}
-    </span>
-  );
-}
-
-/** Selection chip used for keywords, codes and filter options. */
-export function Chip({
-  active,
-  mono,
-  children,
-  ...props
-}: ButtonHTMLAttributes<HTMLButtonElement> & { active?: boolean; mono?: boolean }) {
-  return (
-    <button
-      type="button"
-      {...props}
-      aria-pressed={active}
-      className={`rounded-full border px-3 py-1 text-xs transition disabled:cursor-not-allowed disabled:opacity-50 ${
-        mono ? "font-mono" : ""
-      } ${
-        active
-          ? "border-gold-400 bg-gold-50 font-medium text-gold-700 hover:bg-gold-100"
-          : "border-ink-200 bg-white text-ink-600 hover:border-ink-300 hover:bg-ink-50 hover:text-ink-900"
-      }`}
-    >
-      {children}
-    </button>
   );
 }
 

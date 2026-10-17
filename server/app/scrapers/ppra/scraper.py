@@ -3,44 +3,24 @@
 import logging
 import random
 import time
+from datetime import datetime, timezone
 from typing import Any
-from urllib.parse import urlencode, urljoin
+from urllib.parse import urljoin
 
-from selenium.common.exceptions import TimeoutException, WebDriverException
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import Select
+from selenium.common.exceptions import WebDriverException
 
 from app.config import settings
 from app.core import run_manager
 from app.core.base_scraper import BaseScraper, StopRequested
 from app.core.closing_filter import days_until_close
 from app.core.exports import archive_run
-from app.scrapers.ppra import export, repository
+from app.scrapers.ppra import repository
+from app.scrapers.ppra.filters import build_search_url, save_filter_options
 from app.scrapers.ppra.parsers import parse_listing, parse_options, parse_total
 from app.scrapers.ppra.schemas import PpraFilters, PpraOptions
 from app.services.notifier import notify_scrape_completion
 
 logger = logging.getLogger(__name__)
-
-SEL = {
-    "keyword": (By.NAME, "keyword"),
-    "tender_number": (By.NAME, "tender_no"),
-    "closing_date": (By.NAME, "closing_date"),
-    "tender_type": (By.NAME, "tender_type"),
-    "category": (By.NAME, "category"),
-    "sector": (By.NAME, "sector"),
-    "nature": (By.NAME, "nature"),
-    "organization": (By.NAME, "organization"),
-    "country": (By.NAME, "country"),
-    "advertise_from": (By.NAME, "advertise_from"),
-    "advertise_to": (By.NAME, "advertise_to"),
-    "status": (By.NAME, "status"),
-    "city": (By.NAME, "city"),
-    "submit_btn": (By.CSS_SELECTOR, "button[type='submit'], input[type='submit']"),
-    "table": (By.CSS_SELECTOR, "table"),
-    "pagination": (By.CSS_SELECTOR, ".pagination, ul.pagination"),
-}
 
 
 class PpraScraper(BaseScraper):
@@ -60,65 +40,10 @@ class PpraScraper(BaseScraper):
         self.rows_scraped_total = 0
 
     def polite_delay(self) -> None:
-        delay_min = (getattr(self.options, "delay_ms", None) or settings.ppra_delay_min_ms) / 1000.0
+        delay_min = (self.options.delay_ms or settings.ppra_delay_min_ms) / 1000.0
         delay_max = settings.ppra_delay_max_ms / 1000.0
         delay = random.uniform(delay_min, max(delay_min, delay_max))
         time.sleep(delay)
-
-    def build_filtered_url(self, base_url: str, page: int = 1) -> str:
-        """Construct the exact GET query URL matching the PPRA filter form."""
-        f = self.filters
-        params: dict[str, str] = {}
-        if page > 1:
-            params["page"] = str(page)
-
-        if f.keyword:
-            params["keyword"] = f.keyword.strip()
-        if f.tender_number:
-            params["tender_no"] = f.tender_number.strip()
-        if f.closing_date:
-            params["closing_date"] = f.closing_date.strip()
-        if f.tender_type and f.tender_type != "ALL":
-            # Map human readable to PPRA numeric IDs if given, or pass raw
-            type_map = {
-                "Tender Notice": "1",
-                "Pre-qualification Notice": "2",
-                "Pre-qualification Notice (PQ)": "2",
-                "Request for Proposal": "3",
-                "Request for Proposal (RFP)": "3",
-                "Expression of Interest": "4",
-                "Expression of Interest (EOI)": "4",
-            }
-            params["tender_type"] = type_map.get(f.tender_type, f.tender_type)
-        if f.category and f.category != "ALL":
-            cat_map = {
-                "Goods": "1",
-                "Works": "2",
-                "Consultancy Services": "3",
-                "Non-consultancy Services": "4",
-            }
-            params["procurement_category"] = cat_map.get(f.category, f.category)
-        if f.sector and f.sector != "ALL":
-            params["sector"] = f.sector
-        if f.nature and f.nature != "ALL":
-            nat_map = {"Local": "0", "International": "1"}
-            params["tender_nature"] = nat_map.get(f.nature, f.nature)
-        if f.organization:
-            params["organization"] = f.organization.strip()
-        if f.country:
-            params["country"] = f.country.strip()
-        if f.advertise_from:
-            params["advertise_date_from"] = f.advertise_from.strip()
-        if f.advertise_to:
-            params["advertise_date_to"] = f.advertise_to.strip()
-        if f.status and f.status != "ALL":
-            stat_map = {"Published": "1", "Cancelled": "2"}
-            params["status"] = stat_map.get(f.status, f.status)
-        if f.city:
-            params["city"] = f.city.strip()
-
-        qs = urlencode(params)
-        return f"{base_url}?{qs}" if qs else base_url
 
     def run(self) -> None:
         self.start_driver()
@@ -128,12 +53,18 @@ class PpraScraper(BaseScraper):
         base_url = settings.ppra_base_url
         start_url = urljoin(base_url, settings.ppra_active_tenders_path)
 
-        first_url = self.build_filtered_url(start_url, page=1)
+        first_url = build_search_url(self.filters, start_url, page=1)
         logger.info("[run %s] navigating to PPRA with filters: %s", self.run_id, first_url)
         self.navigate(first_url)
         self.raise_if_stopped()
 
-        # Parse total count
+        # The page carries the search form, so keep the console's dropdowns
+        # (organizations, sectors, …) in step with the site on every run.
+        try:
+            save_filter_options(parse_options(self.driver.page_source))
+        except Exception:  # noqa: BLE001 — the dropdown cache must never fail a scrape
+            logger.exception("[run %s] could not refresh the filter options", self.run_id)
+
         total_records, total_pages = parse_total(self.driver.page_source)
         logger.info("[run %s] parsed PPRA totals: %d tenders across %d pages", self.run_id, total_records, total_pages)
 
@@ -202,7 +133,6 @@ class PpraScraper(BaseScraper):
                 rows_changed=rows_changed_total,
                 skipped_closing=self._skipped_closing,
                 kept_unverified=self._kept_unverified,
-                checkpoint={"page": current_page, "last_tender": filtered_records[-1]["tender_no"] if filtered_records else None},
             )
             repository.update_run_progress(
                 self.run_id,
@@ -212,20 +142,51 @@ class PpraScraper(BaseScraper):
                 rows_changed=rows_changed_total,
                 skipped_closing=self._skipped_closing,
                 kept_unverified=self._kept_unverified,
+                checkpoint={
+                    "page": current_page,
+                    "last_tender": filtered_records[-1]["tender_no"] if filtered_records else None,
+                },
             )
 
             current_page += 1
             if current_page <= total_pages:
                 self.polite_delay()
                 # Navigate to next page with active filters preserved
-                next_url = self.build_filtered_url(start_url, page=current_page)
+                next_url = build_search_url(self.filters, start_url, page=current_page)
                 try:
                     self.navigate(next_url)
-                except Exception as exc:
+                except WebDriverException as exc:
+                    # Stop quits the browser mid-load; that must end as a stop, not a short "completed" run.
+                    self.raise_if_stopped()
                     logger.warning("[run %s] navigation to page %d failed: %s", self.run_id, current_page, exc)
+                    run_manager.add_warning(
+                        self.run_id,
+                        f"Stopped at page {current_page - 1} of {total_pages}: page {current_page} "
+                        f"would not load ({self.describe_failure(exc)}). Results are incomplete.",
+                    )
                     break
 
         run_manager.update_run(self.run_id, step="packaging_results")
+
+    def flush_partial(self) -> int:
+        # Rows are upserted page by page as they are parsed, so everything a
+        # stopped run gathered is already in ppra_bids — nothing left to write.
+        return self.rows_scraped_total
+
+
+def _finish(run_id: str, status: str, error: str | None = None) -> None:
+    """Record the terminal status on both the live run and its ppra_runs row.
+
+    The ppra_runs row is written first: the Excel's Run Summary sheet is built
+    from it during archiving, and would otherwise report the run as still
+    running with no finish time.
+    """
+    repository.update_run_progress(
+        run_id, status=status, finished_at=datetime.now(timezone.utc), error=error
+    )
+    run = run_manager.get_run(run_id) or {}
+    if not run.get("finished_at"):  # request_stop already stamped a stopped run
+        run_manager.update_run(run_id, finished_at=datetime.now().isoformat())
 
 
 def execute_run(
@@ -241,16 +202,21 @@ def execute_run(
 
     try:
         scraper.run()
+        _finish(run_id, "completed")
         archive_run(run_id)
         notify_scrape_completion(run_id, "ppra", scraper.rows_scraped_total)
         run_manager.update_run(run_id, status="completed", step="completed")
     except StopRequested:
         logger.info("[run %s] stopped gracefully by user", run_id)
-        archive_run(run_id)
-        run_manager.update_run(run_id, status="stopped", step="stopped")
+        _finish(run_id, "stopped")
+        # Archives the sheet and sets partial_results, which is what the
+        # download endpoint requires before it will serve a stopped run.
+        scraper.deliver_partial()
     except Exception as exc:
         logger.exception("[run %s] PPRA run failed: %s", run_id, exc)
-        run_manager.add_error(run_id, scraper.describe_failure(exc))
+        cause = scraper.describe_failure(exc)
+        _finish(run_id, "failed", error=cause)
+        run_manager.add_error(run_id, cause)
         run_manager.update_run(run_id, status="failed", step="failed")
     finally:
         scraper.cleanup()
