@@ -7,6 +7,7 @@ the database cannot be read.
 """
 
 import logging
+import re
 import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
@@ -19,6 +20,9 @@ from app.core.filenames import sanitize_filename
 logger = logging.getLogger(__name__)
 
 XLSX_MIME = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+
+_ISO_DAY = re.compile(r"(\d{4})-(\d{2})-(\d{2})")
+
 
 def excel_name(run: dict[str, Any]) -> str:
     """`PPRA_Tenders(13-10-2026 to 15-10-2026, Goods).xlsx`: the advertise date
@@ -52,7 +56,8 @@ def excel_name(run: dict[str, Any]) -> str:
         try:
             dt = datetime.fromisoformat(started)
         except ValueError:
-            pass
+            logger.warning("[run %s] unreadable started_at %r; naming the file by the current time",
+                           run.get("run_id"), started)
     if not dt:
         dt = datetime.now(timezone.utc)
     if dt.tzinfo is None:
@@ -66,12 +71,11 @@ def _ppra_day(value: Any) -> str:
     """A filter date as `dd-mm-yyyy`. The console sends `yyyy-mm-dd`; anything
     else is kept as typed, with `/` made filename-safe."""
     text = str(value or "").strip()
-    if not text:
-        return ""
-    try:
-        return datetime.strptime(text, "%Y-%m-%d").strftime("%d-%m-%Y")
-    except ValueError:
-        return text.replace("/", "-")
+    iso = _ISO_DAY.fullmatch(text)
+    if iso:
+        year, month, day = iso.groups()
+        return f"{day}-{month}-{year}"
+    return text.replace("/", "-")
 
 
 def excel_bytes(run: dict[str, Any]) -> tuple[bytes, str] | None:

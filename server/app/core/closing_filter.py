@@ -13,10 +13,13 @@ bogus "past" date that would wrongly drop a tender.
 
 from __future__ import annotations
 
+import logging
 import re
 import warnings
 from datetime import date, datetime
 from typing import Any
+
+logger = logging.getLogger(__name__)
 
 # The default runway, in days, when a run doesn't set its own.
 MIN_DAYS_UNTIL_CLOSE = 7
@@ -71,7 +74,8 @@ def parse_close_date(raw: Any) -> date | None:
                 warnings.simplefilter("ignore")  # ignore unknown-tzname (e.g. "EST")
                 return _du.parse(text, fuzzy=True).date()
         except (ValueError, OverflowError, TypeError):
-            pass
+            # Kept, not dropped: an unreadable date can't prove the tender closes too soon.
+            logger.debug("unreadable close date %r — the tender is kept", text)
     return None
 
 

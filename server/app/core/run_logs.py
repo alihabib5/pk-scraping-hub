@@ -66,6 +66,8 @@ class RunLogHandler(logging.Handler):
         try:
             message = log_record.getMessage()
         except Exception:  # noqa: BLE001 — a bad format string must not break logging
+            # The standard handler route: reported on stderr, never raised.
+            self.handleError(log_record)
             return
         with _lock:
             entries = _tails.setdefault(run_id, deque(maxlen=TAIL))

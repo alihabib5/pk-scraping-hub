@@ -72,8 +72,8 @@ def _clear_stale_wdm_locks(max_age: float = 300) -> None:
             if time.time() - lock.stat().st_mtime > max_age:
                 lock.unlink(missing_ok=True)
                 logger.warning("removed stale webdriver-manager lock %s", lock)
-    except OSError:  # noqa: PERF203 — lock cleanup is best-effort
-        pass
+    except OSError:  # lock cleanup is best-effort; a stuck lock is retried below
+        logger.debug("could not clear webdriver-manager locks", exc_info=True)
 
 
 def _resolve_chromedriver() -> str:
@@ -164,7 +164,8 @@ class BaseScraper:
                 {"source": "Object.defineProperty(navigator, 'webdriver', {get: () => undefined});"},
             )
         except WebDriverException:
-            pass
+            # Older Chrome builds lack this CDP command; the UA and blink flag still apply.
+            logger.debug("[run %s] could not hide navigator.webdriver", self.run_id, exc_info=True)
 
     def stop_driver(self) -> None:
         if self.driver and self._driver_closed:
@@ -176,7 +177,7 @@ class BaseScraper:
             try:
                 self.driver.quit()
             except Exception:  # noqa: BLE001 — a dead session raises urllib3 errors, not WebDriverException
-                pass
+                logger.debug("[run %s] browser was already gone at shutdown", self.run_id, exc_info=True)
             self.driver = None
 
     def cleanup(self) -> None:
@@ -191,6 +192,7 @@ class BaseScraper:
         try:
             return self.driver.get_screenshot_as_base64()
         except Exception:  # noqa: BLE001 — a dead session raises urllib3 errors; a frame grab must never break a run
+            logger.debug("[run %s] screenshot failed", self.run_id, exc_info=True)
             return None
 
     # -- navigation ---------------------------------------------------------
@@ -310,7 +312,7 @@ class BaseScraper:
             try:
                 driver.quit()
             except Exception:  # noqa: BLE001 — the driver may already be gone
-                pass
+                logger.debug("[run %s] browser was already gone when stopped", self.run_id, exc_info=True)
 
     def raise_if_stopped(self) -> None:
         """Checkpoint: park while paused, and raise StopRequested on a stop.

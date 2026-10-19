@@ -25,21 +25,16 @@ def parse_total(html: str) -> tuple[int, int]:
     total_records = 0
     total_pages = 1
 
-    # e.g. "Showing 1 to 50 of 2221 entries" or "Showing 50 of 2221"
-    m_records = re.search(r"of\s+([0-9,]+)\s*(?:entries|records|tenders)?", text, re.IGNORECASE)
+    # e.g. "Showing 1 to 50 of 2221 entries" or "Showing 50 of 2221". The number
+    # pattern starts with a digit, so int() below can't fail.
+    m_records = re.search(r"of\s+(\d[\d,]*)\s*(?:entries|records|tenders)?", text, re.IGNORECASE)
     if m_records:
-        try:
-            total_records = int(m_records.group(1).replace(",", ""))
-        except ValueError:
-            pass
+        total_records = int(m_records.group(1).replace(",", ""))
 
     # e.g. "Page 1 of 45"
-    m_pages = re.search(r"Page\s+\d+\s+of\s+([0-9,]+)", text, re.IGNORECASE)
+    m_pages = re.search(r"Page\s+\d+\s+of\s+(\d[\d,]*)", text, re.IGNORECASE)
     if m_pages:
-        try:
-            total_pages = int(m_pages.group(1).replace(",", ""))
-        except ValueError:
-            pass
+        total_pages = int(m_pages.group(1).replace(",", ""))
     elif total_records > 0:
         total_pages = max(1, (total_records + 49) // 50)
 
