@@ -18,10 +18,7 @@
 - **History**: run state and every scraped tender persist in PostgreSQL, so past runs can be reopened or downloaded at any time.
 
 > [!NOTE]
-> **Pakistan Procurement Only**: This platform is tailored for Pakistani procurement (PPRA Pakistan / EPMS). All foreign or legacy US portal integrations (BidNet, MyFloridaMarketPlace, RideMetro, Texas SmartBuy, etc.) have been removed.
-
----
-
+> **Pakistan Procurement Only**: This platform is tailored for Pakistani procurement (PPRA Pakistan / EPMS)
 ## 2. Technology Stack
 
 ### Frontend (`client/`)
