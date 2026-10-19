@@ -34,6 +34,38 @@ def test_ppra_filename_format():
     assert filename == "PPRA_Tenders_2026-10-15_0030.xlsx"
 
 
+@pytest.mark.parametrize(
+    "filters, expected",
+    [
+        (
+            {"advertise_from": "2026-10-13", "advertise_to": "2026-10-15", "category": "Goods",
+             "country": "Pakistan", "sector": "ALL"},
+            "PPRA_Tenders(13-10-2026 to 15-10-2026, Goods).xlsx",
+        ),
+        (
+            {"advertise_from": "2026-10-16", "advertise_to": "2026-10-17", "category": "Goods",
+             "tender_type": "Tender Notice", "city": "Lahore"},
+            "PPRA_Tenders(16-10-2026 to 17-10-2026, Goods, Tender Notice, Lahore).xlsx",
+        ),
+        ({"category": "Works"}, "PPRA_Tenders(Works).xlsx"),
+        ({"advertise_from": "2026-10-13", "advertise_to": "2026-10-13"}, "PPRA_Tenders(13-10-2026).xlsx"),
+        ({"advertise_from": "2026-10-13"}, "PPRA_Tenders(from 13-10-2026).xlsx"),
+        ({"advertise_to": "2026-10-15"}, "PPRA_Tenders(to 15-10-2026).xlsx"),
+    ],
+)
+def test_ppra_filename_uses_advertise_dates(filters, expected):
+    run = {"scraper": "ppra", "run_id": "r1", "started_at": "2026-10-17T06:50:03", "filters": filters}
+    assert exports.excel_name(run) == expected
+
+
+def test_ppra_filename_naive_start_is_local_time():
+    """run_manager stores started_at as naive local time; it must not be shifted as if UTC."""
+    started = datetime(2026, 10, 17, 6, 50).astimezone()  # local wall clock, made aware
+    run = {"scraper": "ppra", "run_id": "r1", "started_at": "2026-10-17T06:50:03", "filters": {}}
+    expected = started.astimezone(PKT).strftime("PPRA_Tenders_%Y-%m-%d_%H%M.xlsx")
+    assert exports.excel_name(run) == expected
+
+
 def test_ppra_export_full(tmp_path: Path):
     """Test full workbook generation: date types, formulas, timezone shift, and summary sheet."""
     session = SessionLocal()

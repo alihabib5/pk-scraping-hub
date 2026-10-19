@@ -3,14 +3,16 @@
 import hashlib
 import json
 import re
-from datetime import datetime
 from typing import Any
 from urllib.parse import urljoin
-from zoneinfo import ZoneInfo
 
 from bs4 import BeautifulSoup
 
-PKT = ZoneInfo("Asia/Karachi")
+# The search form's dropdowns, by the query parameter each one sets.
+OPTION_KINDS = (
+    "tender_type", "tender_method", "procurement_category", "sector",
+    "tender_nature", "organization", "country", "status",
+)
 
 
 def parse_total(html: str) -> tuple[int, int]:
@@ -23,21 +25,16 @@ def parse_total(html: str) -> tuple[int, int]:
     total_records = 0
     total_pages = 1
 
-    # e.g. "Showing 1 to 50 of 2221 entries" or "Showing 50 of 2221"
-    m_records = re.search(r"of\s+([0-9,]+)\s*(?:entries|records|tenders)?", text, re.IGNORECASE)
+    # e.g. "Showing 1 to 50 of 2221 entries" or "Showing 50 of 2221". The number
+    # pattern starts with a digit, so int() below can't fail.
+    m_records = re.search(r"of\s+(\d[\d,]*)\s*(?:entries|records|tenders)?", text, re.IGNORECASE)
     if m_records:
-        try:
-            total_records = int(m_records.group(1).replace(",", ""))
-        except ValueError:
-            pass
+        total_records = int(m_records.group(1).replace(",", ""))
 
     # e.g. "Page 1 of 45"
-    m_pages = re.search(r"Page\s+\d+\s+of\s+([0-9,]+)", text, re.IGNORECASE)
+    m_pages = re.search(r"Page\s+\d+\s+of\s+(\d[\d,]*)", text, re.IGNORECASE)
     if m_pages:
-        try:
-            total_pages = int(m_pages.group(1).replace(",", ""))
-        except ValueError:
-            pass
+        total_pages = int(m_pages.group(1).replace(",", ""))
     elif total_records > 0:
         total_pages = max(1, (total_records + 49) // 50)
 
@@ -245,25 +242,23 @@ def parse_listing(html: str, base_url: str = "https://epms.ppra.gov.pk") -> list
 
 
 def parse_options(html: str) -> dict[str, list[dict[str, str]]]:
-    """Parse dropdown options from the PPRA search form HTML."""
+    """Every dropdown on the active-tenders search form, as {kind: [{value, label}]}.
+
+    `value` is the site's own option id — what the search URL must carry; names
+    are ignored or match nothing. The blank "All …" entry is left out.
+    """
     soup = BeautifulSoup(html, "html.parser")
-    options_by_kind: dict[str, list[dict[str, str]]] = {}
-
-    for select in soup.find_all("select"):
-        name = select.get("name") or select.get("id") or ""
-        kind = name.lower()
-        if not kind:
+    options: dict[str, list[dict[str, str]]] = {}
+    for kind in OPTION_KINDS:
+        select = soup.find("select", attrs={"name": kind})
+        if select is None:
             continue
-
-        opts = []
+        entries = []
         for opt in select.find_all("option"):
-            val = opt.get("value", "").strip()
-            lbl = opt.get_text(strip=True)
-            if val and val != "0" and val.upper() != "ALL":
-                opts.append({"value": val, "label": lbl})
-
-        if opts:
-            options_by_kind[kind] = opts
-
-    return options_by_kind
-
+            value = (opt.get("value") or "").strip()
+            label = " ".join(opt.get_text(" ", strip=True).split())
+            if value and label:
+                entries.append({"value": value, "label": label})
+        if entries:
+            options[kind] = entries
+    return options

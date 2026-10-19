@@ -2,7 +2,7 @@
 
 from datetime import date, datetime
 
-from sqlalchemy import BigInteger, Date, DateTime, ForeignKey, Integer, String, Text, UniqueConstraint, func
+from sqlalchemy import BigInteger, Date, DateTime, ForeignKey, Integer, Text, UniqueConstraint, func
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
@@ -86,7 +86,6 @@ class PpraBid(Base):
 
     content_hash: Mapped[str] = mapped_column(Text, nullable=False)
     change_status: Mapped[str] = mapped_column(Text, nullable=False, default="new")
-    diff: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
 
     raw_data: Mapped[dict] = mapped_column(JSONB, nullable=False, default=dict)
     scraped_at: Mapped[datetime] = mapped_column(
@@ -97,7 +96,8 @@ class PpraBid(Base):
 
 
 class PpraFilterOption(Base):
-    """Dropdown options cached from the PPRA website."""
+    """One option of a dropdown on the PPRA search form, cached from the site.
+    `kind` is the query parameter it sets; `value` is the site's own id."""
 
     __tablename__ = "ppra_filter_options"
 
@@ -108,24 +108,3 @@ class PpraFilterOption(Base):
     refreshed_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now()
     )
-
-
-# Excel column definition (mapping attribute to header name)
-EXCEL_COLUMNS: list[tuple[str, str]] = [
-    ("tender_no", "Tender No"),
-    ("title", "Title"),
-    ("tender_ref_no", "Ref No"),
-    ("sector", "Sector"),
-    ("organization", "Organization"),
-    ("department", "Department / Office"),
-    ("city", "City"),
-    ("status", "Status"),
-    ("advertised_on", "Advertised Date"),
-    ("closing_date", "Closing Date"),
-    ("closing_time", "Closing Time (PKT)"),
-    ("days_left", "Days Left"),
-    ("detail_url", "Link"),
-    ("change_status", "Change"),
-    ("scraped_at", "Scraped At (PKT)"),
-]
-

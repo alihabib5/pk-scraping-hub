@@ -2,13 +2,7 @@
 
 import { useEffect, useRef } from "react";
 
-import {
-  getJobLogs,
-  getJobs,
-  getRunStatus,
-  getSweepRunStatus,
-  isRunActive,
-} from "@/lib/api";
+import { getJobLogs, getJobs, getRunStatus, isRunActive } from "@/lib/api";
 import {
   sessionsWithRuns,
   adopt,
@@ -18,7 +12,6 @@ import {
   putJobsFeed,
   putRun,
   restore,
-  slotForScraper,
   type Session,
 } from "@/lib/sessions";
 
@@ -43,18 +36,10 @@ const GRACE_TICKS = 10;
  * it. It discovers runs, polls their status, tails their logs and writes the
  * lot into the session registry. Panels never poll; they read.
  *
- * That inversion is the whole fix. Before, each panel bound its own interval on
- * mount and cleared it on unmount, so navigating away from a portal stopped the
- * console watching the run — the worker carried on alone and the panel came back
- * empty. Now the watching belongs to the shell, so SAM keeps streaming while you
- * are looking at SEPTA, and switching back is a render, not a restart.
- *
- * The transport is HTTP polling, because that is what the API offers: there is
- * no SSE or WebSocket endpoint on the server. What matters for the defect is not
- * the transport but its lifetime — one set of listeners at the top of the tree,
- * bound once, rather than a set per panel bound and unbound by navigation. If
- * the backend grows a stream later, it is this component that opens it and
- * nothing else has to change.
+ * Because the watching belongs to the shell, moving to History or Downloads and
+ * back never loses a running scrape: switching back is a render, not a restart.
+ * The transport is HTTP polling, because the API has no SSE or WebSocket
+ * endpoint; if it grows one, this is the only component that has to change.
  */
 export default function SessionEngine() {
   // The engine is a singleton; a second instance would double every poll.
@@ -90,10 +75,7 @@ export default function SessionEngine() {
         const { jobs, capacity } = await getJobs(true);
         if (cancelled) return;
         putJobsFeed(jobs, capacity);
-        for (const job of jobs) {
-          const { portal, kind } = slotForScraper(job.scraper);
-          adopt(portal, job.run_id, kind);
-        }
+        for (const job of jobs) adopt(job.scraper, job.run_id);
       } catch {
         // The API being briefly unreachable is not worth shouting about — the
         // next tick either recovers or the user has bigger problems.
@@ -118,10 +100,7 @@ export default function SessionEngine() {
 
     const pollStatus = async (session: Session) => {
       try {
-        const latest =
-          session.kind === "sweep"
-            ? await getSweepRunStatus(session.runId)
-            : await getRunStatus(session.portal, session.runId);
+        const latest = await getRunStatus(session.portal, session.runId);
         if (cancelled) return;
         // The slot may have been re-launched or cleared while this was in the
         // air; a late answer for a run nobody is watching any more must not

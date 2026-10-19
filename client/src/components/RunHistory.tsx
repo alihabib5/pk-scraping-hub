@@ -2,16 +2,15 @@
 
 import { useEffect, useState } from "react";
 
-import PortalResults from "@/components/PortalResults";
+import PpraResults from "@/components/PpraResults";
 import RunStatusPanel from "@/components/RunStatus";
 import { Button, DataTable, EmptyState, ErrorBanner, IconButton, LinkButton, RunBadge, Spinner } from "@/components/ui";
 import { runDownloadUrl, type RunStatus } from "@/lib/api";
-import { downloadKind, fetchRunsState, formatDuration, formatTimestamp, runDownloadable, runTarget, RUNS_LOADING, type RunsState } from "@/lib/runs";
+import { fetchRunsState, formatDuration, formatTimestamp, runDownloadable, runTarget, RUNS_LOADING, type RunsState } from "@/lib/runs";
 import type { PortalMeta } from "@/lib/portals";
 
 /**
- * Every run the backend still holds for this portal. The run list is already
- * exposed by `GET /{portal}/scrape/runs`; this surfaces it.
+ * Every run the backend holds for this portal (`GET /{portal}/scrape/runs`).
  */
 export default function RunHistory({ meta }: { meta: PortalMeta }) {
   const [{ runs, error, loading }, setState] = useState<RunsState>(RUNS_LOADING);
@@ -47,7 +46,7 @@ export default function RunHistory({ meta }: { meta: PortalMeta }) {
           </div>
         </div>
         <RunStatusPanel run={selected} />
-        <PortalResults portal={meta.key} bids={selected.bids ?? []} />
+        <PpraResults runId={selected.run_id} />
       </div>
     );
   }
@@ -106,7 +105,6 @@ export default function RunHistory({ meta }: { meta: PortalMeta }) {
             { label: "Duration" },
             { label: "Searched for" },
             { label: "Bids", className: "text-right" },
-            { label: "Docs", className: "text-right" },
             { label: "" },
           ]}
         >
@@ -119,15 +117,14 @@ export default function RunHistory({ meta }: { meta: PortalMeta }) {
               <td className="px-4 py-3">
                 <RunBadge status={run.status} partial={run.partial_results} />
               </td>
-              <td className="tabular whitespace-nowrap px-4 py-3 text-xs text-ink-600">
+              <td className="tabular-nums whitespace-nowrap px-4 py-3 text-xs text-ink-600">
                 {formatTimestamp(run.started_at)}
               </td>
-              <td className="tabular whitespace-nowrap px-4 py-3 text-xs text-ink-600">{formatDuration(run)}</td>
+              <td className="tabular-nums whitespace-nowrap px-4 py-3 text-xs text-ink-600">{formatDuration(run)}</td>
               <td className="max-w-xs truncate px-4 py-3 text-sm text-ink-700" title={runTarget(run)}>
                 {runTarget(run)}
               </td>
-              <td className="tabular px-4 py-3 text-right text-sm text-ink-700">{run.bids_found}</td>
-              <td className="tabular px-4 py-3 text-right text-sm text-ink-700">{run.documents_downloaded}</td>
+              <td className="tabular-nums px-4 py-3 text-right text-sm text-ink-700">{run.bids_found}</td>
               <td className="px-4 py-3 text-right">
                 <span className="inline-flex items-center gap-2">
                   {run.errors.length > 0 && (
@@ -143,11 +140,7 @@ export default function RunHistory({ meta }: { meta: PortalMeta }) {
                       href={runDownloadUrl(run.run_id)}
                       size="sm"
                       onClick={(e) => e.stopPropagation()}
-                      title={
-                        downloadKind(run.scraper ?? "") === "excel"
-                          ? "Download the cumulative Excel report"
-                          : "Download ZIP (cumulative Excel + bid documents)"
-                      }
+                      title="Download the Excel report"
                       icon={
                         <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden>
                           <path d="M8 2v8m0 0L5 7m3 3l3-3M2.5 12.5h11" strokeLinecap="round" strokeLinejoin="round" />

@@ -3,9 +3,9 @@
 import json
 import logging
 import re
-from datetime import date, datetime, timezone
-from pathlib import Path
+from datetime import date, datetime
 from typing import Any
+from zoneinfo import ZoneInfo
 
 from dateutil import parser as dt_parser
 from sqlalchemy import select
@@ -17,6 +17,8 @@ from app.db import SessionLocal
 from app.scrapers.ppra.models import PpraBid, PpraRun
 
 logger = logging.getLogger(__name__)
+
+PKT = ZoneInfo("Asia/Karachi")
 
 
 def _safe_date(val: Any) -> date | None:
@@ -31,40 +33,33 @@ def _safe_date(val: Any) -> date | None:
     # A genuine date must mention a 4-digit year; strings like "2/25-26" or "10/12" are notice refs
     if not re.search(r"\b20\d{2}\b", s):
         return None
-    try:
-        parsed = parse_close_date(s)
-        if parsed:
-            return parsed
-    except Exception:
-        pass
-    try:
-        # Fallback dateutil parser
-        dt = dt_parser.parse(s)
-        return dt.date()
-    except Exception:
-        return None
+    # Tries the explicit formats, then dateutil; returns None rather than raising.
+    return parse_close_date(s)
 
 
 def _safe_datetime(val: Any) -> datetime | None:
-    """Coerce string/datetime into UTC-aware datetime or None. Never returns invalid strings."""
+    """Coerce string/datetime into a timezone-aware datetime or None.
+
+    The portal shows times in Pakistan time with no zone ("Jan 07, 2027 09:30 AM"),
+    so a value without one is read as PKT. Reading it as UTC made every stored
+    closing time five hours late.
+    """
     if not val:
         return None
     if isinstance(val, datetime):
-        return val if val.tzinfo else val.replace(tzinfo=timezone.utc)
+        return val if val.tzinfo else val.replace(tzinfo=PKT)
     if isinstance(val, date):
-        return datetime(val.year, val.month, val.day, tzinfo=timezone.utc)
+        return datetime(val.year, val.month, val.day, tzinfo=PKT)
     s = str(val).strip()
     if not re.search(r"\b20\d{2}\b", s):
         return None
     try:
         dt = dt_parser.parse(s)
-        return dt if dt.tzinfo else dt.replace(tzinfo=timezone.utc)
-    except Exception:
-        pass
-    d = _safe_date(val)
-    if d:
-        return datetime(d.year, d.month, d.day, tzinfo=timezone.utc)
-    return None
+    except (ValueError, OverflowError):
+        # Not a full date-time; keep the day if one can be read.
+        day = _safe_date(s)
+        return datetime(day.year, day.month, day.day, tzinfo=PKT) if day else None
+    return dt if dt.tzinfo else dt.replace(tzinfo=PKT)
 
 
 def init_run_in_db(
@@ -196,12 +191,12 @@ def upsert_bids(
 
 
 def append_to_mirror(run_id: str, records: list[dict[str, Any]]) -> None:
-    """Append records to data/ppra/{run_id}/tenders.jsonl if mirroring is active."""
-    if not getattr(settings, "ppra_local_mirror", True):
+    """Append records to <DATA_DIR>/ppra/{run_id}/tenders.jsonl if mirroring is active."""
+    if not settings.ppra_local_mirror:
         return
 
     try:
-        mirror_dir = Path("data/ppra") / run_id
+        mirror_dir = settings.data_root / "ppra" / run_id
         mirror_dir.mkdir(parents=True, exist_ok=True)
         jsonl_path = mirror_dir / "tenders.jsonl"
 

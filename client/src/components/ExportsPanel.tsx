@@ -4,19 +4,11 @@ import { useEffect, useState } from "react";
 
 import { Button, DataTable, EmptyState, ErrorBanner, LinkButton, Spinner } from "@/components/ui";
 import { runDownloadUrl } from "@/lib/api";
-import { downloadKind, fetchRunsState, formatTimestamp, runDownloadable, runTarget, RUNS_LOADING, type RunsState } from "@/lib/runs";
+import { fetchRunsState, formatTimestamp, runDownloadable, runTarget, RUNS_LOADING, type RunsState } from "@/lib/runs";
 import type { PortalMeta } from "@/lib/portals";
 
-/**
- * Per-run downloads for past runs — the fallback when the completion email
- * didn't arrive. Every row's button hits `GET /runs/{id}/download`, which
- * serves the run's archive ZIP: the cumulative Excel report plus all
- * downloaded bid documents in their niche-wise folders. Portals that produce
- * no documents (see downloadKind) serve the Excel bare instead. Nothing sits in
- * data/documents — runs are packaged into the archive on completion.
- */
+/** Per-run Excel downloads for past runs (`GET /runs/{id}/download`). */
 export default function ExportsPanel({ meta }: { meta: PortalMeta }) {
-  const excelOnly = downloadKind(meta.key) === "excel";
   const [{ runs, error, loading }, setState] = useState<RunsState>(RUNS_LOADING);
 
   useEffect(() => {
@@ -42,9 +34,7 @@ export default function ExportsPanel({ meta }: { meta: PortalMeta }) {
         <div>
           <h2 className="font-display text-2xl text-ink-900">Downloads</h2>
           <p className="mt-1 text-sm text-ink-500">
-            {excelOnly
-              ? `Every completed ${meta.label} run as its cumulative Excel report.`
-              : `Every completed ${meta.label} run as one ZIP — the cumulative Excel report plus all downloaded bid documents.`}
+            {`Every completed ${meta.label} run as its Excel report.`}
           </p>
         </div>
         <Button
@@ -62,8 +52,6 @@ export default function ExportsPanel({ meta }: { meta: PortalMeta }) {
       </div>
 
       {error && <ErrorBanner message={error} />}
-
-
 
       {runs === null && loading && (
         <div className="flex items-center justify-center gap-2 rounded-xl border border-ink-200 bg-white py-14 text-sm text-ink-500">
@@ -91,21 +79,19 @@ export default function ExportsPanel({ meta }: { meta: PortalMeta }) {
             { label: "Produced" },
             { label: "Searched for" },
             { label: "Bids", className: "text-right" },
-            { label: "Docs", className: "text-right" },
             { label: "", className: "text-right" },
           ]}
         >
           {downloadable.map((run) => {
             return (
               <tr key={run.run_id} className="transition hover:bg-ink-50">
-                <td className="tabular whitespace-nowrap px-4 py-3 text-xs text-ink-600">
+                <td className="tabular-nums whitespace-nowrap px-4 py-3 text-xs text-ink-600">
                   {formatTimestamp(run.finished_at ?? run.started_at)}
                 </td>
                 <td className="max-w-xs truncate px-4 py-3 text-sm text-ink-700" title={runTarget(run)}>
                   {runTarget(run)}
                 </td>
-                <td className="tabular px-4 py-3 text-right text-sm text-ink-700">{run.bids_found}</td>
-                <td className="tabular px-4 py-3 text-right text-sm text-ink-700">{run.documents_downloaded}</td>
+                <td className="tabular-nums px-4 py-3 text-right text-sm text-ink-700">{run.bids_found}</td>
                 <td className="px-4 py-3 text-right">
                   <LinkButton
                     href={runDownloadUrl(run.run_id)}
@@ -116,7 +102,7 @@ export default function ExportsPanel({ meta }: { meta: PortalMeta }) {
                       </svg>
                     }
                   >
-                    {excelOnly ? "Download Excel" : "Download ZIP"}
+                    Download Excel
                   </LinkButton>
                 </td>
               </tr>

@@ -1,6 +1,6 @@
 @echo off
 echo Starting PK-Hub Next.js Client...
-cd client
+cd /d "%~dp0client"
 if not exist node_modules (
     echo Installing dependencies...
     npm install

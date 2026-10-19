@@ -6,15 +6,9 @@ run id to the thread; a handler on the root logger then attributes every record
 emitted beneath it — from the scraper, the engine, urllib3, anything — to that
 run, and keeps the last `TAIL` of them.
 
-The alternative would have been to thread a run id through every logging call in
-eleven scrapers, or to parse the "[run abc123]" prefix the modules happen to
-write. This needs neither: nothing in a scraper changes, and a module that never
-mentions a run id still has its lines captured.
-
-Known gap, stated rather than hidden: a scraper that spawns its own inner
-threads (SAM's engine does) loses attribution for whatever those threads log,
-because the binding is per-thread. Those lines still reach the normal log; they
-just do not appear in that run's tail.
+Nothing in the scraper has to pass a run id around, and a module that never
+mentions one still has its lines captured. Lines logged from any extra thread a
+scraper starts are not attributed, because the binding is per-thread.
 """
 
 from __future__ import annotations
@@ -51,20 +45,6 @@ def current() -> str | None:
     return getattr(_local, "run_id", None)
 
 
-def record(run_id: str, level: str, message: str, logger_name: str = "") -> None:
-    """Append one line to a run's tail."""
-    with _lock:
-        tail = _tails.setdefault(run_id, deque(maxlen=TAIL))
-        _sequence[run_id] = _sequence.get(run_id, 0) + 1
-        tail.append({
-            "seq": _sequence[run_id],
-            "ts": None,  # filled by the handler; kept here for direct callers
-            "level": level,
-            "logger": logger_name,
-            "message": message,
-        })
-
-
 def tail(run_id: str, after: int = 0) -> list[dict[str, Any]]:
     """This run's log lines with `seq` greater than `after`, oldest first.
 
@@ -74,18 +54,6 @@ def tail(run_id: str, after: int = 0) -> list[dict[str, Any]]:
     with _lock:
         lines = list(_tails.get(run_id, ()))
     return [line for line in lines if line["seq"] > after]
-
-
-def latest_seq(run_id: str) -> int:
-    with _lock:
-        return _sequence.get(run_id, 0)
-
-
-def forget(run_id: str) -> None:
-    """Drop a finished run's tail (called when its state is evicted)."""
-    with _lock:
-        _tails.pop(run_id, None)
-        _sequence.pop(run_id, None)
 
 
 class RunLogHandler(logging.Handler):
@@ -98,6 +66,8 @@ class RunLogHandler(logging.Handler):
         try:
             message = log_record.getMessage()
         except Exception:  # noqa: BLE001 — a bad format string must not break logging
+            # The standard handler route: reported on stderr, never raised.
+            self.handleError(log_record)
             return
         with _lock:
             entries = _tails.setdefault(run_id, deque(maxlen=TAIL))
