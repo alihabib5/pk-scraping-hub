@@ -10,6 +10,7 @@
 
 - **Every filter on the PPRA search form**: all 1,200+ organizations, all 29 sectors, category, tender type, method, nature, status, country, city, advertise and closing dates, keyword and tender number. The dropdown lists are read from the live site and kept up to date automatically (see [§7](#7-how-the-filters-work)).
 - **Configurable closing-date guard**: skips tenders closing within N days (default 7, set per run, or turned off), so you don't chase tenders you can't bid on in time.
+- **Exclude Karachi**: tick the checkbox next to the closing-date box to drop every tender whose city is Karachi. The portal can't filter a city out, so tenders are dropped after each page is read and never saved; the run status card shows how many were dropped. Off by default.
 - **Live scraper console**: **Start**, **Pause**, **Resume**, **Stop** and **Refresh** for each run; runs keep going while you move between Console, History and Downloads.
 - **Live preview**: screenshots from the headless browser, streamed into the console.
 - **Live results table**: tenders appear page by page as they are saved.
@@ -187,7 +188,8 @@ pk-hub/
 │
 ├── .github/workflows/aislop.yml     # CI: aislop code-quality gate
 ├── data/                            # Workbooks and JSONL mirror (gitignored)
-├── run-client.bat                   # One-click client start (Windows)
+├── run-client.bat                   # One-click client start, dev mode (Windows)
+├── run-client-prod.bat              # Client as a production build: faster to load (Windows)
 └── run-server.bat                   # One-click server start (Windows)
 ```
 
@@ -297,7 +299,7 @@ All server settings are read from `server/.env` (names are case-insensitive). On
 | `DATA_DIR` | `../data` | Where workbooks (`archives/<run_id>/`) and the JSONL mirror (`ppra/<run_id>/`) are written; relative to `server/` |
 | `SCRAPE_CONCURRENCY` | `3` | How many scrapes run at once; more wait in a queue (each Chrome uses ~300–500 MB) |
 | `PUBLIC_BASE_URL` | `http://localhost:8000` | Base of the download link in completion emails |
-| `PPRA_DELAY_MIN_MS` / `PPRA_DELAY_MAX_MS` | `1000` / `2500` | Random pause between result pages, to be polite to the portal |
+| `PPRA_DELAY_MIN_MS` / `PPRA_DELAY_MAX_MS` | `1000` / `2500` | Random pause between result pages, to be polite to the portal; this is the main limit on how fast a scrape runs |
 | `PPRA_LOCAL_MIRROR` | `true` | Also append every saved tender to `data/ppra/<run_id>/tenders.jsonl` |
 | `PPRA_BASE_URL` / `PPRA_ACTIVE_TENDERS_PATH` | the EPMS site | Where the scraper points |
 | `DNS_OVER_HTTPS` / `DNS_OVER_HTTPS_TEMPLATES` | `true` / Google + Cloudflare | Chrome resolves names over DNS-over-HTTPS, which avoids ISP resolver failures |
@@ -313,6 +315,7 @@ The client reads one setting from `client/.env.local`: `NEXT_PUBLIC_API_URL` (de
 The PPRA search form's dropdowns (tender type, method, category, sector, nature, organization, country, status) only accept the **site's own numeric ids**. A name is either ignored (organization) or matches nothing (sector), so PK-Hub always sends ids:
 
 - The server reads every dropdown from the PPRA page and caches it in the `ppra_filter_options` table. This happens on **every scrape** (the scraper is on that page anyway), and on demand from the **Refresh lists** button or `POST /ppra/filters/refresh`.
+- The lists are loaded into memory when the server starts, and `GET /ppra/filters` is cacheable by the browser for 60 seconds. After **Refresh lists** the console uses that call's own response, so it shows the new lists straight away.
 - Until the first refresh, the built-in copy in `server/app/scrapers/ppra/filter_options.json` is served, so the dropdowns are never empty.
 - The console shows the lists by name. Organization (1,200+) and Country are searchable: click, type or use the arrow to open them.
 - Filenames and the Excel summary turn ids back into names. Runs saved before ids were used (with names) are converted automatically.
@@ -336,7 +339,7 @@ Country "Pakistan" is left out of the name, since every tender is in Pakistan.
 
 **Sheets**:
 1. **PPRA Tenders** — Tender No, Title, Ref No, Sector, Organization, Department / Office, City, Status, Advertised Date, Closing Date, Closing Time (PKT), Days Left (live formula), Link, Change (new / changed / unchanged on a refresh run), Scraped At.
-2. **Run Summary** — run id, status, start / finish / duration (PKT), the filters by name, the exact search URL, the closing-date guard and what it skipped, and the tender counts.
+2. **Run Summary** — run id, status, start / finish / duration (PKT), the filters by name, the exact search URL, the closing-date guard and what it skipped, whether Karachi tenders were excluded, and the tender counts.
 
 ---
 
@@ -345,7 +348,7 @@ Country "Pakistan" is left out of the name, since every tender is in Pakistan.
 ### Method A: Quick Launch Scripts (Windows)
 Double-click, or run from any folder:
 1. **Backend**: `run-server.bat` (FastAPI on `http://127.0.0.1:8000`, reloads on code changes)
-2. **Frontend**: `run-client.bat` (Next.js on `http://localhost:3000`)
+2. **Frontend**: `run-client.bat` (Next.js dev server on `http://localhost:3000`; compiles each page the first time you open it, so the first visit is slow). For everyday use, run `run-client-prod.bat` instead: it builds once, then serves the optimised app and loads much faster. `NEXT_PUBLIC_API_URL` is fixed at build time, so rebuild after changing it.
 
 ### Method B: Manual Startup
 
@@ -377,7 +380,7 @@ Interactive docs are served at `http://localhost:8000/docs`.
 | Method | Endpoint | Description |
 |---|---|---|
 | `GET` | `/` | Health check |
-| `POST` | `/ppra/scrape` | Start a scrape with `{ filters, options, live_preview }`; dropdown filters take the site's ids |
+| `POST` | `/ppra/scrape` | Start a scrape with `{ filters, options, live_preview }`; dropdown filters take the site's ids. `options`: `closing_runway_days` (0–365, default 7), `apply_closing_filter` (`false` = off), `exclude_karachi` (default `false`) |
 | `POST` | `/ppra/scrape/refresh/{run_id}` | Re-run a previous scrape's filters and mark tenders new / changed / unchanged |
 | `GET` | `/ppra/scrape/status/{run_id}` | Full status of one run |
 | `GET` | `/ppra/scrape/runs` | Every PPRA run the server holds |
