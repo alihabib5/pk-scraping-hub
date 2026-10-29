@@ -29,3 +29,12 @@ def test_parse_total_reads_counts():
     # "of ," has no digits, so it no longer stops the search before the real count.
     assert parse_total("<p>Terms of , use</p><p>Showing 1 to 50 of 120 entries</p>") == (120, 3)
     assert parse_total("<p>nothing here, of course</p>") == (0, 1)
+
+
+def test_is_karachi_matches_the_portals_spellings_only():
+    from app.scrapers.ppra.parsers import is_karachi
+
+    for city in ("Karachi", "Karachi.", " KARACHI ", "karachi"):
+        assert is_karachi(city)
+    for other in (None, "", "Lahore", "New Karachi Colony", "Rawalpindi."):
+        assert not is_karachi(other)

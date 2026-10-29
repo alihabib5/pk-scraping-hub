@@ -29,6 +29,8 @@ class PpraFilters(BaseModel):
 class PpraOptions(BaseModel):
     apply_closing_filter: bool | None = None
     closing_runway_days: int | None = Field(default=None, ge=0, le=365)
+    # Drop tenders whose city is Karachi (the site can't filter a city out).
+    exclude_karachi: bool = False
     delay_ms: int | None = None
 
     def get_runway_days(self) -> int | None:

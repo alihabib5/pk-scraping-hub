@@ -72,6 +72,7 @@ export default function PpraPanel() {
   const [city, setCity] = useState("");
   const [selected, setSelected] = useState(NO_SELECTION);
   const [closingRunwayDays, setClosingRunwayDays] = useState<number | null>(7);
+  const [excludeKarachi, setExcludeKarachi] = useState(false);
 
   const [lists, setLists] = useState<PpraFilterOptions | null>(null);
   const [refreshingLists, setRefreshingLists] = useState(false);
@@ -142,6 +143,7 @@ export default function PpraPanel() {
           // An empty box means "filter off"; null days alone would fall back to 7.
           apply_closing_filter: closingRunwayDays !== null,
           closing_runway_days: closingRunwayDays,
+          exclude_karachi: excludeKarachi,
         },
       ),
     );
@@ -268,6 +270,16 @@ export default function PpraPanel() {
                 ? "All tenders (0-day minimum)"
                 : `Skip tenders closing in < ${closingRunwayDays} day${closingRunwayDays !== 1 ? "s" : ""}`}
           </span>
+          <label className="ml-auto flex items-center gap-2 text-xs font-medium text-ink-700">
+            <input
+              type="checkbox"
+              checked={excludeKarachi}
+              onChange={(e) => setExcludeKarachi(e.target.checked)}
+              disabled={isRunning}
+              className="h-4 w-4 rounded border-ink-300"
+            />
+            Exclude Karachi
+          </label>
         </div>
       </Card>
 

@@ -97,6 +97,17 @@ export default function RunStatus({ run }: { run: RunStatusData }) {
             />
           )}
 
+          {run.options?.exclude_karachi && (
+            <div className="rounded-lg border border-ink-200 bg-ink-50 p-3.5">
+              <p className="mb-1 text-xs font-semibold text-ink-700">Karachi tenders · excluded</p>
+              <p className="text-sm text-ink-600">
+                {(run.skipped_city ?? 0) > 0
+                  ? `${run.skipped_city} Karachi ${run.skipped_city === 1 ? "tender was" : "tenders were"} dropped.`
+                  : "No Karachi tenders found so far."}
+              </p>
+            </div>
+          )}
+
           {run.status === "stopped" && (
             <Notice tone="amber" title="Stopped">
               You stopped this run{run.bids_processed > 0 ? ` after ${run.bids_processed} saved` : ""}. Anything captured before the stop is kept below.

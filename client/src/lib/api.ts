@@ -43,6 +43,8 @@ export interface RunStatus {
   /** Tenders dropped for closing too soon, and kept despite an unreadable date. */
   skipped_closing?: number;
   kept_unverified?: number;
+  /** Tenders dropped because their city is Karachi (live count). */
+  skipped_city?: number;
   /** True once the workbook has been written. */
   excel_exported?: boolean;
   /** A run the user stopped that nevertheless kept what it had gathered;
@@ -203,6 +205,8 @@ export interface PpraOptionsPayload {
   apply_closing_filter?: boolean | null;
   /** Minimum days until closing (0–365); null uses the server default of 7. */
   closing_runway_days?: number | null;
+  /** Drop tenders located in Karachi. */
+  exclude_karachi?: boolean;
   delay_ms?: number | null;
 }
 

@@ -6,6 +6,7 @@ cooperative pause/stop checkpoint.
 """
 
 import logging
+import threading
 import time
 from pathlib import Path
 from urllib.parse import urlparse
@@ -76,7 +77,25 @@ def _clear_stale_wdm_locks(max_age: float = 300) -> None:
         logger.debug("could not clear webdriver-manager locks", exc_info=True)
 
 
+_driver_path: str | None = None
+_driver_path_lock = threading.Lock()
+
+
 def _resolve_chromedriver() -> str:
+    """The chromedriver path, resolved once per server process.
+
+    webdriver-manager checks versions over the network on every install(), which
+    adds seconds to each run. A Chrome update while the server is running can
+    leave the cached driver mismatched; restarting the server re-resolves it.
+    """
+    global _driver_path
+    with _driver_path_lock:
+        if _driver_path is None or not Path(_driver_path).exists():
+            _driver_path = _install_chromedriver()
+        return _driver_path
+
+
+def _install_chromedriver() -> str:
     """ChromeDriverManager().install(), self-healing a stale wdm lock.
 
     Clears clearly-stale locks first; if the resolver still times out on the

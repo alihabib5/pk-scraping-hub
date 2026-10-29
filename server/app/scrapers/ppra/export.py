@@ -191,7 +191,8 @@ def generate_excel(run_id: str, out_path: str | Path) -> int:
     filters_data = run.filters if run and run.filters else {}
     portal_url = settings.ppra_base_url.rstrip("/") + settings.ppra_active_tenders_path
     search_url = build_search_url(PpraFilters(**filters_data), portal_url)
-    runway = PpraOptions(**(run.options if run and run.options else {})).get_runway_days()
+    run_options = PpraOptions(**(run.options if run and run.options else {}))
+    runway = run_options.get_runway_days()
     skipped = run.skipped_closing if run else 0
     unverified = run.kept_unverified if run else 0
     closing_guard = (
@@ -217,6 +218,7 @@ def generate_excel(run_id: str, out_path: str | Path) -> int:
         ("Search Filters Applied", filters_desc),
         ("Search URL", search_url),
         ("Closing Guard", closing_guard),
+        ("Karachi Tenders", "Excluded" if run_options.exclude_karachi else "Included"),
         ("Total Tenders Scraped", len(rows)),
         ("Total Expected on Portal", run.total_expected if (run and run.total_expected) else len(rows)),
         ("New Tenders", run.rows_new if run else len(rows)),

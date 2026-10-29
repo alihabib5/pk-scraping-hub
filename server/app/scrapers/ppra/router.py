@@ -2,7 +2,7 @@
 
 from typing import Any
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from sqlalchemy import or_, select
 from sqlalchemy.orm import Session
 
@@ -39,6 +39,7 @@ def _launch(
         "rows_changed": 0,
         "skipped_closing": 0,
         "kept_unverified": 0,
+        "skipped_city": 0,
     }
     if parent_run_id:
         fields["parent_run_id"] = parent_run_id
@@ -96,9 +97,12 @@ def list_runs() -> dict[str, Any]:
 
 
 @router.get("/filters")
-def get_filters() -> dict[str, Any]:
+def get_filters(response: Response) -> dict[str, Any]:
     """Every dropdown on the PPRA search form, as {kind: [{value, label}]}, plus
     when the lists were last read from the site ("seed" until the first read)."""
+    # Short on purpose: the lists change only on "Refresh lists", and the client
+    # takes that call's own response, so a minute of staleness is harmless.
+    response.headers["Cache-Control"] = "private, max-age=60"
     return ppra_filters.get_filter_options()
 
 

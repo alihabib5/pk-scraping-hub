@@ -16,7 +16,7 @@ from app.core.closing_filter import days_until_close
 from app.core.exports import archive_run
 from app.scrapers.ppra import repository
 from app.scrapers.ppra.filters import build_search_url, save_filter_options
-from app.scrapers.ppra.parsers import parse_listing, parse_options, parse_total
+from app.scrapers.ppra.parsers import is_karachi, parse_listing, parse_options, parse_total
 from app.scrapers.ppra.schemas import PpraFilters, PpraOptions
 from app.services.notifier import notify_scrape_completion
 
@@ -37,6 +37,7 @@ class PpraScraper(BaseScraper):
         self.parent_run_id = parent_run_id
         self._skipped_closing = 0
         self._kept_unverified = 0
+        self._skipped_city = 0
         self.rows_scraped_total = 0
 
     def polite_delay(self) -> None:
@@ -103,6 +104,9 @@ class PpraScraper(BaseScraper):
             runway = self.options.get_runway_days()
             filtered_records = []
             for rec in page_records:
+                if self.options.exclude_karachi and is_karachi(rec.get("city")):
+                    self._skipped_city += 1
+                    continue
                 if runway is not None:
                     days = days_until_close(rec.get("closing_at"))
                     if days is None:
@@ -133,6 +137,7 @@ class PpraScraper(BaseScraper):
                 rows_changed=rows_changed_total,
                 skipped_closing=self._skipped_closing,
                 kept_unverified=self._kept_unverified,
+                skipped_city=self._skipped_city,
             )
             repository.update_run_progress(
                 self.run_id,
