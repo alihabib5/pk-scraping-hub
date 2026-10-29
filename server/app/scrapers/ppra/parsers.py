@@ -57,6 +57,13 @@ def compute_content_hash(data: dict[str, Any]) -> str:
     return hashlib.sha256(raw.encode("utf-8")).hexdigest()
 
 
+def is_karachi(city: str | None) -> bool:
+    """True when a tender's city is Karachi. The portal sometimes prints a trailing
+    dot ("Karachi."), so compare after trimming case, spaces and punctuation; exact
+    match only, so a place that merely contains the word is not dropped."""
+    return (city or "").strip().strip(".,;:- ").casefold() == "karachi"
+
+
 def parse_listing(html: str, base_url: str = "https://epms.ppra.gov.pk") -> list[dict[str, Any]]:
     """Parse table rows from PPRA active tenders page HTML.
     Handles cb-rt-main and cb-rt-detail row pairs accurately using data-label attributes.
