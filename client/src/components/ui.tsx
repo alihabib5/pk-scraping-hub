@@ -193,7 +193,7 @@ export function Card({
 }
 
 /** The shared look of every form control. */
-const CONTROL =
+export const CONTROL =
   "w-full rounded-lg border border-ink-200 bg-white px-3 py-2 text-sm text-ink-900 shadow-sm transition placeholder:text-ink-400 focus:border-gold-400 focus:outline-none focus:ring-2 focus:ring-gold-400/25 disabled:cursor-not-allowed disabled:bg-ink-50 disabled:text-ink-400";
 
 /** Text input with a label, matching the form language of the rest of the app. */
