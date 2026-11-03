@@ -1,75 +1,14 @@
 import Link from "next/link";
 import { ArrowRight, Database, Moon } from "lucide-react";
 
+import LandingHero from "@/components/LandingHero";
+
 export default function HomePage() {
   return (
     <div className="min-h-screen bg-[#faf8f5] flex flex-col justify-between">
-      {/* Top Navbar */}
-      <header className="bg-white border-b border-[#e8e4dc] sticky top-0 z-50">
-        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-8">
-            <Link href="/" className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-[#0f1f38] flex items-center justify-center text-white shadow-xs">
-                <Database className="w-4 h-4" />
-              </div>
-              <span className="font-semibold text-base text-[#0f1f38] tracking-tight">
-                Scraping Hub
-              </span>
-            </Link>
+      <LandingHero />
 
-
-            <nav className="hidden md:flex items-center gap-6 text-xs font-medium text-zinc-600">
-              <a href="#sources" className="hover:text-zinc-900 transition-colors">Sources</a>
-              <a href="#how-it-works" className="hover:text-zinc-900 transition-colors">How it works</a>
-            </nav>
-          </div>
-
-          <Link
-            href="/console/ppra"
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#0f1f38] hover:bg-[#162a4d] text-white text-xs font-medium transition-colors shadow-xs"
-          >
-            Open console <ArrowRight className="w-3.5 h-3.5" />
-          </Link>
-        </div>
-      </header>
-
-      {/* Hero Section */}
       <main className="max-w-6xl mx-auto px-6 py-16 w-full flex-1">
-        <div className="mb-20">
-          <div className="flex items-center gap-2 mb-6">
-            <span className="w-5 h-[1.5px] bg-[#b47834]" />
-            <span className="text-[11px] font-bold tracking-widest text-[#b47834] uppercase">
-              BID INTELLIGENCE — PAKISTAN
-            </span>
-          </div>
-
-          <h1 className="font-serif text-5xl md:text-6xl font-normal tracking-tight text-[#0f1f38] leading-[1.1] mb-2">
-            Every public bid.
-          </h1>
-          <h2 className="font-serif text-5xl md:text-6xl font-normal tracking-tight text-[#536f88] leading-[1.1] mb-8">
-            Found automatically.
-          </h2>
-
-          <p className="text-sm md:text-base text-zinc-600 max-w-2xl leading-relaxed mb-8">
-            Scraping Hub runs the PPRA tender searches you care about, collects every matching tender page by page, and hands you a spreadsheet — without anyone clicking through a government website.
-          </p>
-
-          <div className="flex items-center gap-3">
-            <Link
-              href="/console/ppra"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#0f1f38] hover:bg-[#162a4d] text-white text-xs font-medium transition-colors shadow-xs"
-            >
-              Open console <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
-            <a
-              href="#sources"
-              className="inline-flex items-center px-5 py-2.5 rounded-lg bg-white border border-[#e8e4dc] hover:bg-zinc-50 text-zinc-700 text-xs font-medium transition-colors shadow-xs"
-            >
-              View sources
-            </a>
-          </div>
-        </div>
-
         {/* Portal Source Card Section */}
         <section id="sources" className="mb-24">
           <div className="mb-8">
@@ -86,7 +25,11 @@ export default function HomePage() {
               <div className="w-10 h-10 rounded-xl bg-emerald-50 ring-1 ring-emerald-200/80 text-emerald-700 flex items-center justify-center">
                 <Moon className="w-5 h-5 fill-emerald-600/20 text-emerald-700" />
               </div>
-              <Link href="/console/ppra" className="text-zinc-400 hover:text-zinc-700">
+              <Link
+                href="/console/ppra"
+                aria-label="Open the PPRA Pakistan console"
+                className="-m-2.5 flex h-10 w-10 items-center justify-center rounded-full text-zinc-400 transition-colors hover:bg-zinc-50 hover:text-zinc-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#b47834]"
+              >
                 <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
@@ -180,7 +123,7 @@ export default function HomePage() {
           </p>
           <Link
             href="/console/ppra"
-            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg bg-white hover:bg-zinc-100 text-[#0f1f38] text-xs font-semibold transition-colors"
+            className="inline-flex min-h-11 items-center gap-2 px-6 py-2.5 rounded-lg bg-white hover:bg-zinc-100 text-[#0f1f38] text-xs font-semibold transition-colors"
           >
             Open console <ArrowRight className="w-3.5 h-3.5" />
           </Link>

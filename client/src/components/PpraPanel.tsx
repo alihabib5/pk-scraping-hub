@@ -15,6 +15,7 @@ import {
 } from "@/components/ui";
 import LiveMonitor from "@/components/LiveMonitor";
 import StopButton from "@/components/StopButton";
+import DateField from "@/components/DateField";
 import RefreshButton from "@/components/RefreshButton";
 import ScraperControls from "@/components/ScraperControls";
 import SessionActivity from "@/components/SessionActivity";
@@ -191,9 +192,8 @@ export default function PpraPanel() {
             disabled={isRunning}
             placeholder="e.g. TS0000015884E"
           />
-          <Field
+          <DateField
             label="Closing Date"
-            type="date"
             value={closingDate}
             onChange={setClosingDate}
             disabled={isRunning}
@@ -225,16 +225,14 @@ export default function PpraPanel() {
             placeholder="All Countries"
           />
 
-          <Field
+          <DateField
             label="Advertise Date From"
-            type="date"
             value={advertiseFrom}
             onChange={setAdvertiseFrom}
             disabled={isRunning}
           />
-          <Field
+          <DateField
             label="Advertise Date To"
-            type="date"
             value={advertiseTo}
             onChange={setAdvertiseTo}
             disabled={isRunning}
