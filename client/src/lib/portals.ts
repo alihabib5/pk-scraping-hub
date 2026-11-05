@@ -23,6 +23,17 @@ export const PORTALS: PortalMeta[] = [
       dot: "bg-emerald-500",
     },
   },
+  {
+    key: "punjab",
+    label: "PPRA Punjab",
+    tagline: "Punjab e-Procurement live tenders",
+    description:
+      "Collect live tenders from the Punjab e-Procurement portal, filter by type, category, department and closing date, leave out auctions, and export every match with its notice and bidding document links into structured Excel workbooks.",
+    accent: {
+      tile: "bg-sky-50 text-sky-800 ring-sky-200",
+      dot: "bg-sky-500",
+    },
+  },
 ];
 
 export function isPortal(val: unknown): val is Portal {

@@ -27,7 +27,13 @@ _ISO_DAY = re.compile(r"(\d{4})-(\d{2})-(\d{2})")
 def excel_name(run: dict[str, Any]) -> str:
     """`PPRA_Tenders(13-10-2026 to 15-10-2026, Goods).xlsx`: the advertise date
     range, then any other filter applied. With no filters at all, falls back to
-    `PPRA_Tenders_<YYYY-MM-DD>_<HHMM>.xlsx` from the run's start time in PKT."""
+    `PPRA_Tenders_<YYYY-MM-DD>_<HHMM>.xlsx` from the run's start time in PKT.
+    A Punjab run is named by its own exporter."""
+    if run.get("scraper") == "punjab":
+        from app.scrapers.punjab.export import excel_name as punjab_excel_name
+
+        return punjab_excel_name(run)
+
     # Imported here: the PPRA package imports this module while it loads.
     from app.scrapers.ppra.filters import filter_labels
 
@@ -81,13 +87,16 @@ def _ppra_day(value: Any) -> str:
 def excel_bytes(run: dict[str, Any]) -> tuple[bytes, str] | None:
     """The run's Excel as (bytes, filename): rebuilt from the DB, or read from
     the archived copy if that fails. None when neither is available."""
-    # Imported here: the PPRA package imports this module while it loads.
-    from app.scrapers.ppra import export as ppra_export
+    # Imported here: the portal packages import this module while they load.
+    if run.get("scraper") == "punjab":
+        from app.scrapers.punjab import export as portal_export
+    else:
+        from app.scrapers.ppra import export as portal_export
 
     try:
         with tempfile.TemporaryDirectory() as tmp:
             out = Path(tmp) / "export.xlsx"
-            ppra_export.generate_excel(run["run_id"], out)
+            portal_export.generate_excel(run["run_id"], out)
             return out.read_bytes(), excel_name(run)
     except Exception:  # noqa: BLE001 — fall back to the archived copy
         logger.exception("[run %s] on-demand Excel generation failed", run.get("run_id"))

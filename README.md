@@ -1,6 +1,6 @@
 # PK-Hub — Pakistan Procurement Intelligence & Active Tender Harvester
 
-> **An automated discovery, live monitoring, and structured extraction engine for Pakistan's federal Public Procurement Regulatory Authority (PPRA) e-Procurement System ([EPMS](https://epms.ppra.gov.pk/public/tenders/active-tenders)).**
+> **An automated discovery, live monitoring, and structured extraction engine for Pakistan's federal Public Procurement Regulatory Authority (PPRA) e-Procurement System ([EPMS](https://epms.ppra.gov.pk/public/tenders/active-tenders)) and the [Punjab e-Procurement portal](https://eproc.punjab.gov.pk/Admin_Tender_Search.aspx).**
 
 ---
 
@@ -17,9 +17,11 @@
 - **Excel workbooks**: real date cells, closing time in Pakistan time (PKT), a live `Days Left` formula (`=MAX(0, J{row}-TODAY())`), clickable links, and a **Run Summary** sheet. Files are named after your filters, e.g. `PPRA_Tenders(13-10-2026 to 15-10-2026, Goods).xlsx` (see [§8](#8-excel-output)).
 - **Stopped runs keep their rows**: stopping a run part-way still gives you a downloadable workbook of everything found so far.
 - **History**: run state and every scraped tender persist in PostgreSQL, so past runs can be reopened or downloaded at any time.
+- **PPRA Punjab**: a second portal with the same console, history and Excel output. It collects live tenders with their notice and bidding document links, and leaves out auctions by default (see [§7](#7-how-the-filters-work)).
 
 > [!NOTE]
-> **Pakistan Procurement Only**: This platform is tailored for Pakistani procurement (PPRA Pakistan / EPMS)
+> **Pakistan Procurement Only**: This platform is tailored for Pakistani procurement (PPRA Pakistan / EPMS, and PPRA Punjab)
+
 ## 2. Technology Stack
 
 ### Frontend (`client/`)
@@ -121,6 +123,8 @@ sequenceDiagram
     Console->>User: "Completed" badge & Download Excel button
 ```
 
+The diagrams show PPRA. Punjab follows the same flow through `/punjab` routes and `punjab_*` tables, but its site has no page URLs, so the scraper clicks through form posts. The design is in [docs/](docs/): [architecture](docs/architecture.md), [system design](docs/system-design.md), [security](docs/security.md) and the [build plan](docs/plan.md).
+
 ---
 
 ## 4. Repository Layout
@@ -137,6 +141,8 @@ pk-hub/
 │   │   ├── components/
 │   │   │   ├── PpraPanel.tsx        # Filter form & run controls
 │   │   │   ├── PpraResults.tsx      # Live tenders table
+│   │   │   ├── PunjabPanel.tsx      # Punjab filter form & run controls
+│   │   │   ├── PunjabResults.tsx    # Punjab live tenders table
 │   │   │   ├── RunStatus.tsx        # Status card, closing-guard note, download
 │   │   │   ├── RunHistory.tsx       # History tab
 │   │   │   ├── ExportsPanel.tsx     # Downloads tab
@@ -149,7 +155,7 @@ pk-hub/
 │   │       ├── sessions.ts          # Session store (survives navigation and reload)
 │   │       ├── usePortalSession.ts  # A panel's view of its session
 │   │       ├── runs.ts              # Run formatting helpers
-│   │       └── portals.ts           # Portal registry (PPRA)
+│   │       └── portals.ts           # Portal registry (PPRA, Punjab)
 │   ├── .env.example                 # Client environment template
 │   └── package.json
 │
@@ -180,6 +186,7 @@ pk-hub/
 │   │   │   ├── repository.py        # Database writes and the JSONL mirror
 │   │   │   ├── models.py            # ppra_runs, ppra_bids, ppra_filter_options
 │   │   │   └── schemas.py           # Request models
+│   │   ├── scrapers/punjab/         # Same layout as ppra/, for eproc.punjab.gov.pk
 │   │   └── services/notifier.py     # Optional completion email (AWS SES)
 │   ├── tests/                       # pytest suite (needs the database)
 │   ├── main.py                      # Root uvicorn entrypoint (main:app)
@@ -188,6 +195,7 @@ pk-hub/
 │
 ├── .github/workflows/aislop.yml     # CI: aislop code-quality gate
 ├── data/                            # Workbooks and JSONL mirror (gitignored)
+├── docs/                            # Punjab plan, architecture, system design, security
 ├── run-client.bat                   # One-click client start, dev mode (Windows)
 ├── run-client-prod.bat              # Client as a production build: faster to load (Windows)
 └── run-server.bat                   # One-click server start (Windows)
@@ -302,6 +310,9 @@ All server settings are read from `server/.env` (names are case-insensitive). On
 | `PPRA_DELAY_MIN_MS` / `PPRA_DELAY_MAX_MS` | `1000` / `2500` | Random pause between result pages, to be polite to the portal; this is the main limit on how fast a scrape runs |
 | `PPRA_LOCAL_MIRROR` | `true` | Also append every saved tender to `data/ppra/<run_id>/tenders.jsonl` |
 | `PPRA_BASE_URL` / `PPRA_ACTIVE_TENDERS_PATH` | the EPMS site | Where the scraper points |
+| `PUNJAB_DELAY_MIN_MS` / `PUNJAB_DELAY_MAX_MS` | `1500` / `3000` | Random pause between Punjab result pages. Higher than PPRA because each page is about 1 MB and the server is old |
+| `PUNJAB_LOCAL_MIRROR` | `true` | Also append every saved tender to `data/punjab/<run_id>/tenders.jsonl` |
+| `PUNJAB_BASE_URL` / `PUNJAB_SEARCH_PATH` | the Punjab site | Where the Punjab scraper points |
 | `DNS_OVER_HTTPS` / `DNS_OVER_HTTPS_TEMPLATES` | `true` / Google + Cloudflare | Chrome resolves names over DNS-over-HTTPS, which avoids ISP resolver failures |
 | `RECIPIENT_EMAILS` | empty | Comma-separated addresses to email each finished workbook to. Nothing is sent unless this and the three SES settings below are set |
 | `AWS_REGION`, `AWS_SES_FROM_EMAIL`, `AWS_SES_USERNAME`, `AWS_SES_PASSWORD` | empty | AWS SES SMTP credentials for those emails |
@@ -319,6 +330,14 @@ The PPRA search form's dropdowns (tender type, method, category, sector, nature,
 - Until the first refresh, the built-in copy in `server/app/scrapers/ppra/filter_options.json` is served, so the dropdowns are never empty.
 - The console shows the lists by name. Organization (1,200+) and Country are searchable: click, type or use the arrow to open them.
 - Filenames and the Excel summary turn ids back into names. Runs saved before ids were used (with names) are converted automatically.
+
+### PPRA Punjab
+
+The Punjab form has Type, Category, Title, Department (about 4,900, searchable) and a closing date range. Its dropdowns are cached the same way, in `punjab_filter_options`, but **Refresh lists** opens a browser because plain HTTP clients fail on that page.
+
+- **Closing dates**: the site's date boxes filter by close date, and its default view holds only closed tenders. Leave both dates blank to search every tender closing from today onward.
+- **Exclude Sales/Auction/Disposal**: ticked by default. A tender is removed only if its Procurement Title is `Sales/Auction/Disposal`. The tender's name isn't checked, so an auction filed under another title stays in. The run status card shows how many were removed.
+- **Tender ID**: the site shows no tender number, so the ID comes from the end of the PDF filename.
 
 ---
 
@@ -340,6 +359,8 @@ Country "Pakistan" is left out of the name, since every tender is in Pakistan.
 **Sheets**:
 1. **PPRA Tenders** — Tender No, Title, Ref No, Sector, Organization, Department / Office, City, Status, Advertised Date, Closing Date, Closing Time (PKT), Days Left (live formula), Link, Change (new / changed / unchanged on a refresh run), Scraped At.
 2. **Run Summary** — run id, status, start / finish / duration (PKT), the filters by name, the exact search URL, the closing-date guard and what it skipped, whether Karachi tenders were excluded, and the tender counts.
+
+**PPRA Punjab** workbooks are named the same way using closing dates, e.g. `Punjab_Tenders(05-11-2026 to 31-12-2026, Goods).xlsx`, or `Punjab_Tenders_2026-11-05_1030.xlsx` with no filters. The tenders sheet has Tender ID, Title, Notice Type, Procurement Type, Department, Status, Published Date, Closing Date, Days Left, Tender Notice and Bidding Document links, Change, and Scraped At. The site lists no closing time. The Run Summary also shows how many `Sales/Auction/Disposal` tenders were removed.
 
 ---
 
@@ -369,6 +390,7 @@ npm run dev -- --port 3000
 Then open:
 ```
 http://localhost:3000/console/ppra
+http://localhost:3000/console/punjab
 ```
 
 ---
@@ -387,6 +409,12 @@ Interactive docs are served at `http://localhost:8000/docs`.
 | `GET` | `/ppra/filters` | Every dropdown on the PPRA search form as the site's ids and labels |
 | `POST` | `/ppra/filters/refresh` | Re-read those dropdowns from the live site now |
 | `GET` | `/ppra/bids` | Tenders for a run (`after_id` cursor for live updates, `query` to search) |
+| `POST` | `/punjab/scrape` | Start a Punjab scrape with `{ filters, options, live_preview }`. `filters`: `procurement_type`, `procurement_category`, `procurement_title`, `department` (site ids), `closing_from`, `closing_to` (`YYYY-MM-DD`). `options`: `closing_runway_days`, `apply_closing_filter`, `exclude_auctions` (default `true`) |
+| `POST` | `/punjab/scrape/refresh/{run_id}` | Re-run a Punjab scrape and mark tenders new / changed / unchanged |
+| `GET` | `/punjab/scrape/status/{run_id}` · `/punjab/scrape/runs` | One run, or every Punjab run |
+| `GET` | `/punjab/filters` | Every dropdown on the Punjab search form |
+| `POST` | `/punjab/filters/refresh` | Re-read those dropdowns from the live site through a browser |
+| `GET` | `/punjab/bids` | Tenders for a Punjab run (`after_id`, `query`) |
 | `GET` | `/runs` | Every run (`?active=true` for those still going) and pool capacity |
 | `GET` | `/runs/{run_id}/logs` | Log lines newer than `after` |
 | `POST` | `/runs/{run_id}/pause` | Pause a running scrape at its next page |

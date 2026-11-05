@@ -8,6 +8,7 @@ const STEP_LABELS: Record<string, string> = {
   queued: "Queued",
   starting: "Starting the browser",
   opening_site: "Opening epms.ppra.gov.pk",
+  opening_punjab: "Opening eproc.punjab.gov.pk",
   scraping_pages: "Reading the results",
   packaging_results: "Saving the Excel report",
   completed: "Done",
@@ -104,6 +105,17 @@ export default function RunStatus({ run }: { run: RunStatusData }) {
                 {(run.skipped_city ?? 0) > 0
                   ? `${run.skipped_city} Karachi ${run.skipped_city === 1 ? "tender was" : "tenders were"} dropped.`
                   : "No Karachi tenders found so far."}
+              </p>
+            </div>
+          )}
+
+          {run.options?.exclude_auctions && (
+            <div className="rounded-lg border border-ink-200 bg-ink-50 p-3.5">
+              <p className="mb-1 text-xs font-semibold text-ink-700">Sales/Auction/Disposal · excluded</p>
+              <p className="text-sm text-ink-600">
+                {(run.skipped_auction ?? 0) > 0
+                  ? `${run.skipped_auction} ${run.skipped_auction === 1 ? "tender was" : "tenders were"} removed.`
+                  : "None found so far."}
               </p>
             </div>
           )}
