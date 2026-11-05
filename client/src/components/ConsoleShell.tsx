@@ -197,7 +197,7 @@ export default function ConsoleShell({ children }: { children: React.ReactNode }
                 torn down on navigation; this is not, which is what lets a
                 running scrape keep its view. The section pages (History,
                 Downloads) still come through as children. */}
-            <PortalPanelHost visible={section === "" && isPortal(portal)} />
+            <PortalPanelHost visible={section === "" && isPortal(portal)} portal={portal} />
             {children}
           </main>
 
@@ -208,7 +208,7 @@ export default function ConsoleShell({ children }: { children: React.ReactNode }
 
           <footer className="border-t border-ink-200/70 px-5 py-5 sm:px-8">
             <p className="mx-auto max-w-5xl text-xs text-ink-400">
-              PK-Hub — automated tender collection from Pakistan's PPRA e-Procurement portal.
+              PK-Hub — automated tender collection from Pakistan's PPRA e-Procurement portals.
             </p>
           </footer>
         </div>

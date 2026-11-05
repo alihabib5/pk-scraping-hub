@@ -39,6 +39,15 @@ class Settings(BaseSettings):
     ppra_delay_max_ms: int = 2500
     ppra_local_mirror: bool = True
 
+    # PPRA Punjab e-procurement
+    # Target URL: https://eproc.punjab.gov.pk/Admin_Tender_Search.aspx
+    punjab_base_url: str = "https://eproc.punjab.gov.pk"
+    punjab_search_path: str = "/Admin_Tender_Search.aspx"
+    # Slower than PPRA: each page is about 1 MB and the server is old.
+    punjab_delay_min_ms: int = 1500
+    punjab_delay_max_ms: int = 3000
+    punjab_local_mirror: bool = True
+
     @property
     def data_root(self) -> Path:
         path = Path(self.data_dir)

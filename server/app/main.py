@@ -8,6 +8,8 @@ from app.core.download_router import router as download_router
 from app.db import init_db
 from app.scrapers.ppra import filters as ppra_filters
 from app.scrapers.ppra.router import router as ppra_router
+from app.scrapers.punjab import filters as punjab_filters
+from app.scrapers.punjab.router import router as punjab_router
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s %(message)s")
 logger = logging.getLogger(__name__)
@@ -29,6 +31,10 @@ def _startup() -> None:
         ppra_filters.get_filter_options()
     except Exception:  # noqa: BLE001 — the first request retries; boot must not fail on this
         logger.exception("could not warm the PPRA filter cache")
+    try:
+        punjab_filters.get_filter_options()
+    except Exception:  # noqa: BLE001 — the first request retries; boot must not fail on this
+        logger.exception("could not warm the Punjab filter cache")
 
 
 app.add_middleware(
@@ -40,6 +46,7 @@ app.add_middleware(
 )
 
 app.include_router(ppra_router)
+app.include_router(punjab_router)
 app.include_router(download_router)
 
 
@@ -48,5 +55,5 @@ def health() -> dict:
     return {
         "status": "ok",
         "service": "pk-hub",
-        "scrapers": ["ppra"],
+        "scrapers": ["ppra", "punjab"],
     }

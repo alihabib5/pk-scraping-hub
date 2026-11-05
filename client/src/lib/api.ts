@@ -1,6 +1,6 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
-export type Portal = "ppra";
+export type Portal = "ppra" | "punjab";
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(`${API_URL}${path}`, {
@@ -37,7 +37,7 @@ export interface RunStatus {
   warnings?: string[];
   /** One-line description of the search, e.g. "category=Goods". */
   search?: string;
-  options?: PpraOptionsPayload;
+  options?: PpraOptionsPayload & PunjabOptionsPayload;
   current_page?: number;
   total_pages?: number | null;
   /** Tenders dropped for closing too soon, and kept despite an unreadable date. */
@@ -45,6 +45,8 @@ export interface RunStatus {
   kept_unverified?: number;
   /** Tenders dropped because their city is Karachi (live count). */
   skipped_city?: number;
+  /** Punjab: auctions removed from the results (live count). */
+  skipped_auction?: number;
   /** True once the workbook has been written. */
   excel_exported?: boolean;
   /** A run the user stopped that nevertheless kept what it had gathered;
@@ -247,4 +249,72 @@ export function listPpraBids(params: {
   if (params.after_id !== undefined) q.set("after_id", String(params.after_id));
   if (params.limit !== undefined) q.set("limit", String(params.limit));
   return request(`/ppra/bids?${q.toString()}`);
+}
+
+// -- PPRA Punjab -------------------------------------------------------------
+
+export function getPunjabFilters(): Promise<PpraFilterOptions> {
+  return request("/punjab/filters");
+}
+
+/** Re-read the dropdowns from the live site now. Slower than PPRA's: it opens a browser. */
+export function refreshPunjabFilters(): Promise<PpraFilterOptions> {
+  return request("/punjab/filters/refresh", { method: "POST" });
+}
+
+/** Dropdown fields carry the site's option ids; dates are `YYYY-MM-DD`. Blank
+ *  dates mean from today, as far ahead as the site goes. */
+export interface PunjabFiltersPayload {
+  procurement_type?: string | null;
+  procurement_category?: string | null;
+  procurement_title?: string | null;
+  department?: string | null;
+  closing_from?: string | null;
+  closing_to?: string | null;
+}
+
+export interface PunjabOptionsPayload {
+  apply_closing_filter?: boolean | null;
+  closing_runway_days?: number | null;
+  /** Leave auctions out of the results. On unless turned off. */
+  exclude_auctions?: boolean;
+}
+
+/** One stored tender, as `GET /punjab/bids` returns it. */
+export interface PunjabBid {
+  id: number;
+  run_id: string;
+  tender_no: string;
+  title: string;
+  notice_type: string | null;
+  procurement_type: string | null;
+  department: string | null;
+  status: string | null;
+  published_on: string | null;
+  closing_on: string | null;
+  notice_url: string | null;
+  document_url: string | null;
+}
+
+export function startPunjabScrape(
+  filters: PunjabFiltersPayload = {},
+  options: PunjabOptionsPayload = {},
+): Promise<{ run_id: string; search: string }> {
+  return request("/punjab/scrape", {
+    method: "POST",
+    body: JSON.stringify({ filters, options }),
+  });
+}
+
+export function listPunjabBids(params: {
+  run_id: string;
+  after_id: number;
+  limit: number;
+}): Promise<{ bids: PunjabBid[]; count: number }> {
+  const q = new URLSearchParams({
+    run_id: params.run_id,
+    after_id: String(params.after_id),
+    limit: String(params.limit),
+  });
+  return request(`/punjab/bids?${q.toString()}`);
 }

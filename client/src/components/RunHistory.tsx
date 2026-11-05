@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 
 import PpraResults from "@/components/PpraResults";
+import PunjabResults from "@/components/PunjabResults";
 import RunStatusPanel from "@/components/RunStatus";
 import { Button, DataTable, EmptyState, ErrorBanner, IconButton, LinkButton, RunBadge, Spinner } from "@/components/ui";
 import { runDownloadUrl, type RunStatus } from "@/lib/api";
@@ -46,7 +47,11 @@ export default function RunHistory({ meta }: { meta: PortalMeta }) {
           </div>
         </div>
         <RunStatusPanel run={selected} />
-        <PpraResults runId={selected.run_id} />
+        {selected.scraper === "punjab" ? (
+          <PunjabResults runId={selected.run_id} />
+        ) : (
+          <PpraResults runId={selected.run_id} />
+        )}
       </div>
     );
   }

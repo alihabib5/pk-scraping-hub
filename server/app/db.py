@@ -17,6 +17,7 @@ def init_db() -> None:
     """Create PPRA and core tables if they do not exist."""
     from app.core import models as _core_models  # noqa: F401
     from app.scrapers.ppra import models as _ppra_models  # noqa: F401
+    from app.scrapers.punjab import models as _punjab_models  # noqa: F401
 
     Base.metadata.create_all(bind=engine)
 

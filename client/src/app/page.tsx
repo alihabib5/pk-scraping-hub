@@ -13,14 +13,15 @@ export default function HomePage() {
         <section id="sources" className="mb-24">
           <div className="mb-8">
             <h2 className="font-serif text-3xl font-normal text-[#0f1f38] mb-2">
-              1 Pakistani portal, one console.
+              2 Pakistani portals, one console.
             </h2>
             <p className="text-xs md:text-sm text-zinc-500 max-w-2xl">
-              PPRA's search filters, paging and closing dates, behind one interface.
+              Federal and Punjab search filters, paging and closing dates, behind one interface.
             </p>
           </div>
 
-          <div className="max-w-2xl bg-white border border-[#e8e4dc] rounded-2xl p-8 shadow-xs hover:border-zinc-300 transition-colors">
+          <div className="grid gap-6 md:grid-cols-2">
+          <div className="bg-white border border-[#e8e4dc] rounded-2xl p-8 shadow-xs hover:border-zinc-300 transition-colors">
             <div className="flex items-center justify-between mb-5">
               <div className="w-10 h-10 rounded-xl bg-emerald-50 ring-1 ring-emerald-200/80 text-emerald-700 flex items-center justify-center">
                 <Moon className="w-5 h-5 fill-emerald-600/20 text-emerald-700" />
@@ -64,6 +65,53 @@ export default function HomePage() {
             <div className="text-xs font-mono text-zinc-400">
               epms.ppra.gov.pk
             </div>
+          </div>
+
+          <div className="bg-white border border-[#e8e4dc] rounded-2xl p-8 shadow-xs hover:border-zinc-300 transition-colors">
+            <div className="flex items-center justify-between mb-5">
+              <div className="w-10 h-10 rounded-xl bg-sky-50 ring-1 ring-sky-200/80 text-sky-700 flex items-center justify-center">
+                <Moon className="w-5 h-5 fill-sky-600/20 text-sky-700" />
+              </div>
+              <Link
+                href="/console/punjab"
+                aria-label="Open the PPRA Punjab console"
+                className="-m-2.5 flex h-10 w-10 items-center justify-center rounded-full text-zinc-400 transition-colors hover:bg-zinc-50 hover:text-zinc-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#b47834]"
+              >
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+
+            <h3 className="font-serif text-2xl font-normal text-[#0f1f38] mb-1">
+              PPRA Punjab
+            </h3>
+            <div className="text-xs text-zinc-400 mb-4">
+              Punjab Procurement Regulatory Authority
+            </div>
+
+            <p className="text-xs md:text-sm text-zinc-600 leading-relaxed mb-6">
+              Collect live tenders from the Punjab e-Procurement portal, filter by type, category, department and closing date, leave out auctions, and export every match with its PDF links into structured Excel workbooks.
+            </p>
+
+            <div className="flex flex-wrap gap-2 mb-8">
+              {[
+                "Auctions excluded",
+                "Notice & bidding PDFs",
+                "Live table tracking",
+                "Excel workbook",
+              ].map((badge) => (
+                <span
+                  key={badge}
+                  className="px-3 py-1 rounded-full text-[11px] font-medium bg-[#f0f6fa] text-[#245275] border border-[#dce8f0]"
+                >
+                  {badge}
+                </span>
+              ))}
+            </div>
+
+            <div className="text-xs font-mono text-zinc-400">
+              eproc.punjab.gov.pk
+            </div>
+          </div>
           </div>
         </section>
 
