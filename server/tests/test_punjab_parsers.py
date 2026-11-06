@@ -154,3 +154,26 @@ def test_hash_changes_when_a_visible_field_changes():
     base = {"title": "A", "closing_on": "2026-11-20", "notice_url": "x"}
     assert parsers.compute_content_hash(base) == parsers.compute_content_hash(dict(base))
     assert parsers.compute_content_hash(base) != parsers.compute_content_hash({**base, "closing_on": "2026-11-21"})
+
+
+def test_a_corrigendum_keeps_the_link_to_the_tender_it_amends():
+    records = parsers.parse_listing(page("page_first.html"), BASE)
+    linked = [r for r in records if r["raw_data"]["detail_url"]]
+    assert linked
+    assert all(r["raw_data"]["detail_url"].startswith(f"{BASE}/ActiveTendersDetail.aspx?id=") for r in linked)
+
+
+def test_only_the_sites_own_detail_path_is_kept():
+    assert parsers.safe_detail_url("ActiveTendersDetail.aspx?id=257944", BASE) == f"{BASE}/ActiveTendersDetail.aspx?id=257944"
+    for bad in (None, "", "http://evil.test/ActiveTendersDetail.aspx?id=1", "javascript:alert(1)", "ActiveTendersDetail.aspx?id=1&x=2"):
+        assert parsers.safe_detail_url(bad, BASE) is None
+
+
+def test_identical_rows_with_no_link_on_one_page_keep_separate_ids():
+    row = ("<tr class='rgRow'><td>Tender Notice</td><td>Purchase of medicines</td><td>Goods</td><td>01 Nov 2026</td>"
+           "<td>20 Nov 2026</td><td>Health Dept</td><td></td><td></td><td></td></tr>")
+    other = row.replace("medicines", "uniforms")
+    ids = [r["tender_no"] for r in parsers.parse_listing(f"<table>{row}{row}{other}</table>", BASE)]
+    assert len(set(ids)) == 3
+    assert ids[1] == ids[0] + "-2"
+    assert parsers.parse_listing(f"<table>{row}</table>", BASE)[0]["tender_no"] == ids[0]  # a lone row's id doesn't change

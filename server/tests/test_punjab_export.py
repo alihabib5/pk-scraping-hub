@@ -66,6 +66,7 @@ def test_workbook_layout_dates_formula_and_links(tmp_path):
     row = sheet[2]
     assert row[0].value == "258713" and row[1].value == "Purchase of Uniform"
     assert row[6].value.date() == date(2026, 11, 1) and row[7].value.date() == date(2026, 11, 20)
+    assert row[6].number_format == row[7].number_format == "dd mmm yyyy"  # 20 Nov 2026, as the site prints it
     assert row[8].value == "=MAX(0, H2-TODAY())"
     assert row[9].hyperlink.target == NOTICE and row[10].hyperlink.target == DOCUMENT
 

@@ -15,6 +15,7 @@ from urllib.parse import urljoin
 
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 from urllib3.exceptions import HTTPError as Urllib3HTTPError
 
 from app.config import settings
@@ -26,12 +27,14 @@ from app.scrapers.punjab import repository
 from app.scrapers.punjab.filters import wanted_labels
 from app.scrapers.punjab.parsers import (
     ELEMENT_PREFIX,
+    PUBLISH_BOX,
     PageInfo,
     SiteChanged,
     check_columns,
     is_auction,
     parse_listing,
     parse_pager,
+    publish_filter_text,
 )
 from app.scrapers.punjab.schemas import PunjabFilters, PunjabOptions
 from app.services.notifier import notify_scrape_completion
@@ -76,6 +79,14 @@ class PunjabScraper(BaseScraper):
         self.options = options
         self.parent_run_id = parent_run_id
         self.wanted = wanted_labels(filters)
+        # One publish day is typed into the portal's own Publish Date box, which cuts the list
+        # on the site. shortcut: a range is still read in full and cut here, upgrade by
+        # filtering per month ("Nov 2026" matches) if ranges become the common case.
+        self.publish_text = (
+            filters.published_from.strftime("%d %b %Y")
+            if filters.published_from and filters.published_from == filters.published_to
+            else None
+        )
         self.runway = options.get_runway_days()
         # A closing range the minimum can never meet would empty the run, so the
         # dates the user chose win, and a notice says so.
@@ -138,8 +149,11 @@ class PunjabScraper(BaseScraper):
         html = self.driver.page_source
         check_columns(html)
         info = parse_pager(html)
+        if self.publish_text and publish_filter_text(html) != self.publish_text:
+            raise PageFailed(f"the Publish Date filter {self.publish_text!r} is not applied on page {expected_page}")
         # The list holds every open tender, so an empty page is a bad load, not a result.
-        if info.no_records:
+        # With the site filter on, a day with no tenders is a real, empty answer.
+        if info.no_records and not (self.publish_text and expected_page == 1):
             raise PageFailed(
                 f"the site showed no tenders on page {expected_page}, so it probably "
                 "didn't load properly. Run it again."
@@ -149,8 +163,17 @@ class PunjabScraper(BaseScraper):
         return html, info
 
     def _open_list(self) -> None:
+        """Open the list, with the site's Publish Date filter applied when the run has one.
+        Every reopen (recovery, second read) goes through here, so the filter is never lost."""
         self.navigate(urljoin(self.base_url, settings.punjab_search_path))
         self._wait_for_reload()
+        if self.publish_text:
+            def type_date() -> None:
+                box = self.driver.find_element(By.ID, PUBLISH_BOX)
+                box.send_keys(self.publish_text)
+                box.send_keys(Keys.ENTER)
+
+            self._post(type_date)
 
     def _jump_to(self, page: int) -> None:
         """Move the grid to a page. setTimeout runs the call outside Selenium's
@@ -228,9 +251,6 @@ class PunjabScraper(BaseScraper):
             self.seen.add(record["tender_no"])
             self._rejected_links += record["rejected_links"]
 
-            if self.options.exclude_auctions and is_auction(record["notice_type"]):
-                self._skipped_auction += 1
-                continue
             if not self._matches(record):
                 self._skipped_filter += 1
                 continue
@@ -241,6 +261,9 @@ class PunjabScraper(BaseScraper):
                 elif days < self.runway:
                     self._skipped_closing += 1
                     continue
+            if self.options.exclude_auctions and is_auction(record["notice_type"]):
+                self._skipped_auction += 1
+                continue
             kept.append(record)
         return kept
 
@@ -316,7 +339,17 @@ class PunjabScraper(BaseScraper):
             run_manager.update_run(
                 self.run_id, current_page=page, step=f"page_{page}_of_{info.total_pages}"
             )
-            self._save_page(html, page, parent_hashes)
+            try:
+                self._save_page(html, page, parent_hashes)
+            except SiteChanged as exc:
+                if page == 1:  # nothing saved yet: the site really has changed
+                    raise
+                self._incomplete = (
+                    f"Stopped at page {page} of {info.total_pages}: page {page} did not look as expected "
+                    f"({exc}). Results are incomplete."
+                )
+                run_manager.add_warning(self.run_id, self._incomplete)
+                return info, False
 
             if page >= info.total_pages:
                 return info, True
@@ -363,6 +396,8 @@ class PunjabScraper(BaseScraper):
                 f"Min. days until closing ({self.options.get_runway_days()}) was not applied, because "
                 "every tender in your closing date range closes sooner than that.",
             )
+        if self.publish_text and not self.seen:
+            run_manager.add_warning(self.run_id, f"The portal lists no tenders published on {self.publish_text}.")
         if self.seen and not self.rows_scraped_total:
             run_manager.add_warning(
                 self.run_id,
@@ -387,6 +422,7 @@ class PunjabScraper(BaseScraper):
             )
             run_manager.add_warning(self.run_id, self._incomplete)
         if self._incomplete:
+            run_manager.update_run(self.run_id, incomplete=self._incomplete)
             repository.update_run_progress(self.run_id, checkpoint={"incomplete": self._incomplete})
 
     def flush_partial(self) -> int:
@@ -420,7 +456,7 @@ def execute_run(
         scraper.run()
         _finish(run_id, "completed")
         archive_run(run_id)
-        notify_scrape_completion(run_id, "punjab", scraper.rows_scraped_total)
+        notify_scrape_completion(run_id, "punjab", scraper.rows_scraped_total, scraper._incomplete)
         run_manager.update_run(run_id, status="completed", step="completed")
     except StopRequested:
         logger.info("[run %s] stopped gracefully by user", run_id)

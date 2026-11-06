@@ -106,3 +106,12 @@ def test_each_portal_names_its_own_file():
 def test_a_run_with_no_portal_key_keeps_the_ppra_name():
     run = {"run_id": "a", "started_at": "2026-10-17T06:50:03", "filters": {"category": "Works"}}
     assert exports.excel_name(run) == "PPRA_Tenders(Works).xlsx"
+
+
+@pytest.mark.parametrize("flags", [{"status": "failed"}, {"status": "stopped"}, {"status": "completed", "incomplete": "cut short"}])
+def test_refresh_refuses_a_run_that_did_not_finish_cleanly(monkeypatch, flags):
+    parent = {"scraper": "punjab", "filters": {}, "options": {}, **flags}
+    monkeypatch.setattr(run_manager, "get_run", lambda run_id: parent)
+    with pytest.raises(HTTPException) as caught:
+        router.refresh_scrape("parent")
+    assert caught.value.status_code == 409

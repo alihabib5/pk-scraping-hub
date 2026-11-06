@@ -10,6 +10,7 @@ import smtplib
 import threading
 from datetime import datetime
 from email import encoders
+from html import escape
 from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -63,7 +64,7 @@ def _send_email(recipients: list[str], subject: str, body_html: str, attachment:
         return False
 
 
-def _notify(run_id: str, scraper: str, record_count: int) -> None:
+def _notify(run_id: str, scraper: str, record_count: int, incomplete: str | None = None) -> None:
     recipients = _recipients()
     if not recipients:
         logger.info("RECIPIENT_EMAILS not configured — skipping notification for %s", run_id)
@@ -84,7 +85,8 @@ def _notify(run_id: str, scraper: str, record_count: int) -> None:
     ts = now.strftime(f"%Y-%m-%d, {hr}:%M %p")
     download_url = f"{settings.public_base_url.rstrip('/')}/runs/{run_id}/download"
 
-    subject = f"{scraper.upper()} Scrape Complete — {record_count} records ({ts})"
+    subject = f"{scraper.upper()} Scrape {'INCOMPLETE' if incomplete else 'Complete'} — {record_count} records ({ts})"
+    warning = f"<p><strong>Incomplete:</strong> {escape(incomplete)}</p>" if incomplete else ""
     body_html = f"""\
 <html><body>
 <p>The <strong>{scraper.upper()}</strong> scraper has finished.</p>
@@ -93,6 +95,7 @@ def _notify(run_id: str, scraper: str, record_count: int) -> None:
   <li><strong>Records scraped:</strong> {record_count}</li>
   <li><strong>Completed at:</strong> {ts}</li>
 </ul>
+{warning}
 <p>The Excel report is attached.</p>
 <p><a href="{download_url}">Download it again from PK-Hub</a></p>
 </body></html>"""
@@ -100,12 +103,12 @@ def _notify(run_id: str, scraper: str, record_count: int) -> None:
     _send_email(recipients, subject, body_html, data, filename)
 
 
-def notify_scrape_completion(run_id: str, scraper: str, record_count: int) -> None:
+def notify_scrape_completion(run_id: str, scraper: str, record_count: int, incomplete: str | None = None) -> None:
     """Fire a completion notification in a background thread (best-effort).
 
     Returns immediately and never raises, so email latency or failure can't
     affect the scrape.
     """
     threading.Thread(
-        target=_notify, args=(run_id, scraper, record_count), daemon=True
+        target=_notify, args=(run_id, scraper, record_count, incomplete), daemon=True
     ).start()

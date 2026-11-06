@@ -16,6 +16,8 @@ from bs4 import BeautifulSoup
 
 ELEMENT_PREFIX = "ctl00_ContentPlaceHolderSRIS_"
 
+PUBLISH_BOX = ELEMENT_PREFIX + "rdgrdManageTender_ctl00_ctl02_ctl02_FilterTextBox_Publish_Date"
+
 EXPECTED_COLUMNS = (
     "Procurement Title", "Procurement Name", "Type", "Publish Date", "Close Date",
     "Department", "Status", "Tender Notice", "Bidding Document",
@@ -26,6 +28,7 @@ AUCTION_TITLE_ID = "5"
 
 _PDF_LINK = re.compile(r"(?:Tenders|BiddingDocuments)/\d+/\d+/\d{28,}\.pdf")
 _PDF_NAME = re.compile(r"/(\d{28,})\.pdf$")
+_DETAIL_PATH = re.compile(r"ActiveTendersDetail\.aspx\?id=\d+")
 # A PDF name is ddMMyyyyHHmmss (14) + 8 random digits, then the tender id.
 _ID_OFFSET = 22
 
@@ -64,6 +67,13 @@ def to_iso_date(value: str | None) -> str | None:
 def safe_pdf_url(href: str | None, base_url: str) -> str | None:
     """The absolute PDF link, or None unless `href` is one of the site's known paths."""
     if not href or not _PDF_LINK.fullmatch(href.strip()):
+        return None
+    return urljoin(base_url.rstrip("/") + "/", href.strip())
+
+
+def safe_detail_url(href: str | None, base_url: str) -> str | None:
+    """The corrigendum's detail page, only when `href` is the site's own detail path."""
+    if not href or not _DETAIL_PATH.fullmatch(href.strip()):
         return None
     return urljoin(base_url.rstrip("/") + "/", href.strip())
 
@@ -109,6 +119,13 @@ def check_columns(html: str) -> None:
         raise SiteChanged(f"unexpected result columns: {found}")
 
 
+def publish_filter_text(html: str) -> str:
+    """What the grid's Publish Date filter box holds. The site keeps it after a post, so it
+    proves the filter we typed is the one the rows came from."""
+    box = BeautifulSoup(html, "html.parser").find("input", id=PUBLISH_BOX)
+    return clean_text(box.get("value") if box else "")
+
+
 def parse_pager(html: str) -> PageInfo:
     """Totals and the current page. A result that fits on one page has no pager,
     so its total is simply the rows shown."""
@@ -132,6 +149,7 @@ def parse_listing(html: str, base_url: str) -> list[dict[str, Any]]:
     """Every tender row on the page. `rejected_links` counts links that were dropped."""
     soup = BeautifulSoup(html, "html.parser")
     records: list[dict[str, Any]] = []
+    twins: dict[str, int] = {}
     for position, row in enumerate(soup.select("tr.rgRow, tr.rgAltRow"), start=1):
         cells = row.find_all("td", recursive=False)
         if len(cells) != len(EXPECTED_COLUMNS):
@@ -144,10 +162,17 @@ def parse_listing(html: str, base_url: str) -> list[dict[str, Any]]:
 
         published_on, closing_on = to_iso_date(text[3]), to_iso_date(text[4])
         title = text[1] or text[0]
+        tender_no = tender_id_from_links(notice_url, document_url)
+        if not tender_no:
+            # shortcut: tells twins apart within one page only; identical rows on different
+            # pages still collapse (the run warns), upgrade if the site ever shows them.
+            tender_no = fallback_id(title, text[5], published_on, closing_on)
+            twins[tender_no] = twins.get(tender_no, 0) + 1
+            if twins[tender_no] > 1:
+                tender_no += f"-{twins[tender_no]}"
         record: dict[str, Any] = {
             "position": position,
-            "tender_no": tender_id_from_links(notice_url, document_url)
-            or fallback_id(title, text[5], published_on, closing_on),
+            "tender_no": tender_no,
             "title": title,
             "notice_type": text[0] or None,
             "procurement_type": text[2] or None,
@@ -158,7 +183,11 @@ def parse_listing(html: str, base_url: str) -> list[dict[str, Any]]:
             "notice_url": notice_url,
             "document_url": document_url,
             "rejected_links": rejected,
-            "raw_data": {"columns": text[:7]},
+            # A corrigendum names the tender it amends only through this link.
+            "raw_data": {
+                "columns": text[:7],
+                "detail_url": safe_detail_url((cells[1].find("a", href=True) or {}).get("href"), base_url),
+            },
         }
         record["content_hash"] = compute_content_hash(record)
         records.append(record)

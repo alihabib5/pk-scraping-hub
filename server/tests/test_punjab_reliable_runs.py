@@ -149,3 +149,27 @@ def test_a_complete_read_is_not_repeated(harness, monkeypatch):
     pages(harness, monkeypatch, (rows("1", "2"), info(2, 1, 1)))
     harness.run()
     assert harness.calls.count("open") == 1 and harness.warnings == []
+
+
+def test_a_bad_page_after_page_one_ends_the_run_incomplete_and_keeps_earlier_pages(harness, monkeypatch):
+    def parse(html, base):
+        if html == "bad":
+            raise SiteChanged("a result row has 8 cells")
+        return html
+
+    monkeypatch.setattr(module, "parse_listing", parse)
+    monkeypatch.setattr(harness, "_next_page", lambda page: ("bad", info(2, 2, 2)))
+    _, complete = harness._sweep(rows("1"), info(2, 2, 1), None)
+    assert complete is False
+    assert harness.saved == ["1"]
+    assert "page 2" in harness._incomplete and "incomplete" in harness._incomplete
+    assert harness.warnings == [harness._incomplete]
+
+
+def test_a_bad_first_page_still_fails_the_run(harness, monkeypatch):
+    def parse(html, base):
+        raise SiteChanged("a result row has 8 cells")
+
+    monkeypatch.setattr(module, "parse_listing", parse)
+    with pytest.raises(SiteChanged):
+        harness._sweep("bad", info(2, 2, 1), None)

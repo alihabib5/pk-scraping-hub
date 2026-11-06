@@ -87,6 +87,12 @@ def refresh_scrape(run_id: str) -> dict[str, Any]:
             status_code=422,
             detail="This run used a filter the Active Tenders page doesn't support. Start a new run instead.",
         ) from exc
+    if parent_run.get("status") != "completed" or parent_run.get("incomplete"):
+        raise HTTPException(
+            status_code=409,
+            detail="That run did not finish cleanly, so a refresh would call tenders it missed new. "
+            "Start a new run instead.",
+        )
     run = _launch(
         filters,
         PunjabOptions(**parent_run.get("options", {})),
@@ -133,6 +139,7 @@ def _bid_dict(bid: PunjabBid) -> dict[str, Any]:
         "closing_on": str(bid.closing_on) if bid.closing_on else None,
         "notice_url": bid.notice_url,
         "document_url": bid.document_url,
+        "detail_url": (bid.raw_data or {}).get("detail_url"),
         "change_status": bid.change_status,
         "scraped_at": str(bid.scraped_at) if bid.scraped_at else None,
     }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { formatDate } from "@/components/DateField";
 import { listPunjabBids, type PunjabBid } from "@/lib/api";
 
 const PAGE_SIZE = 500;
@@ -121,10 +122,11 @@ export default function PunjabResults({ runId }: { runId: string }) {
                       "—"
                     )}
                   </td>
-                  <td className="whitespace-nowrap px-3 py-2.5 font-mono text-ink-600">{b.closing_on || "—"}</td>
+                  <td className="whitespace-nowrap px-3 py-2.5 font-mono text-ink-600">{formatDate(b.closing_on ?? "") || "—"}</td>
                   <td className="space-x-2 whitespace-nowrap px-3 py-2.5">
                     <PdfLink href={b.notice_url} label="Notice" />
                     <PdfLink href={b.document_url} label="Bidding" />
+                    <PdfLink href={b.detail_url ?? null} label="Detail" />
                   </td>
                 </tr>
               ))

@@ -18,8 +18,11 @@ import re
 import warnings
 from datetime import date, datetime
 from typing import Any
+from zoneinfo import ZoneInfo
 
 logger = logging.getLogger(__name__)
+
+PKT = ZoneInfo("Asia/Karachi")
 
 # The default runway, in days, when a run doesn't set its own.
 MIN_DAYS_UNTIL_CLOSE = 7
@@ -80,8 +83,9 @@ def parse_close_date(raw: Any) -> date | None:
 
 
 def days_until_close(raw: Any, today: date | None = None) -> int | None:
-    """Whole days from today until the close date, or None if unreadable."""
+    """Whole days from today until the close date, or None if unreadable. "Today" is the
+    Pakistan date the portals use, not the server's: a UTC host is a day behind for five hours."""
     parsed = parse_close_date(raw)
     if parsed is None:
         return None
-    return (parsed - (today or date.today())).days
+    return (parsed - (today or datetime.now(PKT).date())).days

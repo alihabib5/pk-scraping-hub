@@ -1,8 +1,9 @@
 """The scraper's row rules and page checks, without a browser."""
 
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 from pathlib import Path
 from types import SimpleNamespace
+from zoneinfo import ZoneInfo
 
 import pytest
 
@@ -10,13 +11,14 @@ from app.core import run_manager
 from app.scrapers.punjab import filters as punjab_filters
 from app.scrapers.punjab.parsers import PageInfo, SiteChanged
 from app.scrapers.punjab.schemas import PunjabFilters, PunjabOptions
+from app.scrapers.punjab import scraper as module
 from app.scrapers.punjab.scraper import PageFailed, PunjabScraper
 
 FIXTURES = Path(__file__).parent / "fixtures" / "punjab"
 
 
 def closes_in(days: int) -> str:
-    return (date.today() + timedelta(days=days)).isoformat()
+    return (datetime.now(ZoneInfo("Asia/Karachi")).date() + timedelta(days=days)).isoformat()
 
 
 def row(tender_no: str, title: str = "Purchase of Uniform", notice_type: str = "Tender Notice",
@@ -197,3 +199,41 @@ def test_an_empty_later_page_is_a_failure():
 def test_a_changed_site_is_reported_as_such():
     with pytest.raises(SiteChanged):
         on_page("", html="<html><body>Service unavailable</body></html>")._read_page(1)
+
+
+def test_one_publish_day_is_typed_into_the_site_filter_but_a_range_is_not():
+    assert filtered(published_from="2026-11-06", published_to="2026-11-06").publish_text == "06 Nov 2026"
+    assert filtered(published_from="2026-11-05", published_to="2026-11-06").publish_text is None
+    assert filtered(published_from="2026-11-06").publish_text is None
+    assert scraper().publish_text is None
+
+
+def test_closing_days_are_applied_before_the_auction_exclusion():
+    instance = scraper()
+    kept = instance._keep([
+        row("1", notice_type="Sales/Auction/Disposal", closing_on=closes_in(1)),   # too soon: a closing skip
+        row("2", notice_type="Sales/Auction/Disposal", closing_on=closes_in(30)),  # fine, but an auction
+    ])
+    assert kept == []
+    assert (instance._skipped_closing, instance._skipped_auction) == (1, 1)
+
+
+def test_the_site_filter_must_be_the_one_applied(monkeypatch):
+    instance = filtered(published_from="2026-11-06", published_to="2026-11-06")
+    instance.driver = SimpleNamespace(page_source=(FIXTURES / "page_first.html").read_text(encoding="utf-8"))
+    monkeypatch.setattr(module, "publish_filter_text", lambda html: "")
+    with pytest.raises(PageFailed):
+        instance._read_page(1)
+    monkeypatch.setattr(module, "publish_filter_text", lambda html: "06 Nov 2026")
+    _, info = instance._read_page(1)
+    assert info.total_pages == 9
+
+
+def test_a_day_with_no_tenders_is_an_empty_result_not_a_bad_load(monkeypatch):
+    instance = filtered(published_from="2026-11-07", published_to="2026-11-07")
+    instance.driver = SimpleNamespace(page_source=(FIXTURES / "page_empty.html").read_text(encoding="utf-8"))
+    monkeypatch.setattr(module, "publish_filter_text", lambda html: "07 Nov 2026")
+    _, info = instance._read_page(1)
+    assert info.no_records
+    with pytest.raises(PageFailed):  # a later page can never be empty
+        instance._read_page(2)

@@ -105,8 +105,8 @@ def _write_tenders(sheet: Any, rows: list[PunjabBid], scraped_at: datetime) -> N
         ])
         for column in TEXT_COLUMNS:
             _as_text(sheet.cell(row=index, column=column))
-        sheet.cell(row=index, column=COL_PUBLISHED).number_format = "yyyy-mm-dd"
-        sheet.cell(row=index, column=COL_CLOSING).number_format = "yyyy-mm-dd"
+        sheet.cell(row=index, column=COL_PUBLISHED).number_format = "dd mmm yyyy"  # as the site prints it
+        sheet.cell(row=index, column=COL_CLOSING).number_format = "dd mmm yyyy"
         sheet.cell(row=index, column=COL_DAYS_LEFT).number_format = "0"
         sheet.cell(row=index, column=COL_SCRAPED).number_format = "yyyy-mm-dd hh:mm"
         for column, url in ((COL_NOTICE, bid.notice_url), (COL_DOCUMENT, bid.document_url)):

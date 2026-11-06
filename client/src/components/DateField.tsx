@@ -41,10 +41,10 @@ function parseIso(iso: string): [number, number, number] | null {
   return check.getFullYear() === y && check.getMonth() === mo && check.getDate() === d ? [y, mo, d] : null;
 }
 
-/** "2 Nov 2026", or "" for an empty or unreadable value. */
+/** "02 Nov 2026" (the Punjab portal's own format), or "" for an empty or unreadable value. */
 export function formatDate(iso: string): string {
   const p = parseIso(iso);
-  return p ? `${p[2]} ${MONTHS[p[1]].slice(0, 3)} ${p[0]}` : "";
+  return p ? `${pad(p[2])} ${MONTHS[p[1]].slice(0, 3)} ${p[0]}` : "";
 }
 
 const NAV_BUTTON =

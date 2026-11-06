@@ -287,6 +287,8 @@ export interface PunjabBid {
   closing_on: string | null;
   notice_url: string | null;
   document_url: string | null;
+  /** A corrigendum's link to the tender it amends. */
+  detail_url?: string | null;
 }
 
 export function startPunjabScrape(
