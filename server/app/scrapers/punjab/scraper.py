@@ -1,38 +1,36 @@
-"""Selenium automation for the Punjab e-procurement search page.
+"""Selenium automation for the Punjab Active Tenders page.
 
-The site is ASP.NET WebForms: searching and paging are form posts on one URL, so
-there is no page address to open. Each step therefore clicks, waits for the page
-to be replaced, and checks the new page before anything from it is saved.
+The page has no search form, so a run reads every active tender and applies its
+filters to each row. It is ASP.NET WebForms: paging is a form post on one URL, so
+each step clicks, waits for the page to be replaced, and checks the new page
+before anything from it is saved.
 """
 
 import logging
 import random
-import threading
 import time
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 from typing import Any
 from urllib.parse import urljoin
 
 from selenium.common.exceptions import WebDriverException
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import Select
+from urllib3.exceptions import HTTPError as Urllib3HTTPError
 
 from app.config import settings
 from app.core import run_manager
 from app.core.base_scraper import BaseScraper, StopRequested
-from app.core.closing_filter import days_until_close
+from app.core.closing_filter import days_until_close, parse_close_date
 from app.core.exports import archive_run
 from app.scrapers.punjab import repository
-from app.scrapers.punjab.filters import save_filter_options, search_dates, site_date, site_to_date
+from app.scrapers.punjab.filters import wanted_labels
 from app.scrapers.punjab.parsers import (
     ELEMENT_PREFIX,
-    SELECTS,
     PageInfo,
     SiteChanged,
     check_columns,
     is_auction,
     parse_listing,
-    parse_options,
     parse_pager,
 )
 from app.scrapers.punjab.schemas import PunjabFilters, PunjabOptions
@@ -50,8 +48,19 @@ _RELOADED = (
 )
 
 
+def _in_range(value: str | None, first: date | None, last: date | None) -> bool:
+    """Both ends count. An unreadable date is kept, as the closing guard does."""
+    day = parse_close_date(value)
+    return day is None or not ((first and day < first) or (last and day > last))
+
+
 class PageFailed(Exception):
     """A page did not load, or is not the page that was asked for."""
+
+
+# A dead browser raises urllib3 errors, and a one-off server error page has no
+# results table, so both are worth a recovery before giving up.
+_PAGE_ERRORS = (PageFailed, SiteChanged, WebDriverException, Urllib3HTTPError)
 
 
 class PunjabScraper(BaseScraper):
@@ -66,7 +75,17 @@ class PunjabScraper(BaseScraper):
         self.filters = filters
         self.options = options
         self.parent_run_id = parent_run_id
-        self.first_day, self.last_day = search_dates(filters)
+        self.wanted = wanted_labels(filters)
+        self.runway = options.get_runway_days()
+        # A closing range the minimum can never meet would empty the run, so the
+        # dates the user chose win, and a notice says so.
+        self._runway_ignored = bool(
+            self.runway is not None
+            and filters.closing_to
+            and days_until_close(filters.closing_to.isoformat()) < self.runway
+        )
+        if self._runway_ignored:
+            self.runway = None
         self.seen: set[str] = set()
         self.rows_scraped_total = 0
         self._rows_new = 0
@@ -75,8 +94,11 @@ class PunjabScraper(BaseScraper):
         self._kept_unverified = 0
         self._skipped_auction = 0
         self._skipped_repeat = 0
+        self._skipped_filter = 0
         self._rejected_links = 0
         self._recoveries = 0
+        self._rereading = False
+        self._incomplete: str | None = None
 
     # -- the site ------------------------------------------------------------
 
@@ -98,7 +120,9 @@ class PunjabScraper(BaseScraper):
             try:
                 if self.driver.execute_script(_RELOADED):
                     return
-            except WebDriverException:
+            except WebDriverException as exc:
+                if self._is_dead_session_error(exc):
+                    raise
                 # Normal while the old document is being torn down.
                 logger.debug("[run %s] page still reloading", self.run_id, exc_info=True)
             time.sleep(0.3)
@@ -114,35 +138,19 @@ class PunjabScraper(BaseScraper):
         html = self.driver.page_source
         check_columns(html)
         info = parse_pager(html)
-        if info.no_records and expected_page > 1:
-            raise PageFailed(f"page {expected_page} came back empty")
-        if not info.no_records and info.current_page != expected_page:
+        # The list holds every open tender, so an empty page is a bad load, not a result.
+        if info.no_records:
+            raise PageFailed(
+                f"the site showed no tenders on page {expected_page}, so it probably "
+                "didn't load properly. Run it again."
+            )
+        if info.current_page != expected_page:
             raise PageFailed(f"expected page {expected_page}, got {info.current_page}")
         return html, info
 
-    def _search(self) -> None:
-        """Run the search from a freshly loaded page. Fresh matters: the grid keeps
-        its page number across searches, so searching from page 33 of an earlier
-        result reports "No Record Found!" for a search that has matches."""
+    def _open_list(self) -> None:
         self.navigate(urljoin(self.base_url, settings.punjab_search_path))
-        self.raise_if_stopped()
-        try:
-            save_filter_options(parse_options(self.driver.page_source))
-        except Exception:  # noqa: BLE001 — the dropdown cache must never fail a scrape
-            logger.exception("[run %s] could not refresh the filter options", self.run_id)
-
-        for field, suffix in SELECTS.items():
-            value = getattr(self.filters, field)
-            if value:
-                Select(self.driver.find_element(By.ID, ELEMENT_PREFIX + suffix)).select_by_value(value)
-        # The boxes are read-only for typing. Values go in as arguments, never as script text.
-        for suffix, value in (
-            ("txtFromDate", site_date(self.first_day)),
-            ("txtToDate", site_to_date(self.last_day)),
-        ):
-            box = self.driver.find_element(By.ID, ELEMENT_PREFIX + suffix)
-            self.driver.execute_script("arguments[0].value = arguments[1]", box, value)
-        self._post(self.driver.find_element(By.ID, f"{ELEMENT_PREFIX}btnSubmit").click)
+        self._wait_for_reload()
 
     def _jump_to(self, page: int) -> None:
         """Move the grid to a page. setTimeout runs the call outside Selenium's
@@ -150,58 +158,87 @@ class PunjabScraper(BaseScraper):
         script = f'setTimeout(function(){{ $find("{GRID_ID}").get_masterTableView().page({int(page)}) }}, 0)'
         self._post(lambda: self.driver.execute_script(script))
 
-    def _recover(self, page: int) -> tuple[str, PageInfo]:
-        """Repeat the search and return to `page`. There is no URL to reopen."""
+    def _restart_browser(self, page: int) -> None:
+        logger.warning("[run %s] the browser died at page %d, restarting it", self.run_id, page)
+        self.stop_driver()
+        self.raise_if_stopped()
+        self.start_driver()
+        if self._stop_requested:
+            # stop() quit the old browser, so it can't have reached this new one.
+            self._driver_closed = False
+            self.stop_driver()
+            raise StopRequested("run stopped by user")
+        run_manager.add_warning(
+            self.run_id, f"The browser stopped at page {page} and was restarted. The run carried on from there."
+        )
+
+    def _recover(self, page: int, cause: Exception) -> tuple[str, PageInfo]:
+        """Reopen the list and return to `page`. A page has no URL of its own."""
         self._recoveries += 1
         if self._recoveries > MAX_RECOVERIES:
             raise PageFailed(f"gave up after {MAX_RECOVERIES} recoveries")
         logger.warning("[run %s] recovering at page %d (attempt %d)", self.run_id, page, self._recoveries)
-        self._search()
+        self.polite_delay()
+        if self._is_dead_session_error(cause):
+            self._restart_browser(page)
+        self._open_list()
         if page > 1:
             self._jump_to(page)
         return self._read_page(page)
 
     def _open_first_page(self) -> tuple[str, PageInfo]:
         try:
-            self._search()
+            self._open_list()
             return self._read_page(1)
-        except (PageFailed, WebDriverException) as exc:
+        except _PAGE_ERRORS as exc:
             self.raise_if_stopped()
-            logger.warning("[run %s] first search failed: %s", self.run_id, exc)
-            return self._recover(1)
+            logger.warning("[run %s] first page failed: %s", self.run_id, exc)
+            return self._recover(1, exc)
 
     def _next_page(self, page: int) -> tuple[str, PageInfo]:
         try:
             self._post(self.driver.find_element(By.CSS_SELECTOR, ".rgPageNext").click)
             return self._read_page(page)
-        except (PageFailed, WebDriverException) as exc:
+        except _PAGE_ERRORS as exc:
             # Stop quits the browser mid-load; that must end as a stop, not a recovery.
             self.raise_if_stopped()
             logger.warning("[run %s] page %d failed: %s", self.run_id, page, exc)
-            return self._recover(page)
+            return self._recover(page, exc)
 
     # -- rows ----------------------------------------------------------------
 
+    def _matches(self, record: dict[str, Any]) -> bool:
+        """Whether a row passes the run's dropdown and date filters."""
+        if any((record.get(key) or "").lower() != label for key, label in self.wanted.items()):
+            return False
+        chosen = self.filters
+        return _in_range(record.get("published_on"), chosen.published_from, chosen.published_to) and _in_range(
+            record["closing_on"], chosen.closing_from, chosen.closing_to
+        )
+
     def _keep(self, records: list[dict[str, Any]]) -> list[dict[str, Any]]:
         """Apply the run's rules to a page, counting everything dropped."""
-        runway = self.options.get_runway_days()
         kept = []
         for record in records:
-            self._rejected_links += record["rejected_links"]
             # A new tender pushes rows on to the next page, so a row can appear twice.
             if record["tender_no"] in self.seen:
-                self._skipped_repeat += 1
+                if not self._rereading:
+                    self._skipped_repeat += 1
                 continue
             self.seen.add(record["tender_no"])
+            self._rejected_links += record["rejected_links"]
 
             if self.options.exclude_auctions and is_auction(record["notice_type"]):
                 self._skipped_auction += 1
                 continue
-            if runway is not None:
+            if not self._matches(record):
+                self._skipped_filter += 1
+                continue
+            if self.runway is not None:
                 days = days_until_close(record["closing_on"])
                 if days is None:
                     self._kept_unverified += 1
-                elif days < runway:
+                elif days < self.runway:
                     self._skipped_closing += 1
                     continue
             kept.append(record)
@@ -248,7 +285,9 @@ class PunjabScraper(BaseScraper):
     def run(self) -> None:
         self.start_driver()
         run_manager.update_run(self.run_id, status="running", step="opening_punjab")
-        repository.update_run_progress(self.run_id, closing_from=self.first_day, closing_to=self.last_day)
+        repository.update_run_progress(
+            self.run_id, closing_from=self.filters.closing_from, closing_to=self.filters.closing_to
+        )
         self.raise_if_stopped()
 
         html, info = self._open_first_page()
@@ -260,9 +299,19 @@ class PunjabScraper(BaseScraper):
             repository.get_parent_run_hashes(self.parent_run_id) if self.parent_run_id else None
         )
 
+        info, complete = self._sweep(html, info, parent_hashes)
+        if complete and len(self.seen) < info.total_records:
+            info, complete = self._sweep_again(info, parent_hashes)
+
+        self._finish_checks(info, complete)
+        run_manager.update_run(self.run_id, step="packaging_results")
+
+    def _sweep(
+        self, html: str, info: PageInfo, parent_hashes: dict[str, str] | None
+    ) -> tuple[PageInfo, bool]:
+        """Read from page 1 to the end. Returns the latest totals and whether it got there."""
         page = 1
-        complete = True
-        while not info.no_records:
+        while True:
             self.raise_if_stopped()
             run_manager.update_run(
                 self.run_id, current_page=page, step=f"page_{page}_of_{info.total_pages}"
@@ -270,66 +319,80 @@ class PunjabScraper(BaseScraper):
             self._save_page(html, page, parent_hashes)
 
             if page >= info.total_pages:
-                break
+                return info, True
             self.polite_delay()
             self.raise_if_stopped()
             try:
                 html, next_info = self._next_page(page + 1)
-            except (PageFailed, WebDriverException) as exc:
+            except _PAGE_ERRORS as exc:
                 self.raise_if_stopped()
                 logger.warning("[run %s] page %d failed for good: %s", self.run_id, page + 1, exc)
-                run_manager.add_warning(
-                    self.run_id,
+                self._incomplete = (
                     f"Stopped at page {page} of {info.total_pages}: page {page + 1} would not load "
-                    f"({self.describe_failure(exc)}). Results are incomplete.",
+                    f"({self.describe_failure(exc)}). Results are incomplete."
                 )
-                complete = False
-                break
+                run_manager.add_warning(self.run_id, self._incomplete)
+                return info, False
             page += 1
             # New tenders arrive during a run, so the totals can move.
             if next_info[:2] != info[:2]:
                 self._record_totals(next_info)
             info = next_info
 
-        self._finish_checks(info, complete)
-        run_manager.update_run(self.run_id, step="packaging_results")
+    def _sweep_again(
+        self, info: PageInfo, parent_hashes: dict[str, str] | None
+    ) -> tuple[PageInfo, bool]:
+        """Read once more when tenders are missing: one leaving the list moves later
+        rows back a page, past where the run has read. Seen rows are simply skipped."""
+        logger.info("[run %s] read %d of %d tenders, reading again", self.run_id, len(self.seen), info.total_records)
+        self._rereading = True
+        self.polite_delay()
+        try:
+            html, fresh = self._open_first_page()
+        except _PAGE_ERRORS as exc:
+            self.raise_if_stopped()
+            logger.warning("[run %s] the second read failed: %s", self.run_id, exc)
+            return info, True
+        self._record_totals(fresh)
+        return self._sweep(html, fresh, parent_hashes)
 
     def _finish_checks(self, info: PageInfo, complete: bool) -> None:
+        if self._runway_ignored:
+            run_manager.add_warning(
+                self.run_id,
+                f"Min. days until closing ({self.options.get_runway_days()}) was not applied, because "
+                "every tender in your closing date range closes sooner than that.",
+            )
+        if self.seen and not self.rows_scraped_total:
+            run_manager.add_warning(
+                self.run_id,
+                f"The site listed {len(self.seen)} active tenders but none were saved: "
+                f"{self._skipped_auction} Sales/Auction/Disposal, "
+                f"{self._skipped_filter} not matching your filters, "
+                f"{self._skipped_closing} closing too soon.",
+            )
+        elif self._skipped_filter:
+            run_manager.add_warning(
+                self.run_id, f"{self._skipped_filter} active tenders didn't match your filters."
+            )
         if self._rejected_links:
             run_manager.add_warning(
                 self.run_id,
                 f"{self._rejected_links} PDF link(s) did not match the site's known format and were left out.",
             )
         if complete and len(self.seen) < info.total_records:
-            run_manager.add_warning(
-                self.run_id,
+            self._incomplete = (
                 f"Read {len(self.seen)} different tenders but the site reports {info.total_records}. "
-                "Tenders can change while a run is in progress.",
+                "Tenders can change while a run is in progress."
             )
+            run_manager.add_warning(self.run_id, self._incomplete)
+        if self._incomplete:
+            repository.update_run_progress(self.run_id, checkpoint={"incomplete": self._incomplete})
 
     def flush_partial(self) -> int:
         # Rows are saved page by page, so everything a stopped run gathered is
         # already in punjab_bids.
         return self.rows_scraped_total
-
-
-_lists_lock = threading.Lock()
-
-
-def refresh_lists() -> int:
-    """Read the dropdowns from the live page through Chrome, because plain HTTP
-    clients fail on this page. One at a time, and outside the worker pool."""
-    with _lists_lock:
-        reader = BaseScraper("punjab-filter-lists")
-        try:
-            reader.start_driver()
-            reader.navigate(urljoin(settings.punjab_base_url, settings.punjab_search_path))
-            options = parse_options(reader.driver.page_source)
-        finally:
-            reader.cleanup()
-    if not options:
-        raise SiteChanged("the page had no filter dropdowns")
-    return save_filter_options(options)
 
 
 def _finish(run_id: str, status: str, error: str | None = None) -> None:

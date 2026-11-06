@@ -20,9 +20,9 @@ def page(name: str) -> str:
 def test_normal_page_totals_and_rows():
     html = page("page_first.html")
     info = parsers.parse_pager(html)
-    assert (info.total_records, info.total_pages, info.current_page, info.no_records) == (944, 19, 1, False)
+    assert (info.total_records, info.total_pages, info.current_page, info.no_records) == (880, 9, 1, False)
     records = parsers.parse_listing(html, BASE)
-    assert len(records) == 50
+    assert len(records) == 100
     first = records[0]
     assert first["tender_no"].isdigit() and len(first["tender_no"]) == 6
     assert first["notice_url"].startswith(f"{BASE}/Tenders/")
@@ -33,7 +33,7 @@ def test_normal_page_totals_and_rows():
 
 def test_last_page_reports_its_position():
     info = parsers.parse_pager(page("page_last.html"))
-    assert (info.current_page, info.total_pages) == (19, 19)
+    assert (info.current_page, info.total_pages) == (9, 9)
 
 
 def test_one_page_result_has_no_pager_so_rows_are_the_total():
@@ -65,6 +65,12 @@ def test_row_with_missing_cells_is_detected():
     html = '<table><tr class="rgRow"><td>only one</td></tr></table>'
     with pytest.raises(parsers.SiteChanged):
         parsers.parse_listing(html, BASE)
+
+
+def test_the_detail_link_text_is_not_part_of_the_title():
+    records = parsers.parse_listing(page("page_first.html"), BASE)
+    assert records[0]["title"] == "Development schemes District Council Jhelum"
+    assert not any("View Tender Detail" in r["title"] for r in records)
 
 
 def test_ids_are_unique_on_a_page():
@@ -141,24 +147,7 @@ def test_dates_become_iso_so_they_are_not_read_month_first():
 def test_whitespace_is_normalised():
     assert parsers.clean_text("  Purchase   of\xa0Uniform \n") == "Purchase of Uniform"
     assert parsers.clean_text(None) == ""
-
-
-def test_options_leave_out_all_and_junk_labels():
-    html = """
-    <select id="ctl00_ContentPlaceHolderSRIS_ddlDepartment">
-      <option value="0">--- All ---</option><option value="4585">.</option>
-      <option value="561">Accountant General, Punjab</option>
-    </select>"""
-    assert parsers.parse_options(html) == {
-        "department": [{"value": "561", "label": "Accountant General, Punjab"}]
-    }
-
-
-def test_options_from_a_real_page():
-    options = parsers.parse_options(page("page_first.html"))
-    assert set(options) == set(parsers.SELECTS)
-    assert {"value": "5", "label": "Sales/Auction/Disposal"} in options["procurement_title"]
-    assert [o["label"] for o in options["procurement_type"]] == ["Work", "Services", "Goods"]
+    assert parsers.clean_text("Pur\x00chase") == "Purchase"
 
 
 def test_hash_changes_when_a_visible_field_changes():

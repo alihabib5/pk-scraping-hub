@@ -257,20 +257,13 @@ export function getPunjabFilters(): Promise<PpraFilterOptions> {
   return request("/punjab/filters");
 }
 
-/** Re-read the dropdowns from the live site now. Slower than PPRA's: it opens a browser. */
-export function refreshPunjabFilters(): Promise<PpraFilterOptions> {
-  return request("/punjab/filters/refresh", { method: "POST" });
-}
-
-/** Dropdown fields carry the site's option ids; dates are `YYYY-MM-DD`. Blank
- *  dates mean from today, as far ahead as the site goes. */
+/** Dropdown fields carry option ids; dates are `YYYY-MM-DD`. Blank means no limit. */
 export interface PunjabFiltersPayload {
   procurement_type?: string | null;
-  procurement_category?: string | null;
   procurement_title?: string | null;
   department?: string | null;
-  closing_from?: string | null;
-  closing_to?: string | null;
+  published_from?: string | null;
+  published_to?: string | null;
 }
 
 export interface PunjabOptionsPayload {

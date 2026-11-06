@@ -89,7 +89,7 @@ export default function HomePage() {
             </div>
 
             <p className="text-xs md:text-sm text-zinc-600 leading-relaxed mb-6">
-              Collect live tenders from the Punjab e-Procurement portal, filter by type, category, department and closing date, leave out auctions, and export every match with its PDF links into structured Excel workbooks.
+              Collect live tenders from the Punjab e-Procurement portal, filter by type, title, department and closing date, leave out auctions, and export every match with its PDF links into structured Excel workbooks.
             </p>
 
             <div className="flex flex-wrap gap-2 mb-8">

@@ -12,11 +12,9 @@ import RefreshButton from "@/components/RefreshButton";
 import ScraperControls from "@/components/ScraperControls";
 import SessionActivity from "@/components/SessionActivity";
 import { usePortalSession } from "@/lib/usePortalSession";
-import { formatTimestamp } from "@/lib/runs";
 import {
   getPunjabFilters,
   isRunActive,
-  refreshPunjabFilters,
   startPunjabScrape,
   type PpraFilterOptions,
 } from "@/lib/api";
@@ -24,24 +22,22 @@ import {
 /** The site's id for its Sales/Auction/Disposal category. */
 const AUCTION_TITLE_ID = "5";
 
-type Dropdown = "procurement_type" | "procurement_category" | "procurement_title" | "department";
+type Dropdown = "procurement_type" | "procurement_title" | "department";
 
 const NO_SELECTION: Record<Dropdown, string> = {
   procurement_type: "",
-  procurement_category: "",
   procurement_title: "",
   department: "",
 };
 
 export default function PunjabPanel() {
-  const [closingFrom, setClosingFrom] = useState("");
-  const [closingTo, setClosingTo] = useState("");
+  const [publishedFrom, setPublishedFrom] = useState("");
+  const [publishedTo, setPublishedTo] = useState("");
   const [selected, setSelected] = useState(NO_SELECTION);
   const [closingRunwayDays, setClosingRunwayDays] = useState<number | null>(7);
   const [excludeAuctions, setExcludeAuctions] = useState(true);
 
   const [lists, setLists] = useState<PpraFilterOptions | null>(null);
-  const [refreshingLists, setRefreshingLists] = useState(false);
 
   const { run, error, starting, setError, launch, applyStatus, hasSession, reset } =
     usePortalSession("punjab");
@@ -62,17 +58,6 @@ export default function PunjabPanel() {
     };
   }, [setError]);
 
-  const reloadLists = async () => {
-    setRefreshingLists(true);
-    try {
-      setLists(await refreshPunjabFilters());
-    } catch (e) {
-      setError((e as Error).message);
-    } finally {
-      setRefreshingLists(false);
-    }
-  };
-
   const options = (field: Dropdown) => lists?.options[field] ?? [];
   const choose = (field: Dropdown) => (value: string) => setSelected((s) => ({ ...s, [field]: value }));
   // With auctions excluded, searching only auctions could return nothing.
@@ -89,16 +74,19 @@ export default function PunjabPanel() {
     }
   };
 
-  const handleStart = () =>
-    launch(() =>
+  const handleStart = () => {
+    if (publishedFrom && publishedTo && publishedFrom > publishedTo) {
+      setError("Publish Date From must not be after To.");
+      return;
+    }
+    return launch(() =>
       startPunjabScrape(
         {
           procurement_type: selected.procurement_type || null,
-          procurement_category: selected.procurement_category || null,
           procurement_title: selected.procurement_title || null,
           department: selected.department || null,
-          closing_from: closingFrom || null,
-          closing_to: closingTo || null,
+          published_from: publishedFrom || null,
+          published_to: publishedTo || null,
         },
         {
           // An empty box means "filter off"; null days alone would fall back to 7.
@@ -108,6 +96,7 @@ export default function PunjabPanel() {
         },
       ),
     );
+  };
 
   return (
     <div className="space-y-6">
@@ -115,29 +104,9 @@ export default function PunjabPanel() {
 
       <Card
         title="PPRA Punjab Search & Filter Criteria"
-        description="Filter live tenders on the Punjab e-Procurement portal (eproc.punjab.gov.pk). With no closing dates, every tender closing from today onward is searched."
-        actions={
-          <div className="flex items-center gap-2 text-xs text-ink-500">
-            <span>
-              {!lists
-                ? "Loading lists…"
-                : lists.refreshed_at
-                  ? `Lists from the site, ${formatTimestamp(lists.refreshed_at)}`
-                  : "Built-in lists"}
-            </span>
-            <button
-              type="button"
-              onClick={reloadLists}
-              disabled={refreshingLists || isRunning}
-              title="Re-read every dropdown from eproc.punjab.gov.pk"
-              className="rounded-md px-2 py-1 font-medium text-ink-600 transition hover:bg-ink-50 hover:text-ink-900 disabled:cursor-not-allowed disabled:opacity-40"
-            >
-              {refreshingLists ? "Refreshing…" : "Refresh lists"}
-            </button>
-          </div>
-        }
+        description="Reads every open tender from the Active Tenders page (eproc.punjab.gov.pk), then keeps the ones matching these filters."
       >
-        <div className="grid gap-4 sm:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-2">
           <SelectField
             label="Procurement Type"
             value={selected.procurement_type}
@@ -145,14 +114,6 @@ export default function PunjabPanel() {
             onChange={choose("procurement_type")}
             disabled={isRunning}
             placeholder="All Types"
-          />
-          <SelectField
-            label="Category"
-            value={selected.procurement_category}
-            options={options("procurement_category")}
-            onChange={choose("procurement_category")}
-            disabled={isRunning}
-            placeholder="All Categories"
           />
           <SelectField
             label="Procurement Title"
@@ -163,7 +124,7 @@ export default function PunjabPanel() {
             placeholder="All Titles"
           />
 
-          <div className="sm:col-span-3">
+          <div className="sm:col-span-2">
             <SearchSelect
               label="Department"
               value={selected.department}
@@ -174,8 +135,16 @@ export default function PunjabPanel() {
             />
           </div>
 
-          <DateField label="Closing Date From" value={closingFrom} onChange={setClosingFrom} disabled={isRunning} />
-          <DateField label="Closing Date To" value={closingTo} onChange={setClosingTo} disabled={isRunning} />
+          <div className="sm:col-span-2">
+            <p className="mb-2 text-sm font-semibold text-ink-800">Publish Date Range</p>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <DateField label="From" value={publishedFrom} onChange={setPublishedFrom} disabled={isRunning} />
+              <DateField label="To" value={publishedTo} onChange={setPublishedTo} disabled={isRunning} />
+            </div>
+            <p className="mt-2 text-xs text-ink-500">
+              Both days are included. Leave either blank for an open-ended range.
+            </p>
+          </div>
         </div>
 
         <div className="mt-4 flex items-center gap-3 border-t border-ink-100 pt-4">

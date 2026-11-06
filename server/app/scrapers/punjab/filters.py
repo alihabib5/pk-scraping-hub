@@ -1,20 +1,18 @@
-"""Punjab search filters: the site's dropdown options, the run's filter hash, and
-the dates a run searches.
+"""Punjab filters: the option lists, how a filter matches a row, and the filter hash.
 
-The option lists live in `punjab_filter_options`, refreshed from the live page on
-every scrape and on demand. Until the first refresh, the checked-in
-`filter_options.json` seed is served, so the dropdowns are never empty.
+The Active Tenders page has no search form, so a run reads every tender and these
+filters are applied to each row. The option lists can't be read from that page:
+they come from `punjab_filter_options`, or the checked-in `filter_options.json`.
 """
 
 import hashlib
 import json
 import logging
 import threading
-from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
-from sqlalchemy import delete, func, select
+from sqlalchemy import func, select
 
 from app.db import SessionLocal
 from app.scrapers.punjab.models import PunjabFilterOption
@@ -25,9 +23,6 @@ logger = logging.getLogger(__name__)
 SEED_PATH = Path(__file__).with_name("filter_options.json")
 PKT = ZoneInfo("Asia/Karachi")
 
-# Far enough for any tender: the furthest close date seen was about 8 months out.
-DEFAULT_SEARCH_DAYS = 730
-
 # PunjabFilters field -> the name shown in filenames and the Excel summary. Each
 # dropdown field shares its name with the option `kind` it draws from.
 FIELD_NAMES = {
@@ -35,6 +30,13 @@ FIELD_NAMES = {
     "procurement_category": "Category",
     "procurement_title": "Title",
     "department": "Department",
+}
+
+# Dropdown field -> the scraped row key its label is compared with.
+ROW_KEYS = {
+    "procurement_type": "procurement_type",
+    "procurement_title": "notice_type",
+    "department": "department",
 }
 
 _lock = threading.Lock()
@@ -79,33 +81,6 @@ def get_filter_options() -> dict:
         return _cache
 
 
-def save_filter_options(options: dict[str, list[dict[str, str]]]) -> int:
-    """Replace the cached lists for each kind present. Returns the option count."""
-    global _cache
-    if not options:
-        return 0
-    now = datetime.now(timezone.utc)
-    session = SessionLocal()
-    try:
-        for kind, entries in options.items():
-            session.execute(delete(PunjabFilterOption).where(PunjabFilterOption.kind == kind))
-            # One row per id, so a repeated id on the site can't break the primary key.
-            unique = {entry["value"]: entry for entry in entries}.values()
-            session.add_all(
-                PunjabFilterOption(kind=kind, value=e["value"], label=e["label"], sort_order=i, refreshed_at=now)
-                for i, e in enumerate(unique)
-            )
-        session.commit()
-    except Exception:
-        session.rollback()
-        raise
-    finally:
-        session.close()
-    with _lock:
-        _cache = None
-    return sum(len(entries) for entries in options.values())
-
-
 def label_for(field: str, value: object) -> str:
     """The human label for a dropdown value; the value itself when it isn't known."""
     text = str(value).strip()
@@ -124,29 +99,15 @@ def filter_labels(filters: dict) -> list[tuple[str, str]]:
     ]
 
 
+def wanted_labels(filters: PunjabFilters) -> dict[str, str]:
+    """{row key: lowercase label the row must have} for each dropdown filter chosen."""
+    return {
+        key: label_for(field, getattr(filters, field)).lower()
+        for field, key in ROW_KEYS.items()
+        if getattr(filters, field)
+    }
+
+
 def compute_filters_hash(filters: PunjabFilters) -> str:
     encoded = json.dumps(filters.model_dump(mode="json"), sort_keys=True).encode("utf-8")
     return hashlib.sha256(encoded).hexdigest()
-
-
-def search_dates(filters: PunjabFilters, today: date | None = None) -> tuple[date, date]:
-    """The first and last closing day a run covers, both included.
-
-    The default starts today because the site's own default window holds only
-    tenders that have already closed.
-    """
-    today = today or datetime.now(PKT).date()
-    last = filters.closing_to or today + timedelta(days=DEFAULT_SEARCH_DAYS)
-    first = filters.closing_from or min(today, last)
-    return first, last
-
-
-def site_date(day: date) -> str:
-    """A date as the site's boxes hold it: dd/mm/yyyy."""
-    return day.strftime("%d/%m/%Y")
-
-
-def site_to_date(last_day: date) -> str:
-    """The value for the To box. The site leaves out tenders closing on the To
-    date itself, so covering a last day means sending the day after it."""
-    return site_date(last_day + timedelta(days=1))

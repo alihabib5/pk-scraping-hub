@@ -40,10 +40,10 @@ class Settings(BaseSettings):
     ppra_local_mirror: bool = True
 
     # PPRA Punjab e-procurement
-    # Target URL: https://eproc.punjab.gov.pk/Admin_Tender_Search.aspx
+    # Target URL: https://eproc.punjab.gov.pk/ActiveTenders.aspx
     punjab_base_url: str = "https://eproc.punjab.gov.pk"
-    punjab_search_path: str = "/Admin_Tender_Search.aspx"
-    # Slower than PPRA: each page is about 1 MB and the server is old.
+    punjab_search_path: str = "/ActiveTenders.aspx"
+    # Slower than PPRA: the server is old.
     punjab_delay_min_ms: int = 1500
     punjab_delay_max_ms: int = 3000
     punjab_local_mirror: bool = True

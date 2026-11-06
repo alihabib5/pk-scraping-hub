@@ -1,9 +1,11 @@
 """FastAPI router for the Punjab scraper. The routes match `/ppra`, so the
 console's shared calls work for both portals."""
 
+from datetime import datetime
 from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Response
+from pydantic import ValidationError
 from sqlalchemy import or_, select
 from sqlalchemy.orm import Session
 
@@ -13,7 +15,7 @@ from app.scrapers.punjab import filters as punjab_filters
 from app.scrapers.punjab import repository
 from app.scrapers.punjab.models import PunjabBid
 from app.scrapers.punjab.schemas import PunjabFilters, PunjabOptions, PunjabScrapeRequest
-from app.scrapers.punjab.scraper import execute_run, refresh_lists
+from app.scrapers.punjab.scraper import execute_run
 
 router = APIRouter(prefix="/punjab", tags=["punjab"])
 
@@ -60,6 +62,12 @@ def _launch(
 def start_scrape(request: PunjabScrapeRequest) -> dict[str, Any]:
     """Start a Punjab scrape run."""
     filters = request.filters
+    if filters.closing_to and filters.closing_to < datetime.now(punjab_filters.PKT).date():
+        raise HTTPException(
+            status_code=422,
+            detail="Closing Date To is in the past. The Active Tenders page lists only open "
+            "tenders, so choose a later date or leave the dates blank.",
+        )
     labels = [label for _, label in punjab_filters.filter_labels(filters.model_dump(mode="json"))]
     search = ", ".join(labels) or "all live tenders"
     run = _launch(filters, request.options, search, request.live_preview)
@@ -72,8 +80,15 @@ def refresh_scrape(run_id: str) -> dict[str, Any]:
     parent_run = run_manager.get_run(run_id)
     if not parent_run or parent_run.get("scraper") != "punjab":
         raise HTTPException(status_code=404, detail=f"Punjab run {run_id} not found")
+    try:
+        filters = PunjabFilters(**parent_run.get("filters", {}))
+    except ValidationError as exc:
+        raise HTTPException(
+            status_code=422,
+            detail="This run used a filter the Active Tenders page doesn't support. Start a new run instead.",
+        ) from exc
     run = _launch(
-        PunjabFilters(**parent_run.get("filters", {})),
+        filters,
         PunjabOptions(**parent_run.get("options", {})),
         f"Refresh of {run_id}",
         parent_run.get("live_preview", False),
@@ -97,18 +112,8 @@ def list_runs() -> dict[str, Any]:
 
 @router.get("/filters")
 def get_filters(response: Response) -> dict[str, Any]:
-    """Every dropdown on the search form, plus when the lists were last read."""
+    """The option lists behind the console's dropdowns."""
     response.headers["Cache-Control"] = "private, max-age=60"
-    return punjab_filters.get_filter_options()
-
-
-@router.post("/filters/refresh")
-def refresh_filters() -> dict[str, Any]:
-    """Re-read the dropdowns from the live site now."""
-    try:
-        refresh_lists()
-    except Exception as exc:  # noqa: BLE001 — report the cause instead of a bare 500
-        raise HTTPException(status_code=502, detail=f"Could not read the Punjab site: {exc}") from exc
     return punjab_filters.get_filter_options()
 
 

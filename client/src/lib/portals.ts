@@ -28,7 +28,7 @@ export const PORTALS: PortalMeta[] = [
     label: "PPRA Punjab",
     tagline: "Punjab e-Procurement live tenders",
     description:
-      "Collect live tenders from the Punjab e-Procurement portal, filter by type, category, department and closing date, leave out auctions, and export every match with its notice and bidding document links into structured Excel workbooks.",
+      "Collect live tenders from the Punjab e-Procurement portal, filter by type, title, department and closing date, leave out auctions, and export every match with its notice and bidding document links into structured Excel workbooks.",
     accent: {
       tile: "bg-sky-50 text-sky-800 ring-sky-200",
       dot: "bg-sky-500",
