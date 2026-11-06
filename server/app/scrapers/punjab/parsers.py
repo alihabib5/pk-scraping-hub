@@ -1,4 +1,4 @@
-"""Pure HTML parsing for the Punjab e-procurement search page.
+"""Pure HTML parsing for the Punjab Active Tenders page.
 
 Everything read here comes from a remote site and is treated as untrusted: links
 are only kept when they match the site's known PDF paths, and a page whose table
@@ -16,14 +16,6 @@ from bs4 import BeautifulSoup
 
 ELEMENT_PREFIX = "ctl00_ContentPlaceHolderSRIS_"
 
-# The form's dropdowns: option kind -> element id suffix.
-SELECTS = {
-    "procurement_type": "ddlProcurementType",
-    "procurement_category": "ddlProcurementCategory",
-    "procurement_title": "ddlProcurementTitle",
-    "department": "ddlDepartment",
-}
-
 EXPECTED_COLUMNS = (
     "Procurement Title", "Procurement Name", "Type", "Publish Date", "Close Date",
     "Department", "Status", "Tender Notice", "Bidding Document",
@@ -36,6 +28,9 @@ _PDF_LINK = re.compile(r"(?:Tenders|BiddingDocuments)/\d+/\d+/\d{28,}\.pdf")
 _PDF_NAME = re.compile(r"/(\d{28,})\.pdf$")
 # A PDF name is ddMMyyyyHHmmss (14) + 8 random digits, then the tender id.
 _ID_OFFSET = 22
+
+# Link text the site appends to the name of a tender that has a detail page.
+_DETAIL_LINK = re.compile(r"\s*\(\s*View Tender Detail\s*\)\s*$", re.IGNORECASE)
 
 _PAGER = re.compile(r"([\d,]+)\s+items?\s+in\s+([\d,]+)\s+pages?", re.IGNORECASE)
 
@@ -52,8 +47,9 @@ class PageInfo(NamedTuple):
 
 
 def clean_text(value: str | None) -> str:
-    """Collapse runs of whitespace, including the site's non-breaking spaces."""
-    return " ".join((value or "").split())
+    """Collapse runs of whitespace, including the site's non-breaking spaces. NUL goes
+    too: PostgreSQL refuses it, and one such value would lose a whole page of tenders."""
+    return " ".join((value or "").replace("\x00", "").split())
 
 
 def to_iso_date(value: str | None) -> str | None:
@@ -141,6 +137,7 @@ def parse_listing(html: str, base_url: str) -> list[dict[str, Any]]:
         if len(cells) != len(EXPECTED_COLUMNS):
             raise SiteChanged(f"a result row has {len(cells)} cells")
         text = [clean_text(cell.get_text(" ")) for cell in cells]
+        text[1] = _DETAIL_LINK.sub("", text[1])
         hrefs = [(cell.find("a", href=True) or {}).get("href") for cell in cells[7:9]]
         notice_url, document_url = (safe_pdf_url(href, base_url) for href in hrefs)
         rejected = sum(1 for href, url in zip(hrefs, (notice_url, document_url)) if href and not url)
@@ -166,23 +163,3 @@ def parse_listing(html: str, base_url: str) -> list[dict[str, Any]]:
         record["content_hash"] = compute_content_hash(record)
         records.append(record)
     return records
-
-
-def parse_options(html: str) -> dict[str, list[dict[str, str]]]:
-    """Every dropdown as {kind: [{value, label}]}. Leaves out "All" (value 0) and
-    labels with no letters in them, such as the site's stray "." department."""
-    soup = BeautifulSoup(html, "html.parser")
-    options: dict[str, list[dict[str, str]]] = {}
-    for kind, suffix in SELECTS.items():
-        select = soup.find("select", id=ELEMENT_PREFIX + suffix)
-        if select is None:
-            continue
-        entries = []
-        for option in select.find_all("option"):
-            value = (option.get("value") or "").strip()
-            label = clean_text(option.get_text(" "))
-            if value and value != "0" and any(ch.isalpha() for ch in label):
-                entries.append({"value": value, "label": label})
-        if entries:
-            options[kind] = entries
-    return options

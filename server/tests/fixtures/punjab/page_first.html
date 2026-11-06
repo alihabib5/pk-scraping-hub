@@ -1,13 +1,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml"><head><title>
-	PPRA SERVICES PORTAL  :: Search
+	PPRA SERVICES PORTAL :: Active Procurement
 </title>
 </head>
 <body>
-<form action="./Admin_Tender_Search.aspx" id="aspnetForm" method="post" name="aspnetForm">
+<form action="./ActiveTenders.aspx" id="aspnetForm" method="post" name="aspnetForm">
 <div>
-<input id="__EVENTTARGET" name="__EVENTTARGET" type="hidden" value=""/>
-<input id="__EVENTARGUMENT" name="__EVENTARGUMENT" type="hidden" value=""/>
-<input id="__VIEWSTATE" name="__VIEWSTATE" type="hidden" value=""/>
+
+
+
 </div>
 
 
@@ -27,23 +27,16 @@
 
 
 
-
-
-
-
-
-
-
 <div>
-<input id="__VIEWSTATEGENERATOR" name="__VIEWSTATEGENERATOR" type="hidden" value=""/>
-<input id="__SCROLLPOSITIONX" name="__SCROLLPOSITIONX" type="hidden" value=""/>
-<input id="__SCROLLPOSITIONY" name="__SCROLLPOSITIONY" type="hidden" value=""/>
-<input id="__EVENTVALIDATION" name="__EVENTVALIDATION" type="hidden" value=""/>
+
+
+
+
 </div>
 
 <div class="page">
 <div class="header">
-<a href="https://ppra.punjab.gov.pk" target="_blank"></a>
+<a href="https://ppra.punjab.gov.pk" target="_blank"><img src="images/logo.png"/></a>
 </div>
 <nav class="navbar navbar-default">
 <div class="container navcontainer">
@@ -68,5115 +61,80 @@
 </nav>
 <div class="main">
 <div class="BackgroundFormmain">
+<div id="ctl00_ContentPlaceHolderSRIS_RadWindowManager1" style="display:none;">
+<!-- 2009.2.701.20 --><div id="ctl00_ContentPlaceHolderSRIS_RadWindowManager1_alerttemplate" style="display:none;">
+<div class="rwDialogPopup radalert">
+<div class="rwDialogText">
+			{1}				
+			</div>
+<div>
+<a class="rwPopupButton" href="javascript:void(0);" onclick="$find('{0}').close();">
+<span class="rwOuterSpan">
+<span class="rwInnerSpan">##LOC[OK]##</span>
+</span>
+</a>
+</div>
+</div>
+</div><div id="ctl00_ContentPlaceHolderSRIS_RadWindowManager1_prompttemplate" style="display:none;">
+<div class="rwDialogPopup radprompt">
+<div class="rwDialogText">
+			    {1}				
+			    </div>
+<div>
+
+<input class="rwDialogInput" onkeydown="return RadWindowprompt_detectenter('{0}', event, this);" type="text" value="{2}"/>
+</div>
+<div>
+<a class="rwPopupButton" href="javascript:void(0);" onclick="$find('{0}').close(this.parentNode.parentNode.getElementsByTagName('input')[0].value);"><span class="rwOuterSpan"><span class="rwInnerSpan">##LOC[OK]##</span></span></a>
+<a class="rwPopupButton" href="javascript:void(0);" onclick="$find('{0}').close(null);"><span class="rwOuterSpan"><span class="rwInnerSpan">##LOC[Cancel]##</span></span></a>
+</div>
+</div>
+</div><div id="ctl00_ContentPlaceHolderSRIS_RadWindowManager1_confirmtemplate" style="display:none;">
+<div class="rwDialogPopup radconfirm">
+<div class="rwDialogText">
+			{1}				
+			</div>
+<div>
+<a class="rwPopupButton" href="javascript:void(0);" onclick="$find('{0}').close(true);"><span class="rwOuterSpan"><span class="rwInnerSpan">##LOC[OK]##</span></span></a>
+<a class="rwPopupButton" href="javascript:void(0);" onclick="$find('{0}').close(false);"><span class="rwOuterSpan"><span class="rwInnerSpan">##LOC[Cancel]##</span></span></a>
+</div>
+</div>
+</div>
+</div>
 
 
-
-<table border="0" cellpadding="0" cellspacing="0" style="width: 100%">
+<table cellpadding="0" cellspacing="0" width="100%">
 <tbody><tr>
 <td>
-<div aria-hidden="true" id="ctl00_ContentPlaceHolderSRIS_ModalUpdateProgress1" role="status" style="display: none; position: absolute; z-index: 1000001;">
-<div class="modalPopup">
-<br/>
-<br/>
-
-</div>
-</div>
-<div id="ctl00_ContentPlaceHolderSRIS_UpdatePanel1">
-<table style="width: 100%;">
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tbody><tr>
-<td align="right" class="MainText">
-</td>
-<td align="left">
-</td>
-<td align="left">
-                                                                                         </td>
-<td align="left">
-</td>
+<td align="center">
+<div style="text-align: center; width: 100%">
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+<tbody><tr>
+<td>
+                 </td>
 </tr>
 <tr>
-<td align="left" class="MainTextBB" colspan="4">
-                                                                                        Search</td>
-</tr>
-<tr>
-<td align="left" class="MainTextB" colspan="2">
-<span class="ErrorMessage" id="ctl00_ContentPlaceHolderSRIS_lblError" style="display:inline-block;font-weight:normal;width:100%;"></span>
-</td>
-<td align="left" class="MainTextB">
-                                                                                         </td>
-<td align="left" class="MainTextB">
-                                                                                         </td>
-</tr>
-<tr>
-<td align="right" class="MainText">
-                                                                                       Procurement Type:</td>
-<td align="left">
-<select class="dropDown" id="ctl00_ContentPlaceHolderSRIS_ddlProcurementType" name="ctl00$ContentPlaceHolderSRIS$ddlProcurementType">
-<option selected="selected" value="0">--- All ---</option>
-<option value="1">Work</option>
-<option value="2">Services</option>
-<option value="3">Goods</option>
-</select>
-</td>
-<td align="right" class="MainText">
-                                                                                       Procurement Category:</td>
-<td align="left">
-<select class="dropDown" id="ctl00_ContentPlaceHolderSRIS_ddlProcurementCategory" name="ctl00$ContentPlaceHolderSRIS$ddlProcurementCategory">
-<option selected="selected" value="0">--- All ---</option>
-<option value="1">Local</option>
-<option value="2">International</option>
-</select>
-</td>
-</tr>
-<tr>
-<td align="right" class="MainText">
-                                                                                         </td>
-<td align="left">
-                                                                                         </td>
-<td align="right" class="MainText">
-                                                                                         </td>
-<td align="left">
-                                                                                         </td>
-</tr>
-<tr>
-<td align="right" class="MainText">
-                                                                                       Procurement Title:</td>
-<td align="left">
-<select class="dropDown" id="ctl00_ContentPlaceHolderSRIS_ddlProcurementTitle" name="ctl00$ContentPlaceHolderSRIS$ddlProcurementTitle">
-<option selected="selected" value="0">--- All ---</option>
-<option value="3">Tender Notice</option>
-<option value="1">Expression of Interest</option>
-<option value="2">Request for Proposal</option>
-<option value="8">Addendum</option>
-<option value="9">Corrigendum</option>
-<option value="7">Quotations</option>
-<option value="4">Prequalification Notice</option>
-<option value="5">Sales/Auction/Disposal</option>
-<option value="6">Others</option>
-</select>
-</td>
-<td align="right" class="MainText">
-                                                                                         </td>
-<td align="left">
-</td>
-</tr>
-<tr>
-<td align="right" class="MainText">
-                                                                                         </td>
-<td align="left">
-                                                                                         </td>
-<td align="right" class="MainText">
-                                                                                         </td>
-<td align="left">
-                                                                                         </td>
-</tr>
-<tr>
-<td align="right" class="MainText">
-                                                                                        Department:</td>
-<td align="left" colspan="3">
-<select class="dropDown1" id="ctl00_ContentPlaceHolderSRIS_ddlDepartment" name="ctl00$ContentPlaceHolderSRIS$ddlDepartment">
-<option selected="selected" value="0">--- All ---</option>
-<option value="4585">.</option>
-<option value="2004">20-Bedded Hospital Ghaziabad, Lahore.</option>
-<option value="2240">50 Bedded THQ Level Hospital, Chowk Sarwar SHaheed, Muzaffargarh</option>
-<option value="4285">60-Bedded Hospital Khurrianwala, District Faisalabad</option>
-<option value="1044">Abdus Salam School of Mathematical Sciences, GC University, Lahore</option>
-<option value="2871">Accelerated Action Plan (AAP) (Agriculture Sector)</option>
-<option value="561">Accountant General, Punjab</option>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-</select>
-</td>
-</tr>
-<tr>
-<td align="right" class="MainText">
-                                                                                         </td>
-<td align="left">
-                                                                                         </td>
-<td align="right" class="MainText">
-                                                                                         </td>
-<td align="left">
-                                                                                         </td>
-</tr>
-<tr>
-<td align="left" class="MainTextBB" colspan="2">
-                                                                                        Tender/RFP Opening Date</td>
-<td align="right" class="MainText">
-                                                                                         </td>
-<td align="left">
-                                                                                         </td>
-</tr>
-<tr>
-<td align="right" class="MainText">
-                                                                                       From Date:</td>
-<td align="left">
-<input class="textBox" id="ctl00_ContentPlaceHolderSRIS_txtFromDate" name="ctl00$ContentPlaceHolderSRIS$txtFromDate" readonly="True" style="width:130px;" type="text" value="05/11/2026"/>
-<input id="ctl00_ContentPlaceHolderSRIS_ImgCalendertxtFromDate" name="ctl00$ContentPlaceHolderSRIS$ImgCalendertxtFromDate" onclick='javascript:WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions("ctl00$ContentPlaceHolderSRIS$ImgCalendertxtFromDate", "", true, "", "", false, false))' src="images/Calendar_scheduleHS.png" style="border-width:0px;" type="image"/>
-</td>
-<td align="right" class="MainText">
-                                                                                       To Date:</td>
-<td align="left">
-<input class="textBox" id="ctl00_ContentPlaceHolderSRIS_txtToDate" name="ctl00$ContentPlaceHolderSRIS$txtToDate" readonly="True" style="width:130px;" type="text" value="31/12/2027"/>
-<input id="ctl00_ContentPlaceHolderSRIS_ImgCalendertxtToDate" name="ctl00$ContentPlaceHolderSRIS$ImgCalendertxtToDate" onclick='javascript:WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions("ctl00$ContentPlaceHolderSRIS$ImgCalendertxtToDate", "", true, "", "", false, false))' src="images/Calendar_scheduleHS.png" style="border-width:0px;" type="image"/>
-</td>
-</tr>
-<tr>
-<td align="right" class="MainText">
-                                                                                         </td>
-<td align="left">
-                                                                                         </td>
-<td align="right" class="MainText">
-                                                                                         </td>
-<td align="left">
-                                                                                         </td>
-</tr>
-<tr>
-<td align="center" colspan="4" style="height: 30px; ">
-<input class="Click" id="ctl00_ContentPlaceHolderSRIS_btnSubmit" name="ctl00$ContentPlaceHolderSRIS$btnSubmit" onclick='javascript:WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions("ctl00$ContentPlaceHolderSRIS$btnSubmit", "", true, "", "", false, false))' style="height:29px;width:113px;" type="submit" value="Search"/> 
-                                    <input class="Click" id="ctl00_ContentPlaceHolderSRIS_btnReset" name="ctl00$ContentPlaceHolderSRIS$btnReset" style="height:29px;width:65px;" type="submit" value="Reset"/>
-                                                                                          
-                                    <input id="ctl00_ContentPlaceHolderSRIS_hidRecordStatus" name="ctl00$ContentPlaceHolderSRIS$hidRecordStatus" type="hidden" value=""/></td>
-</tr>
-<tr>
-<td align="right" class="MainText">
-                                                                                         </td>
-<td align="left" colspan="3" style="height: 30px; ">
-                                                                                         </td>
-</tr>
-</tbody></table>
-</div>
-<div class="modalProgressGreyBackground" style="display: none; position: absolute; z-index: 100000;"></div></td>
+<td align="left" class="style111">
+<a href="https://ppra.punjab.gov.pk" style="color:#F28300">Home</a> | 
+               <a href="https://ppra.punjab.gov.pk/public_procurement" style="color:#F28300">Public Procurement</a> </td>
 </tr>
 <tr>
 <td>
-<div class="RadGrid RadGrid_Default" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender" style="width:100%;" tabindex="0">
-<!-- 2009.2.701.20 --><table border="0" cellspacing="0" class="rgMasterTable" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00" style="width:100%;table-layout:auto;empty-cells:show;">
+                 </td>
+</tr>
+<tr>
+<td align="left" class="MainTextB" style="height: 30px">
+                            Active Procurement</td>
+</tr>
+<tr>
+<td style="text-align: left">
+                                             
+                                           
+                                                              
+                                            <div class="RadGrid RadGrid_Default" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender" style="width:100%;" tabindex="0">
+<table border="0" cellspacing="0" class="rgMasterTable" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00" style="width:100%;table-layout:auto;empty-cells:show;">
 <colgroup>
 <col width="110px"/>
 <col width="340px"/>
@@ -5192,332 +150,632 @@
 <tr>
 <th class="rgHeader" scope="col" style="text-align:left;"><a href="javascript:__doPostBack('ctl00$ContentPlaceHolderSRIS$rdgrdManageTender$ctl00$ctl02$ctl01$ctl01','')" title="Click here to sort">Procurement Title</a></th><th class="rgHeader" scope="col" style="text-align:left;"><a href="javascript:__doPostBack('ctl00$ContentPlaceHolderSRIS$rdgrdManageTender$ctl00$ctl02$ctl01$ctl02','')" title="Click here to sort">Procurement Name</a></th><th class="rgHeader" scope="col" style="text-align:left;"><a href="javascript:__doPostBack('ctl00$ContentPlaceHolderSRIS$rdgrdManageTender$ctl00$ctl02$ctl01$ctl04','')" title="Click here to sort">Type</a></th><th class="rgHeader" scope="col" style="text-align:left;"><a href="javascript:__doPostBack('ctl00$ContentPlaceHolderSRIS$rdgrdManageTender$ctl00$ctl02$ctl01$ctl05','')" title="Click here to sort">Publish Date</a></th><th class="rgHeader" scope="col" style="text-align:left;"><a href="javascript:__doPostBack('ctl00$ContentPlaceHolderSRIS$rdgrdManageTender$ctl00$ctl02$ctl01$ctl06','')" title="Click here to sort">Close Date</a></th><th class="rgHeader" scope="col" style="text-align:left;"><a href="javascript:__doPostBack('ctl00$ContentPlaceHolderSRIS$rdgrdManageTender$ctl00$ctl02$ctl01$ctl08','')" title="Click here to sort">Department</a></th><th class="rgHeader" scope="col" style="text-align:left;"><a href="javascript:__doPostBack('ctl00$ContentPlaceHolderSRIS$rdgrdManageTender$ctl00$ctl02$ctl01$ctl09','')" title="Click here to sort">Status</a></th><th class="rgHeader" scope="col" style="text-align:center;">Tender Notice</th><th class="rgHeader" scope="col" style="text-align:center;">Bidding Document</th>
 </tr><tr class="rgFilterRow">
-<td style="white-space:nowrap;"><input class="rgFilterBox" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl02_ctl02_FilterTextBox_Tender_Title" name="ctl00$ContentPlaceHolderSRIS$rdgrdManageTender$ctl00$ctl02$ctl02$FilterTextBox_Tender_Title" onchange='setTimeout(function(){$find("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00").filter("Tender_Title", $get("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl02_ctl02_FilterTextBox_Tender_Title").value);}, 0);' onkeydown='if(event.keyCode == 13 || event.keyCode == 20){ event.cancelBubble = true; event.returnValue = false; if (event.stopPropagation){ event.stopPropagation(); event.preventDefault();} setTimeout(function(){$find("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00").filter("Tender_Title", $get("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl02_ctl02_FilterTextBox_Tender_Title").value);}, 0); }' size="10" type="text"/><input class="rgFilter" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl02_ctl02_Filter_Tender_Title" name="ctl00$ContentPlaceHolderSRIS$rdgrdManageTender$ctl00$ctl02$ctl02$Filter_Tender_Title" onclick='$find("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender")._showFilterMenu("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00", "Tender_Title", event); return false;WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions("ctl00$ContentPlaceHolderSRIS$rdgrdManageTender$ctl00$ctl02$ctl02$Filter_Tender_Title", "", true, "", "", false, false))' title="Filter" type="submit" value=" "/></td><td style="white-space:nowrap;"><input class="rgFilterBox" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl02_ctl02_FilterTextBox_Tender_Name" name="ctl00$ContentPlaceHolderSRIS$rdgrdManageTender$ctl00$ctl02$ctl02$FilterTextBox_Tender_Name" onchange='setTimeout(function(){$find("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00").filter("Tender_Name", $get("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl02_ctl02_FilterTextBox_Tender_Name").value);}, 0);' onkeydown='if(event.keyCode == 13 || event.keyCode == 20){ event.cancelBubble = true; event.returnValue = false; if (event.stopPropagation){ event.stopPropagation(); event.preventDefault();} setTimeout(function(){$find("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00").filter("Tender_Name", $get("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl02_ctl02_FilterTextBox_Tender_Name").value);}, 0); }' size="10" type="text"/><input class="rgFilter" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl02_ctl02_Filter_Tender_Name" name="ctl00$ContentPlaceHolderSRIS$rdgrdManageTender$ctl00$ctl02$ctl02$Filter_Tender_Name" onclick='$find("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender")._showFilterMenu("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00", "Tender_Name", event); return false;WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions("ctl00$ContentPlaceHolderSRIS$rdgrdManageTender$ctl00$ctl02$ctl02$Filter_Tender_Name", "", true, "", "", false, false))' title="Filter" type="submit" value=" "/></td><td style="white-space:nowrap;"><input class="rgFilterBox" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl02_ctl02_FilterTextBox_Tender_Type" name="ctl00$ContentPlaceHolderSRIS$rdgrdManageTender$ctl00$ctl02$ctl02$FilterTextBox_Tender_Type" onchange='setTimeout(function(){$find("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00").filter("Tender_Type", $get("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl02_ctl02_FilterTextBox_Tender_Type").value);}, 0);' onkeydown='if(event.keyCode == 13 || event.keyCode == 20){ event.cancelBubble = true; event.returnValue = false; if (event.stopPropagation){ event.stopPropagation(); event.preventDefault();} setTimeout(function(){$find("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00").filter("Tender_Type", $get("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl02_ctl02_FilterTextBox_Tender_Type").value);}, 0); }' size="10" type="text"/><input class="rgFilter" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl02_ctl02_Filter_Tender_Type" name="ctl00$ContentPlaceHolderSRIS$rdgrdManageTender$ctl00$ctl02$ctl02$Filter_Tender_Type" onclick='$find("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender")._showFilterMenu("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00", "Tender_Type", event); return false;WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions("ctl00$ContentPlaceHolderSRIS$rdgrdManageTender$ctl00$ctl02$ctl02$Filter_Tender_Type", "", true, "", "", false, false))' title="Filter" type="submit" value=" "/></td><td style="white-space:nowrap;"><input class="rgFilterBox" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl02_ctl02_FilterTextBox_Publish_Date" name="ctl00$ContentPlaceHolderSRIS$rdgrdManageTender$ctl00$ctl02$ctl02$FilterTextBox_Publish_Date" onchange='setTimeout(function(){$find("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00").filter("Publish_Date", $get("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl02_ctl02_FilterTextBox_Publish_Date").value);}, 0);' onkeydown='if(event.keyCode == 13 || event.keyCode == 20){ event.cancelBubble = true; event.returnValue = false; if (event.stopPropagation){ event.stopPropagation(); event.preventDefault();} setTimeout(function(){$find("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00").filter("Publish_Date", $get("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl02_ctl02_FilterTextBox_Publish_Date").value);}, 0); }' size="10" type="text"/><input class="rgFilter" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl02_ctl02_Filter_Publish_Date" name="ctl00$ContentPlaceHolderSRIS$rdgrdManageTender$ctl00$ctl02$ctl02$Filter_Publish_Date" onclick='$find("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender")._showFilterMenu("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00", "Publish_Date", event); return false;WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions("ctl00$ContentPlaceHolderSRIS$rdgrdManageTender$ctl00$ctl02$ctl02$Filter_Publish_Date", "", true, "", "", false, false))' title="Filter" type="submit" value=" "/></td><td style="white-space:nowrap;"><input class="rgFilterBox" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl02_ctl02_FilterTextBox_Close_Date" name="ctl00$ContentPlaceHolderSRIS$rdgrdManageTender$ctl00$ctl02$ctl02$FilterTextBox_Close_Date" onchange='setTimeout(function(){$find("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00").filter("Close_Date", $get("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl02_ctl02_FilterTextBox_Close_Date").value);}, 0);' onkeydown='if(event.keyCode == 13 || event.keyCode == 20){ event.cancelBubble = true; event.returnValue = false; if (event.stopPropagation){ event.stopPropagation(); event.preventDefault();} setTimeout(function(){$find("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00").filter("Close_Date", $get("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl02_ctl02_FilterTextBox_Close_Date").value);}, 0); }' size="10" type="text"/><input class="rgFilter" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl02_ctl02_Filter_Close_Date" name="ctl00$ContentPlaceHolderSRIS$rdgrdManageTender$ctl00$ctl02$ctl02$Filter_Close_Date" onclick='$find("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender")._showFilterMenu("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00", "Close_Date", event); return false;WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions("ctl00$ContentPlaceHolderSRIS$rdgrdManageTender$ctl00$ctl02$ctl02$Filter_Close_Date", "", true, "", "", false, false))' title="Filter" type="submit" value=" "/></td><td style="white-space:nowrap;"><input class="rgFilterBox" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl02_ctl02_FilterTextBox_Deptt_Name" name="ctl00$ContentPlaceHolderSRIS$rdgrdManageTender$ctl00$ctl02$ctl02$FilterTextBox_Deptt_Name" onchange='setTimeout(function(){$find("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00").filter("Deptt_Name", $get("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl02_ctl02_FilterTextBox_Deptt_Name").value);}, 0);' onkeydown='if(event.keyCode == 13 || event.keyCode == 20){ event.cancelBubble = true; event.returnValue = false; if (event.stopPropagation){ event.stopPropagation(); event.preventDefault();} setTimeout(function(){$find("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00").filter("Deptt_Name", $get("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl02_ctl02_FilterTextBox_Deptt_Name").value);}, 0); }' size="10" type="text"/><input class="rgFilter" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl02_ctl02_Filter_Deptt_Name" name="ctl00$ContentPlaceHolderSRIS$rdgrdManageTender$ctl00$ctl02$ctl02$Filter_Deptt_Name" onclick='$find("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender")._showFilterMenu("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00", "Deptt_Name", event); return false;WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions("ctl00$ContentPlaceHolderSRIS$rdgrdManageTender$ctl00$ctl02$ctl02$Filter_Deptt_Name", "", true, "", "", false, false))' title="Filter" type="submit" value=" "/></td><td style="white-space:nowrap;"><input class="rgFilterBox" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl02_ctl02_FilterTextBox_Tender_Approval_Status" name="ctl00$ContentPlaceHolderSRIS$rdgrdManageTender$ctl00$ctl02$ctl02$FilterTextBox_Tender_Approval_Status" onchange='setTimeout(function(){$find("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00").filter("Tender_Approval_Status", $get("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl02_ctl02_FilterTextBox_Tender_Approval_Status").value);}, 0);' onkeydown='if(event.keyCode == 13 || event.keyCode == 20){ event.cancelBubble = true; event.returnValue = false; if (event.stopPropagation){ event.stopPropagation(); event.preventDefault();} setTimeout(function(){$find("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00").filter("Tender_Approval_Status", $get("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl02_ctl02_FilterTextBox_Tender_Approval_Status").value);}, 0); }' size="10" type="text"/><input class="rgFilter" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl02_ctl02_Filter_Tender_Approval_Status" name="ctl00$ContentPlaceHolderSRIS$rdgrdManageTender$ctl00$ctl02$ctl02$Filter_Tender_Approval_Status" onclick='$find("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender")._showFilterMenu("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00", "Tender_Approval_Status", event); return false;WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions("ctl00$ContentPlaceHolderSRIS$rdgrdManageTender$ctl00$ctl02$ctl02$Filter_Tender_Approval_Status", "", true, "", "", false, false))' title="Filter" type="submit" value=" "/></td><td> </td><td> </td>
+<td style="white-space:nowrap;"><input class="rgFilterBox" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl02_ctl02_FilterTextBox_Tender_Title" name="ctl00$ContentPlaceHolderSRIS$rdgrdManageTender$ctl00$ctl02$ctl02$FilterTextBox_Tender_Title" onchange='setTimeout(function(){$find("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00").filter("Tender_Title", $get("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl02_ctl02_FilterTextBox_Tender_Title").value);}, 0);' onkeydown='if(event.keyCode == 13 || event.keyCode == 20){ event.cancelBubble = true; event.returnValue = false; if (event.stopPropagation){ event.stopPropagation(); event.preventDefault();} setTimeout(function(){$find("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00").filter("Tender_Title", $get("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl02_ctl02_FilterTextBox_Tender_Title").value);}, 0); }' size="10" type="text"/><input class="rgFilter" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl02_ctl02_Filter_Tender_Title" name="ctl00$ContentPlaceHolderSRIS$rdgrdManageTender$ctl00$ctl02$ctl02$Filter_Tender_Title" onclick='$find("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender")._showFilterMenu("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00", "Tender_Title", event); return false;' title="Filter" type="submit" value=" "/></td><td style="white-space:nowrap;"><input class="rgFilterBox" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl02_ctl02_FilterTextBox_ProcurementNameDetails" name="ctl00$ContentPlaceHolderSRIS$rdgrdManageTender$ctl00$ctl02$ctl02$FilterTextBox_ProcurementNameDetails" onchange='setTimeout(function(){$find("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00").filter("ProcurementNameDetails", $get("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl02_ctl02_FilterTextBox_ProcurementNameDetails").value);}, 0);' onkeydown='if(event.keyCode == 13 || event.keyCode == 20){ event.cancelBubble = true; event.returnValue = false; if (event.stopPropagation){ event.stopPropagation(); event.preventDefault();} setTimeout(function(){$find("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00").filter("ProcurementNameDetails", $get("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl02_ctl02_FilterTextBox_ProcurementNameDetails").value);}, 0); }' size="10" type="text"/><input class="rgFilter" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl02_ctl02_Filter_ProcurementNameDetails" name="ctl00$ContentPlaceHolderSRIS$rdgrdManageTender$ctl00$ctl02$ctl02$Filter_ProcurementNameDetails" onclick='$find("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender")._showFilterMenu("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00", "ProcurementNameDetails", event); return false;' title="Filter" type="submit" value=" "/></td><td style="white-space:nowrap;"><input class="rgFilterBox" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl02_ctl02_FilterTextBox_Tender_Type" name="ctl00$ContentPlaceHolderSRIS$rdgrdManageTender$ctl00$ctl02$ctl02$FilterTextBox_Tender_Type" onchange='setTimeout(function(){$find("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00").filter("Tender_Type", $get("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl02_ctl02_FilterTextBox_Tender_Type").value);}, 0);' onkeydown='if(event.keyCode == 13 || event.keyCode == 20){ event.cancelBubble = true; event.returnValue = false; if (event.stopPropagation){ event.stopPropagation(); event.preventDefault();} setTimeout(function(){$find("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00").filter("Tender_Type", $get("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl02_ctl02_FilterTextBox_Tender_Type").value);}, 0); }' size="10" type="text"/><input class="rgFilter" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl02_ctl02_Filter_Tender_Type" name="ctl00$ContentPlaceHolderSRIS$rdgrdManageTender$ctl00$ctl02$ctl02$Filter_Tender_Type" onclick='$find("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender")._showFilterMenu("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00", "Tender_Type", event); return false;' title="Filter" type="submit" value=" "/></td><td style="white-space:nowrap;"><input class="rgFilterBox" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl02_ctl02_FilterTextBox_Publish_Date" name="ctl00$ContentPlaceHolderSRIS$rdgrdManageTender$ctl00$ctl02$ctl02$FilterTextBox_Publish_Date" onchange='setTimeout(function(){$find("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00").filter("Publish_Date", $get("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl02_ctl02_FilterTextBox_Publish_Date").value);}, 0);' onkeydown='if(event.keyCode == 13 || event.keyCode == 20){ event.cancelBubble = true; event.returnValue = false; if (event.stopPropagation){ event.stopPropagation(); event.preventDefault();} setTimeout(function(){$find("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00").filter("Publish_Date", $get("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl02_ctl02_FilterTextBox_Publish_Date").value);}, 0); }' size="10" type="text"/><input class="rgFilter" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl02_ctl02_Filter_Publish_Date" name="ctl00$ContentPlaceHolderSRIS$rdgrdManageTender$ctl00$ctl02$ctl02$Filter_Publish_Date" onclick='$find("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender")._showFilterMenu("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00", "Publish_Date", event); return false;' title="Filter" type="submit" value=" "/></td><td style="white-space:nowrap;"><input class="rgFilterBox" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl02_ctl02_FilterTextBox_Close_Date" name="ctl00$ContentPlaceHolderSRIS$rdgrdManageTender$ctl00$ctl02$ctl02$FilterTextBox_Close_Date" onchange='setTimeout(function(){$find("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00").filter("Close_Date", $get("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl02_ctl02_FilterTextBox_Close_Date").value);}, 0);' onkeydown='if(event.keyCode == 13 || event.keyCode == 20){ event.cancelBubble = true; event.returnValue = false; if (event.stopPropagation){ event.stopPropagation(); event.preventDefault();} setTimeout(function(){$find("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00").filter("Close_Date", $get("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl02_ctl02_FilterTextBox_Close_Date").value);}, 0); }' size="10" type="text"/><input class="rgFilter" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl02_ctl02_Filter_Close_Date" name="ctl00$ContentPlaceHolderSRIS$rdgrdManageTender$ctl00$ctl02$ctl02$Filter_Close_Date" onclick='$find("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender")._showFilterMenu("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00", "Close_Date", event); return false;' title="Filter" type="submit" value=" "/></td><td style="white-space:nowrap;"><input class="rgFilterBox" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl02_ctl02_FilterTextBox_Deptt_Name" name="ctl00$ContentPlaceHolderSRIS$rdgrdManageTender$ctl00$ctl02$ctl02$FilterTextBox_Deptt_Name" onchange='setTimeout(function(){$find("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00").filter("Deptt_Name", $get("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl02_ctl02_FilterTextBox_Deptt_Name").value);}, 0);' onkeydown='if(event.keyCode == 13 || event.keyCode == 20){ event.cancelBubble = true; event.returnValue = false; if (event.stopPropagation){ event.stopPropagation(); event.preventDefault();} setTimeout(function(){$find("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00").filter("Deptt_Name", $get("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl02_ctl02_FilterTextBox_Deptt_Name").value);}, 0); }' size="10" type="text"/><input class="rgFilter" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl02_ctl02_Filter_Deptt_Name" name="ctl00$ContentPlaceHolderSRIS$rdgrdManageTender$ctl00$ctl02$ctl02$Filter_Deptt_Name" onclick='$find("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender")._showFilterMenu("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00", "Deptt_Name", event); return false;' title="Filter" type="submit" value=" "/></td><td style="white-space:nowrap;"><input class="rgFilterBox" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl02_ctl02_FilterTextBox_Tender_Vio_Status" name="ctl00$ContentPlaceHolderSRIS$rdgrdManageTender$ctl00$ctl02$ctl02$FilterTextBox_Tender_Vio_Status" onchange='setTimeout(function(){$find("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00").filter("Tender_Vio_Status", $get("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl02_ctl02_FilterTextBox_Tender_Vio_Status").value);}, 0);' onkeydown='if(event.keyCode == 13 || event.keyCode == 20){ event.cancelBubble = true; event.returnValue = false; if (event.stopPropagation){ event.stopPropagation(); event.preventDefault();} setTimeout(function(){$find("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00").filter("Tender_Vio_Status", $get("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl02_ctl02_FilterTextBox_Tender_Vio_Status").value);}, 0); }' size="10" type="text"/><input class="rgFilter" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl02_ctl02_Filter_Tender_Vio_Status" name="ctl00$ContentPlaceHolderSRIS$rdgrdManageTender$ctl00$ctl02$ctl02$Filter_Tender_Vio_Status" onclick='$find("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender")._showFilterMenu("ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00", "Tender_Vio_Status", event); return false;' title="Filter" type="submit" value=" "/></td><td> </td><td> </td>
 </tr>
 </thead><tfoot>
 <tr class="rgPager">
 <td colspan="9"><table border="0" cellspacing="0" style="width:100%;">
 <tbody><tr>
 <td class="rgPagerCell NextPrevAndNumeric"><div class="rgWrap rgArrPart1">
-<input class="rgPageFirst" name="ctl00$ContentPlaceHolderSRIS$rdgrdManageTender$ctl00$ctl03$ctl01$ctl02" onclick='return false;WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions("ctl00$ContentPlaceHolderSRIS$rdgrdManageTender$ctl00$ctl03$ctl01$ctl02", "", true, "", "", false, false))' title="First Page" type="submit" value=" "/> <input class="rgPagePrev" name="ctl00$ContentPlaceHolderSRIS$rdgrdManageTender$ctl00$ctl03$ctl01$ctl03" onclick='return false;WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions("ctl00$ContentPlaceHolderSRIS$rdgrdManageTender$ctl00$ctl03$ctl01$ctl03", "", true, "", "", false, false))' title="Previous Page" type="submit" value=" "/>
+<input class="rgPageFirst" name="ctl00$ContentPlaceHolderSRIS$rdgrdManageTender$ctl00$ctl03$ctl01$ctl02" onclick="return false;" title="First Page" type="submit" value=" "/> <input class="rgPagePrev" name="ctl00$ContentPlaceHolderSRIS$rdgrdManageTender$ctl00$ctl03$ctl01$ctl03" onclick="return false;" title="Previous Page" type="submit" value=" "/>
 </div><div class="rgWrap rgNumPart">
-<a class="rgCurrentPage" href="javascript:__doPostBack('ctl00$ContentPlaceHolderSRIS$rdgrdManageTender$ctl00$ctl03$ctl01$ctl05','')" onclick="return false;"><span>1</span></a><a href="javascript:__doPostBack('ctl00$ContentPlaceHolderSRIS$rdgrdManageTender$ctl00$ctl03$ctl01$ctl07','')"><span>2</span></a><a href="javascript:__doPostBack('ctl00$ContentPlaceHolderSRIS$rdgrdManageTender$ctl00$ctl03$ctl01$ctl09','')"><span>3</span></a><a href="javascript:__doPostBack('ctl00$ContentPlaceHolderSRIS$rdgrdManageTender$ctl00$ctl03$ctl01$ctl11','')"><span>4</span></a><a href="javascript:__doPostBack('ctl00$ContentPlaceHolderSRIS$rdgrdManageTender$ctl00$ctl03$ctl01$ctl13','')"><span>5</span></a><a href="javascript:__doPostBack('ctl00$ContentPlaceHolderSRIS$rdgrdManageTender$ctl00$ctl03$ctl01$ctl15','')"><span>6</span></a><a href="javascript:__doPostBack('ctl00$ContentPlaceHolderSRIS$rdgrdManageTender$ctl00$ctl03$ctl01$ctl17','')"><span>7</span></a><a href="javascript:__doPostBack('ctl00$ContentPlaceHolderSRIS$rdgrdManageTender$ctl00$ctl03$ctl01$ctl19','')"><span>8</span></a><a href="javascript:__doPostBack('ctl00$ContentPlaceHolderSRIS$rdgrdManageTender$ctl00$ctl03$ctl01$ctl21','')"><span>9</span></a><a href="javascript:__doPostBack('ctl00$ContentPlaceHolderSRIS$rdgrdManageTender$ctl00$ctl03$ctl01$ctl23','')"><span>10</span></a><a href="javascript:__doPostBack('ctl00$ContentPlaceHolderSRIS$rdgrdManageTender$ctl00$ctl03$ctl01$ctl25','')" title="Next Pages"><span>...</span></a>
+<a class="rgCurrentPage" href="javascript:__doPostBack('ctl00$ContentPlaceHolderSRIS$rdgrdManageTender$ctl00$ctl03$ctl01$ctl05','')" onclick="return false;"><span>1</span></a><a href="javascript:__doPostBack('ctl00$ContentPlaceHolderSRIS$rdgrdManageTender$ctl00$ctl03$ctl01$ctl07','')"><span>2</span></a><a href="javascript:__doPostBack('ctl00$ContentPlaceHolderSRIS$rdgrdManageTender$ctl00$ctl03$ctl01$ctl09','')"><span>3</span></a><a href="javascript:__doPostBack('ctl00$ContentPlaceHolderSRIS$rdgrdManageTender$ctl00$ctl03$ctl01$ctl11','')"><span>4</span></a><a href="javascript:__doPostBack('ctl00$ContentPlaceHolderSRIS$rdgrdManageTender$ctl00$ctl03$ctl01$ctl13','')"><span>5</span></a><a href="javascript:__doPostBack('ctl00$ContentPlaceHolderSRIS$rdgrdManageTender$ctl00$ctl03$ctl01$ctl15','')"><span>6</span></a><a href="javascript:__doPostBack('ctl00$ContentPlaceHolderSRIS$rdgrdManageTender$ctl00$ctl03$ctl01$ctl17','')"><span>7</span></a><a href="javascript:__doPostBack('ctl00$ContentPlaceHolderSRIS$rdgrdManageTender$ctl00$ctl03$ctl01$ctl19','')"><span>8</span></a><a href="javascript:__doPostBack('ctl00$ContentPlaceHolderSRIS$rdgrdManageTender$ctl00$ctl03$ctl01$ctl21','')"><span>9</span></a>
 </div><div class="rgWrap rgArrPart2">
-<input class="rgPageNext" name="ctl00$ContentPlaceHolderSRIS$rdgrdManageTender$ctl00$ctl03$ctl01$ctl28" title="Next Page" type="submit" value=" "/> <input class="rgPageLast" name="ctl00$ContentPlaceHolderSRIS$rdgrdManageTender$ctl00$ctl03$ctl01$ctl29" title="Last Page" type="submit" value=" "/>
+<input class="rgPageNext" name="ctl00$ContentPlaceHolderSRIS$rdgrdManageTender$ctl00$ctl03$ctl01$ctl24" title="Next Page" type="submit" value=" "/> <input class="rgPageLast" name="ctl00$ContentPlaceHolderSRIS$rdgrdManageTender$ctl00$ctl03$ctl01$ctl25" title="Last Page" type="submit" value=" "/>
 </div><div class="rgWrap rgAdvPart">
-<span class="rgPagerLabel" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl03_ctl01_ChangePageSizeLabel">Page size:</span><div class="RadComboBox RadComboBox_Default" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl03_ctl01_PageSizeComboBox" style="width:46px;display:-moz-inline-stack;display:inline-block;zoom:1;*display:inline;">
+<span class="rgPagerLabel" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl03_ctl01_ChangePageSizeLabel">Page size:</span><div class="RadComboBox RadComboBox_Default" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl03_ctl01_PageSizeComboBox" style="width:52px;display:-moz-inline-stack;display:inline-block;zoom:1;*display:inline;">
 <table border="0" cellpadding="0" cellspacing="0" style="border-width:0;width:100%" summary="combobox">
 <tbody><tr class="rcbReadOnly">
-<td class="rcbInputCell rcbInputCellLeft" style="width:100%;"><input autocomplete="off" class="rcbInput" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl03_ctl01_PageSizeComboBox_Input" name="ctl00$ContentPlaceHolderSRIS$rdgrdManageTender$ctl00$ctl03$ctl01$PageSizeComboBox" readonly="readonly" style="text-decoration:;" type="text" value="50"/></td><td class="rcbArrowCell rcbArrowCellRight"><a id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl03_ctl01_PageSizeComboBox_Arrow" style="overflow: hidden;display: block;position: relative;outline: none;">select</a></td>
+<td class="rcbInputCell rcbInputCellLeft" style="width:100%;"><input autocomplete="off" class="rcbInput" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl03_ctl01_PageSizeComboBox_Input" name="ctl00$ContentPlaceHolderSRIS$rdgrdManageTender$ctl00$ctl03$ctl01$PageSizeComboBox" readonly="readonly" style="text-decoration:;" type="text" value="100"/></td><td class="rcbArrowCell rcbArrowCellRight"><a id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl03_ctl01_PageSizeComboBox_Arrow" style="overflow: hidden;display: block;position: relative;outline: none;">select</a></td>
 </tr>
-</tbody></table><div class="rcbSlide" style="z-index:6000;"><div class="RadComboBoxDropDown RadComboBoxDropDown_Default" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl03_ctl01_PageSizeComboBox_DropDown" style="display:none;"><div class="rcbScroll rcbWidth" style="width:100%;"><ul class="rcbList" style="list-style:none;margin:0;padding:0;zoom:1;"><li class="rcbItem">10</li><li class="rcbItem">20</li><li class="rcbItem">50</li></ul></div></div></div><input autocomplete="off" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl03_ctl01_PageSizeComboBox_ClientState" name="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl03_ctl01_PageSizeComboBox_ClientState" type="hidden" value=""/>
+</tbody></table><div class="rcbSlide" style="z-index:6000;"><div class="RadComboBoxDropDown RadComboBoxDropDown_Default" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl03_ctl01_PageSizeComboBox_DropDown" style="display:none;"><div class="rcbScroll rcbWidth" style="width:100%;"><ul class="rcbList" style="list-style:none;margin:0;padding:0;zoom:1;"><li class="rcbItem">10</li><li class="rcbItem">20</li><li class="rcbItem">50</li><li class="rcbItem">100</li></ul></div></div></div>
 </div>
 </div><div class="rgWrap rgInfoPart">
-						  <strong>944</strong> items in <strong>19</strong> pages
+						  <strong>880</strong> items in <strong>9</strong> pages
 					</div></td>
 </tr>
 </tbody></table></td>
 </tr>
 </tfoot><tbody>
 <tr class="rgRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__0" style="text-align:left;">
-<td align="left">Corrigendum</td><td align="left">HIRING OF INTERNATIONAL CONSULTANT FOR HOSPITAL PLANNING OF NAWAZ SHARIF INSTITUTE OF GENETICS &amp; BLOOD DISEASES AND BONE MARROW TRANSPLANTATION (NAWAZ SHARIF MEDICAL DISTRICT), LAHORE</td><td align="left">Services</td><td align="left">05 Nov 2026</td><td align="left">12 Nov 2026</td><td align="left">Infrastructure Development Authority of the Punjab - IDAP</td><td align="left"> </td><td align="center" class="MyImageButton">
-<a href="Tenders/50485054/4949/0511202610103916431812258713.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl04_lnkILetter" target="_blank"></a>
+<td align="left">Corrigendum</td><td align="left">Development schemes District Council Jhelum (<a href="ActiveTendersDetail.aspx?id=258044" style="font-weight:bold;color:#F28300;" target="_blank">View Tender Detail</a>) </td><td align="left">Work</td><td align="left">06 Nov 2026</td><td align="left">10 Nov 2026</td><td align="left">District Council, Jhelum</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0611202607483422728844258792.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl04_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td><td align="center" class="MyImageButton">
-<a href="BiddingDocuments/50485054/4949/0511202610103938566723258713.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl04_HyperLink1" target="_blank"></a>
+<a href="BiddingDocuments/50485054/4949/0611202607483455378037258792.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl04_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td>
 </tr><tr class="rgAltRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__1">
-<td align="left">Tender Notice</td><td align="left">Procurement of Lab Equipment for Maryam Nawaz Sharif Medical College Mainwali</td><td align="left">Goods</td><td align="left">05 Nov 2026</td><td align="left">20 Nov 2026</td><td align="left">Sargodha Medical College</td><td align="left"> </td><td align="center" class="MyImageButton">
-<a href="Tenders/50485054/4949/0511202603390341678485258677.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl06_lnkILetter" target="_blank"></a>
+<td align="left">Corrigendum</td><td align="left">Hiring of Firm / Workshop for Fleet Maintenance &amp; Repair Services (<a href="ActiveTendersDetail.aspx?id=258067" style="font-weight:bold;color:#F28300;" target="_blank">View Tender Detail</a>) </td><td align="left">Services</td><td align="left">06 Nov 2026</td><td align="left">14 Nov 2026</td><td align="left">Rawalpindi Waste Management Company</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0611202607441615053138258791.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl06_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td><td align="center" class="MyImageButton">
-<a href="BiddingDocuments/50485054/4949/0511202603390374116321258677.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl06_HyperLink1" target="_blank"></a>
+<a href="BiddingDocuments/50485054/4949/0611202607441603854236258791.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl06_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td>
 </tr><tr class="rgRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__2" style="text-align:left;">
-<td align="left">Tender Notice</td><td align="left">Tender Notice</td><td align="left">Work</td><td align="left">05 Nov 2026</td><td align="left">20 Nov 2026</td><td align="left">Municipal Committee, Zafarwal</td><td align="left"> </td><td align="center" class="MyImageButton">
-<a href="Tenders/50485054/4949/0511202604001802134632258678.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl08_lnkILetter" target="_blank"></a>
+<td align="left">Corrigendum</td><td align="left">Procurement Of Supportive Equipment: Multi-mode Microplate Reader For The Testing Of Biologics (<a href="ActiveTendersDetail.aspx?id=258200" style="font-weight:bold;color:#F28300;" target="_blank">View Tender Detail</a>) </td><td align="left">Goods</td><td align="left">06 Nov 2026</td><td align="left">13 Nov 2026</td><td align="left">Punjab Agriculture, Food and Drug Authority</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0611202611505710738520258814.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl08_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td><td align="center" class="MyImageButton">
-<a href="BiddingDocuments/50485054/4949/0511202604001808264085258678.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl08_HyperLink1" target="_blank"></a>
+<a href="BiddingDocuments/50485054/4949/0611202611505762570218258814.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl08_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td>
 </tr><tr class="rgAltRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__3">
-<td align="left">Tender Notice</td><td align="left">Supply / Installation / commissioning of Air Conditioners</td><td align="left">Goods</td><td align="left">05 Nov 2026</td><td align="left">20 Nov 2026</td><td align="left">University of Agriculture Faisalabad</td><td align="left"> </td><td align="center" class="MyImageButton">
-<a href="Tenders/50485054/4949/0511202604102875134384258679.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl10_lnkILetter" target="_blank"></a>
+<td align="left">Tender Notice</td><td align="left">DEVELOPMENT WORK IN AGRICULTURE PRODUCE MARKETS</td><td align="left">Work</td><td align="left">06 Nov 2026</td><td align="left">23 Nov 2026</td><td align="left">Punjab Agriculture Market Regulatory Authority</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0611202612242674386132258761.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl10_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td><td align="center" class="MyImageButton">
-<a href="BiddingDocuments/50485054/4949/0511202604102805400544258679.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl10_HyperLink1" target="_blank"></a>
+<a href="BiddingDocuments/50485054/4949/0611202612242657116163258761.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl10_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td>
 </tr><tr class="rgRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__4" style="text-align:left;">
-<td align="left">Tender Notice</td><td align="left">PROCUREMENT OF  OF LIBRARY BOOKS FOR FJWUCAMPUS-I &amp; II</td><td align="left">Goods</td><td align="left">05 Nov 2026</td><td align="left">23 Nov 2026</td><td align="left">Fatima Jinnah Women University, Rawalpindi</td><td align="left"> </td><td align="center" class="MyImageButton">
-<a href="Tenders/50485054/4949/0511202604304254074220258680.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl12_lnkILetter" target="_blank"></a>
+<td align="left">Tender Notice</td><td align="left">Procurement of Training Material for Electrical Technology</td><td align="left">Goods</td><td align="left">06 Nov 2026</td><td align="left">23 Nov 2026</td><td align="left">Govt. College of Technology Chak Daulat Jhelum</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0611202603462024531656258762.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl12_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td><td align="center" class="MyImageButton">
-<a href="BiddingDocuments/50485054/4949/0511202604304286307271258680.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl12_HyperLink1" target="_blank"></a>
+<a href="BiddingDocuments/50485054/4949/0611202603462085052703258762.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl12_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td>
 </tr><tr class="rgAltRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__5">
-<td align="left">Tender Notice</td><td align="left">Purchase of G.Store items, Drugs and Medicines, Lab Kits Reagents &amp;Surgical Disposable items</td><td align="left">Goods</td><td align="left">05 Nov 2026</td><td align="left">23 Nov 2026</td><td align="left">Pak Italian Burn Center, Nishtar Medical University, Multan.</td><td align="left"> </td><td align="center" class="MyImageButton">
-<a href="Tenders/50485054/4949/0511202604444834613643258681.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl14_lnkILetter" target="_blank"></a>
+<td align="left">Tender Notice</td><td align="left">Framework Contract for the Procurement of Biomedical Gases at DHQ Hospital Bhakkar for the FY 2026-27</td><td align="left">Goods</td><td align="left">06 Nov 2026</td><td align="left">21 Nov 2026</td><td align="left">DHQ Hospital, Bhakkar</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0611202604125100485161258763.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl14_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td><td align="center" class="MyImageButton">
-<a href="BiddingDocuments/50485054/4949/0511202604444832248832258681.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl14_HyperLink1" target="_blank"></a>
+<a href="BiddingDocuments/50485054/4949/0611202604125170658037258763.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl14_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td>
 </tr><tr class="rgRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__6" style="text-align:left;">
-<td align="left">Tender Notice</td><td align="left">Purchase of Dietary Articles</td><td align="left">Goods</td><td align="left">05 Nov 2026</td><td align="left">20 Nov 2026</td><td align="left">Central Jail, Rawalpindi</td><td align="left"> </td><td align="center" class="MyImageButton">
-<a href="Tenders/50485054/4949/0511202604495852226430258682.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl16_lnkILetter" target="_blank"></a>
+<td align="left">Tender Notice</td><td align="left">Uniform 2026-27</td><td align="left">Goods</td><td align="left">06 Nov 2026</td><td align="left">21 Nov 2026</td><td align="left">Govt. Special Education Centre Jinnah Town Faisalabad</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0611202604571570117728258764.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl16_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td><td align="center" class="MyImageButton">
-<a href="BiddingDocuments/50485054/4949/0511202604495877363830258682.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl16_HyperLink1" target="_blank"></a>
+<a href="BiddingDocuments/50485054/4949/0611202604571581757352258764.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl16_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td>
 </tr><tr class="rgAltRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__7">
-<td align="left">Tender Notice</td><td align="left">Provision of whole body multi slice CT Scan machine (128-Slice) with EEG and NCS/EMG machine in Punjab Institute of neurosciences Lahore under CM stroke program</td><td align="left">Goods</td><td align="left">05 Nov 2026</td><td align="left">24 Nov 2026</td><td align="left">Punjab Institute of Neurosciences (PINS), Lahore.</td><td align="left"> </td><td align="center" class="MyImageButton">
-<a href="Tenders/50485054/4949/0511202604565207553265258683.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl18_lnkILetter" target="_blank"></a>
+<td align="left">Tender Notice</td><td align="left">Rehabilitation / Repair of Sport Complex Mogian Municipal Committee, Bhalwal.</td><td align="left">Work</td><td align="left">06 Nov 2026</td><td align="left">23 Nov 2026</td><td align="left">Municipal Committee, Bhalwal</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0611202605010630836307258765.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl18_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td><td align="center" class="MyImageButton">
-<a href="BiddingDocuments/50485054/4949/0511202604565218502158258683.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl18_HyperLink1" target="_blank"></a>
+<a href="BiddingDocuments/50485054/4949/0611202605010633471118258765.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl18_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td>
 </tr><tr class="rgRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__8" style="text-align:left;">
-<td align="left">Tender Notice</td><td align="left">Executive Engineer</td><td align="left">Work</td><td align="left">05 Nov 2026</td><td align="left">25 Nov 2026</td><td align="left">Executive Engineer, Building Division, Khushab.</td><td align="left"> </td><td align="center" class="MyImageButton">
-<a href="Tenders/50485054/4949/0511202604580736168646258684.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl20_lnkILetter" target="_blank"></a>
+<td align="left">Tender Notice</td><td align="left">Installation of Street Lights Poles &amp; Lights from Bank Chowk to Shakoor Khel Masjid Sher Shah Suri Road Daud Khel</td><td align="left">Work</td><td align="left">06 Nov 2026</td><td align="left">26 Nov 2026</td><td align="left">Municipal Committee, Daud Khel, Mianwali</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0611202605350233754676258766.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl20_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td><td align="center" class="MyImageButton">
-<a href="BiddingDocuments/50485054/4949/0511202604580771547255258684.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl20_HyperLink1" target="_blank"></a>
+<a href="BiddingDocuments/50485054/4949/0611202605350234001188258766.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl20_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td>
 </tr><tr class="rgAltRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__9">
-<td align="left">Tender Notice</td><td align="left">Procurement of Uniform 2026-27</td><td align="left">Goods</td><td align="left">05 Nov 2026</td><td align="left">23 Nov 2026</td><td align="left">Govt. Institute for Slow learners, Khushab</td><td align="left"> </td><td align="center" class="MyImageButton">
-<a href="Tenders/50485054/4949/0511202605102737220572258685.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl22_lnkILetter" target="_blank"></a>
+<td align="left">Tender Notice</td><td align="left">Hiring of Pharmacy on LDA Panel</td><td align="left">Goods</td><td align="left">06 Nov 2026</td><td align="left">23 Nov 2026</td><td align="left">Lahore Development Authority, Lahore</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0611202605463552418554258767.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl22_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td><td align="center" class="MyImageButton">
-<a href="BiddingDocuments/50485054/4949/0511202605102758835383258685.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl22_HyperLink1" target="_blank"></a>
+<a href="BiddingDocuments/50485054/4949/0611202605463540423565258767.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl22_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td>
 </tr><tr class="rgRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__10" style="text-align:left;">
-<td align="left">Tender Notice</td><td align="left">Framework Contract for Procurement of Liquefied Petroleum Gas (LPG)</td><td align="left">Goods</td><td align="left">05 Nov 2026</td><td align="left">24 Nov 2026</td><td align="left">Fatima Jinnah Women University, Rawalpindi</td><td align="left"> </td><td align="center" class="MyImageButton">
-<a href="Tenders/50485054/4949/0511202605221121361175258686.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl24_lnkILetter" target="_blank"></a>
+<td align="left">Tender Notice</td><td align="left">PURCHASE OF SEASONAL FLOWERS (SEEDS) F-1 FOR ALL TOWNS &amp; R.B CANAL HA, FAISALABAD</td><td align="left">Work</td><td align="left">06 Nov 2026</td><td align="left">23 Nov 2026</td><td align="left">Parks and Horticulture Authority Faisalabad</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0611202605521262364476258768.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl24_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td><td align="center" class="MyImageButton">
-<a href="BiddingDocuments/50485054/4949/0511202605221106773743258686.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl24_HyperLink1" target="_blank"></a>
+<a href="BiddingDocuments/50485054/4949/0611202605521224847657258768.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl24_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td>
 </tr><tr class="rgAltRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__11">
-<td align="left">Tender Notice</td><td align="left">Tender for Procurement of Printing Items</td><td align="left">Goods</td><td align="left">05 Nov 2026</td><td align="left">20 Nov 2026</td><td align="left">Queen Mary College, Lahore</td><td align="left"> </td><td align="center" class="MyImageButton">
-<a href="Tenders/50485054/4949/0511202605361404452570258687.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl26_lnkILetter" target="_blank"></a>
+<td align="left">Tender Notice</td><td align="left">Procurement of Group Life Insurance of QIE Employees</td><td align="left">Services</td><td align="left">06 Nov 2026</td><td align="left">23 Nov 2026</td><td align="left">Punjab Industrial Estate Development and Management Company</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0611202605522002542283258769.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl26_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td><td align="center" class="MyImageButton">
-<a href="BiddingDocuments/50485054/4949/0511202605361405763335258687.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl26_HyperLink1" target="_blank"></a>
+<a href="BiddingDocuments/50485054/4949/0611202605522062546635258769.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl26_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td>
 </tr><tr class="rgRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__12" style="text-align:left;">
-<td align="left">Corrigendum</td><td align="left">PROCUREMENT OF CRYOSTAT AND BIO-SAETY CABINET FOR PKLI &amp; RC RAWALPINDI PRO/241/2026</td><td align="left">Goods</td><td align="left">05 Nov 2026</td><td align="left">27 Nov 2026</td><td align="left">Pakistan Kidney  Liver Institute and Research Center Trust</td><td align="left"> </td><td align="center" class="MyImageButton">
-<a href="Tenders/50485054/4949/0511202605393270878140258688.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl28_lnkILetter" target="_blank"></a>
+<td align="left">Tender Notice</td><td align="left">NOTICE FOR INVITING TENDERS (NIT)</td><td align="left">Work</td><td align="left">06 Nov 2026</td><td align="left">23 Nov 2026</td><td align="left">Executive Engineer, Dera Gazi  Khan Canal Division</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0611202605545354726536258770.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl28_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td><td align="center" class="MyImageButton">
-<a href="BiddingDocuments/50485054/4949/0511202605393226481145258688.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl28_HyperLink1" target="_blank"></a>
+<a href="BiddingDocuments/50485054/4949/0611202605545300837688258770.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl28_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td>
 </tr><tr class="rgAltRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__13">
-<td align="left">Sales/Auction/Disposal</td><td align="left">Retender Notice For Auction of Canteen at THQ Hospital Choa Saiden Shah for the Year 2026-27</td><td align="left">Services</td><td align="left">05 Nov 2026</td><td align="left">24 Nov 2026</td><td align="left">THQ Hospital Choa Saidan Shah Chakwal</td><td align="left"> </td><td align="center" class="MyImageButton">
-<a href="Tenders/50485054/4949/0511202605523808407225258689.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl30_lnkILetter" target="_blank"></a>
+<td align="left">Tender Notice</td><td align="left">Purchase of Uniform F.Y 2026-2027</td><td align="left">Goods</td><td align="left">06 Nov 2026</td><td align="left">23 Nov 2026</td><td align="left">Govt. Secondary School of Special Education For H.I Kasur</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0611202605551378577716258771.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl30_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td><td align="center" class="MyImageButton">
-<a href="BiddingDocuments/50485054/4949/0511202605523881232154258689.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl30_HyperLink1" target="_blank"></a>
+<a href="BiddingDocuments/50485054/4949/0611202605551337375618258771.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl30_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td>
 </tr><tr class="rgRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__14" style="text-align:left;">
-<td align="left">Tender Notice</td><td align="left">Tender Notice District Council Mandi Bahauddin (Dhal)</td><td align="left">Work</td><td align="left">05 Nov 2026</td><td align="left">23 Nov 2026</td><td align="left">District Council, Mandi Bahauddin</td><td align="left"> </td><td align="center" class="MyImageButton">
-<a href="Tenders/50485054/4949/0511202606052278441328258690.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl32_lnkILetter" target="_blank"></a>
+<td align="left">Tender Notice</td><td align="left">Framework Contract of Different Categories of Items General, Stationary, Computer Stationary, Printing and Publications, Plant and Machinery, Furniture, IT Equipment, Dental &amp; Clinical Physiological</td><td align="left">Goods</td><td align="left">06 Nov 2026</td><td align="left">24 Nov 2026</td><td align="left">University of Child Health Sciences Lahore</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0611202606055007376608258772.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl32_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td><td align="center" class="MyImageButton">
-<a href="BiddingDocuments/50485054/4949/0511202606052231065335258690.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl32_HyperLink1" target="_blank"></a>
+<a href="BiddingDocuments/50485054/4949/0611202606055016838261258772.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl32_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td>
 </tr><tr class="rgAltRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__15">
-<td align="left">Tender Notice</td><td align="left">Auction Notice for CANTEEN OF Social Security Hospital Sialkot for the year 2026-27</td><td align="left">Services</td><td align="left">05 Nov 2026</td><td align="left">25 Nov 2026</td><td align="left">Labor and Human Resource</td><td align="left"> </td><td align="center" class="MyImageButton">
-<a href="Tenders/50485054/4949/0511202606321057381614258691.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl34_lnkILetter" target="_blank"></a>
+<td align="left">Expression of Interest</td><td align="left">ESTABLISHMENT AND OPERATION OF INCUBATION AND SANDBOX INFRASTRUCTURE ACROSS PUNJAB (SIX LOTS)</td><td align="left">Services</td><td align="left">06 Nov 2026</td><td align="left">10 Dec 2026</td><td align="left">Innovate Punjab Leaders of Frontier Tech Incubators Project, Punjab Information Technology and Innovation Department</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0611202606152642820865258773.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl34_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td><td align="center" class="MyImageButton">
-<a href="BiddingDocuments/50485054/4949/0511202606321013731748258691.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl34_HyperLink1" target="_blank"></a>
+<a href="BiddingDocuments/50485054/4949/0611202606152627375656258773.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl34_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td>
 </tr><tr class="rgRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__16" style="text-align:left;">
-<td align="left">Tender Notice</td><td align="left">ANNUAL REPAIR &amp; MAINTENACE OF 64 NO. TUBEWELLS IN WATER SUPPLY EAST ZONE FOR YEAR 2026-27 WASA RAWALPINDI</td><td align="left">Work</td><td align="left">05 Nov 2026</td><td align="left">24 Nov 2026</td><td align="left">Water and Sanitation Agency Rawalpindi</td><td align="left"> </td><td align="center" class="MyImageButton">
-<a href="Tenders/50485054/4949/0511202606424587386260258692.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl36_lnkILetter" target="_blank"></a>
+<td align="left">Tender Notice</td><td align="left">Purchase of Uniform for boys students of Govt. Deaf &amp; Defective Hearing High School for Boys Gujrat</td><td align="left">Goods</td><td align="left">06 Nov 2026</td><td align="left">23 Nov 2026</td><td align="left">Govt. Deaf &amp; Defective Hearing High School, Gujrat</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0611202606160246157222258774.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl36_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td><td align="center" class="MyImageButton">
-<a href="BiddingDocuments/50485054/4949/0511202606424554021715258692.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl36_HyperLink1" target="_blank"></a>
+<a href="BiddingDocuments/50485054/4949/0611202606160263805680258774.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl36_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td>
 </tr><tr class="rgAltRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__17">
-<td align="left">Tender Notice</td><td align="left">Tender Notice District Council Vehari</td><td align="left">Work</td><td align="left">05 Nov 2026</td><td align="left">21 Nov 2026</td><td align="left">District Council, Vehari</td><td align="left"> </td><td align="center" class="MyImageButton">
-<a href="Tenders/50485054/4949/0511202606511545755101258693.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl38_lnkILetter" target="_blank"></a>
+<td align="left">Tender Notice</td><td align="left">Tender 24.11.2026</td><td align="left">Work</td><td align="left">06 Nov 2026</td><td align="left">24 Nov 2026</td><td align="left">Executive Engineer, Lower Gugera Division, Faisalabad</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0611202606263608561011258775.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl38_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td><td align="center" class="MyImageButton">
-<a href="BiddingDocuments/50485054/4949/0511202606511545106138258693.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl38_HyperLink1" target="_blank"></a>
+<a href="BiddingDocuments/50485054/4949/0611202606263648667420258775.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl38_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td>
 </tr><tr class="rgRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__18" style="text-align:left;">
-<td align="left">Tender Notice</td><td align="left">Procurement of Food Processing Unit + Ion Analyzer for Hydroponics under PSDP Funded Project ENCIB</td><td align="left">Goods</td><td align="left">05 Nov 2026</td><td align="left">20 Nov 2026</td><td align="left">Arid Agriculture University Rawalpini</td><td align="left"> </td><td align="center" class="MyImageButton">
-<a href="Tenders/50485054/4949/0511202606561881614435258694.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl40_lnkILetter" target="_blank"></a>
+<td align="left">Tender Notice</td><td align="left">Tender notice</td><td align="left">Work</td><td align="left">06 Nov 2026</td><td align="left">26 Nov 2026</td><td align="left">Municipal Committee, Kallar Syedan</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0611202606285243800411258776.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl40_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td><td align="center" class="MyImageButton">
-<a href="BiddingDocuments/50485054/4949/0511202606561880721886258694.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl40_HyperLink1" target="_blank"></a>
+<a href="BiddingDocuments/50485054/4949/0611202606285238375704258776.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl40_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td>
 </tr><tr class="rgAltRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__19">
-<td align="left">Tender Notice</td><td align="left">E-Tender Notice</td><td align="left">Work</td><td align="left">05 Nov 2026</td><td align="left">25 Nov 2026</td><td align="left">Executive Engineer, Buildings Division No. 1, Gujranwala</td><td align="left"> </td><td align="center" class="MyImageButton">
-<a href="Tenders/50485054/4949/0511202607140805177130258695.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl42_lnkILetter" target="_blank"></a>
+<td align="left">Tender Notice</td><td align="left">Hiring of Webhosting Services</td><td align="left">Services</td><td align="left">06 Nov 2026</td><td align="left">23 Nov 2026</td><td align="left">Board of Intermediate and Secondary Education, Rawalpindi</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0611202606294044684812258777.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl42_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td><td align="center" class="MyImageButton">
-<a href="BiddingDocuments/50485054/4949/0511202607140875283003258695.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl42_HyperLink1" target="_blank"></a>
+<a href="BiddingDocuments/50485054/4949/0611202606294024616620258777.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl42_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td>
 </tr><tr class="rgRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__20" style="text-align:left;">
-<td align="left">Sales/Auction/Disposal</td><td align="left">Old Building Material Auction</td><td align="left">Services</td><td align="left">05 Nov 2026</td><td align="left">20 Nov 2026</td><td align="left">Govt. Truama Centre Lalamusa Gujrat</td><td align="left"> </td><td align="center" class="MyImageButton">
-<a href="Tenders/50485054/4949/0511202607375660355404258696.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl44_lnkILetter" target="_blank"></a>
+<td align="left">Tender Notice</td><td align="left">WASA, Lahore XEN-II Maintenance</td><td align="left">Work</td><td align="left">06 Nov 2026</td><td align="left">21 Nov 2026</td><td align="left">Water and Sanitation Agency Lahore</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0611202606432511576368258778.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl44_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td><td align="center" class="MyImageButton">
-<a href="BiddingDocuments/50485054/4949/0511202607375606861807258696.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl44_HyperLink1" target="_blank"></a>
+<a href="BiddingDocuments/50485054/4949/0611202606432508575028258778.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl44_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td>
 </tr><tr class="rgAltRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__21">
-<td align="left">Tender Notice</td><td align="left">SUPPLY AND INSTALLATION OF VIDEO INTERCOM CAMERA &amp; ACCESSORIES FOR ELEVATORS IN PKLI &amp; RC RAWALPINDI PRO-179-2026</td><td align="left">Goods</td><td align="left">05 Nov 2026</td><td align="left">24 Nov 2026</td><td align="left">Pakistan Kidney  Liver Institute and Research Center Trust</td><td align="left"> </td><td align="center" class="MyImageButton">
-<a href="Tenders/50485054/4949/0511202607390874473372258697.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl46_lnkILetter" target="_blank"></a>
+<td align="left">Tender Notice</td><td align="left">Procurement of Kitchen Utensils and Crockery &amp; Cutlery Items</td><td align="left">Goods</td><td align="left">06 Nov 2026</td><td align="left">24 Nov 2026</td><td align="left">Punjab Daanish Schools and Centers of Excellence Authority, Lahore</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0611202607015377160335258779.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl46_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td><td align="center" class="MyImageButton">
-<a href="BiddingDocuments/50485054/4949/0511202607390833878371258697.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl46_HyperLink1" target="_blank"></a>
+<a href="BiddingDocuments/50485054/4949/0611202607015313231543258779.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl46_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td>
 </tr><tr class="rgRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__22" style="text-align:left;">
-<td align="left">Tender Notice</td><td align="left">Frame work Contract for Year 2026-27</td><td align="left">Work</td><td align="left">05 Nov 2026</td><td align="left">23 Nov 2026</td><td align="left">Municipal Committee, Nowshera Virkan</td><td align="left"> </td><td align="center" class="MyImageButton">
-<a href="Tenders/50485054/4949/0511202607440616033728258698.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl48_lnkILetter" target="_blank"></a>
+<td align="left">Tender Notice</td><td align="left">Procurement and Installation of 8x 100KVA Diesel Generators</td><td align="left">Goods</td><td align="left">06 Nov 2026</td><td align="left">24 Nov 2026</td><td align="left">Punjab Daanish Schools and Centers of Excellence Authority, Lahore</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0611202607062436234505258780.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl48_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td><td align="center" class="MyImageButton">
-<a href="BiddingDocuments/50485054/4949/0511202607440663467236258698.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl48_HyperLink1" target="_blank"></a>
+<a href="BiddingDocuments/50485054/4949/0611202607062427485382258780.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl48_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td>
 </tr><tr class="rgAltRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__23">
-<td align="left">Tender Notice</td><td align="left">TENDER FOR PROCUREMENT OF STATIONERY ITEMS FOR CHOLISTAN MOBILE SCHOOLS (CMS) FY 2026-27</td><td align="left">Goods</td><td align="left">05 Nov 2026</td><td align="left">25 Nov 2026</td><td align="left">Punjab Education Foundation</td><td align="left"> </td><td align="center" class="MyImageButton">
-<a href="Tenders/50485054/4949/0511202607490761430804258699.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl50_lnkILetter" target="_blank"></a>
+<td align="left">Tender Notice</td><td align="left">Afforestation &amp; Maintenance of Afforestation and Nurseries in Jhang Forest Division</td><td align="left">Goods</td><td align="left">06 Nov 2026</td><td align="left">23 Nov 2026</td><td align="left">Divisional Forest officer, Jhang</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0611202607063916107722258781.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl50_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td><td align="center" class="MyImageButton">
-<a href="BiddingDocuments/50485054/4949/0511202607490711885435258699.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl50_HyperLink1" target="_blank"></a>
+<a href="BiddingDocuments/50485054/4949/0611202607063910580214258781.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl50_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td>
 </tr><tr class="rgRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__24" style="text-align:left;">
-<td align="left">Tender Notice</td><td align="left">Tender Notice</td><td align="left">Work</td><td align="left">05 Nov 2026</td><td align="left">20 Nov 2026</td><td align="left">First Buildings Division, Lahore</td><td align="left"> </td><td align="center" class="MyImageButton">
-<a href="Tenders/50485054/4949/0511202608234253036150258700.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl52_lnkILetter" target="_blank"></a>
+<td align="left">Tender Notice</td><td align="left">Afforestation, Maintenance of Afforestation, Repair of Tractor, Purchase of Kassi etc for Jhang Forest Division</td><td align="left">Goods</td><td align="left">06 Nov 2026</td><td align="left">23 Nov 2026</td><td align="left">Divisional Forest officer, Jhang</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0611202607113183407044258782.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl52_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td><td align="center" class="MyImageButton">
-<a href="BiddingDocuments/50485054/4949/0511202608234246256038258700.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl52_HyperLink1" target="_blank"></a>
+<a href="BiddingDocuments/50485054/4949/0611202607113138665517258782.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl52_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td>
 </tr><tr class="rgAltRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__25">
-<td align="left">Tender Notice</td><td align="left">Annual Framework Contract of Drugs / Medicines (Not Quoted Items) for the Financial Year 2026-27.</td><td align="left">Goods</td><td align="left">05 Nov 2026</td><td align="left">23 Nov 2026</td><td align="left">Services Hospital, Jail Road, Lahore</td><td align="left"> </td><td align="center" class="MyImageButton">
-<a href="Tenders/50485054/4949/0511202608234938182102258701.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl54_lnkILetter" target="_blank"></a>
+<td align="left">Tender Notice</td><td align="left">PURCHASE OF VARIOUS CLOTH BAGS</td><td align="left">Goods</td><td align="left">06 Nov 2026</td><td align="left">23 Nov 2026</td><td align="left">Board of Intermediate and Secondary Education, Rawalpindi</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0611202607140050087601258783.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl54_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td><td align="center" class="MyImageButton">
-<a href="BiddingDocuments/50485054/4949/0511202608234985150122258701.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl54_HyperLink1" target="_blank"></a>
+<a href="BiddingDocuments/50485054/4949/0611202607140035330661258783.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl54_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td>
 </tr><tr class="rgRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__26" style="text-align:left;">
-<td align="left">Tender Notice</td><td align="left">Purchase/Installation of Solar System 120KW+35 KW (155KW) under PSDP Funded Project ENCIB</td><td align="left">Goods</td><td align="left">05 Nov 2026</td><td align="left">20 Nov 2026</td><td align="left">Arid Agriculture University Rawalpini</td><td align="left"> </td><td align="center" class="MyImageButton">
-<a href="Tenders/50485054/4949/0511202608245988312846258702.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl56_lnkILetter" target="_blank"></a>
+<td align="left">Tender Notice</td><td align="left">Construction of welcome monument Municipal Committee Shorkot.</td><td align="left">Work</td><td align="left">06 Nov 2026</td><td align="left">23 Nov 2026</td><td align="left">Municipal Committee, Shorkot, Jhang</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0611202607165253051664258784.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl56_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td><td align="center" class="MyImageButton">
-<a href="BiddingDocuments/50485054/4949/0511202608245907462825258702.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl56_HyperLink1" target="_blank"></a>
+<a href="BiddingDocuments/50485054/4949/0611202607165273144763258784.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl56_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td>
 </tr><tr class="rgAltRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__27">
-<td align="left">Tender Notice</td><td align="left">Procurement of I.T Equipment's</td><td align="left">Goods</td><td align="left">05 Nov 2026</td><td align="left">20 Nov 2026</td><td align="left">Punjab Information Commission</td><td align="left"> </td><td align="center" class="MyImageButton">
-<a href="Tenders/50485054/4949/0511202608261551237833258703.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl58_lnkILetter" target="_blank"></a>
+<td align="left">Tender Notice</td><td align="left">Purchase of Uniform</td><td align="left">Goods</td><td align="left">06 Nov 2026</td><td align="left">27 Nov 2026</td><td align="left">Govt. Secondary School for Deaf &amp; Defective Hearing Khushab</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0611202607191223863235258785.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl58_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td><td align="center" class="MyImageButton">
-<a href="BiddingDocuments/50485054/4949/0511202608261528023660258703.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl58_HyperLink1" target="_blank"></a>
+<a href="BiddingDocuments/50485054/4949/0611202607191215433862258785.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl58_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td>
 </tr><tr class="rgRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__28" style="text-align:left;">
-<td align="left">Tender Notice</td><td align="left">Annual Framework Contract of Surgical Disposables / Medical Devices &amp; Surgical Sutures (Not Quoted Items) for the Financial Year 2026-27.</td><td align="left">Goods</td><td align="left">05 Nov 2026</td><td align="left">23 Nov 2026</td><td align="left">Services Hospital, Jail Road, Lahore</td><td align="left"> </td><td align="center" class="MyImageButton">
-<a href="Tenders/50485054/4949/0511202608302573376542258704.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl60_lnkILetter" target="_blank"></a>
+<td align="left">Tender Notice</td><td align="left">SUPPLY OF PLANTS FOR PLANTATION AT 13 DANEPUR LANE GOR-I, HA LAHORE</td><td align="left">Goods</td><td align="left">06 Nov 2026</td><td align="left">23 Nov 2026</td><td align="left">Parks and Horticulture Authority Lahore</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0611202607212955274127258786.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl60_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td><td align="center" class="MyImageButton">
-<a href="BiddingDocuments/50485054/4949/0511202608302556041151258704.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl60_HyperLink1" target="_blank"></a>
+<a href="BiddingDocuments/50485054/4949/0611202607212946511666258786.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl60_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td>
 </tr><tr class="rgAltRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__29">
-<td align="left">Tender Notice</td><td align="left">Frame work contract for General Store MIsc Items</td><td align="left">Goods</td><td align="left">05 Nov 2026</td><td align="left">26 Nov 2026</td><td align="left">District Health Officer, District Health Authority, Rawalpindi</td><td align="left"> </td><td align="center" class="MyImageButton">
-<a href="Tenders/50485054/4949/0511202608352362580610258705.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl62_lnkILetter" target="_blank"></a>
+<td align="left">Sales/Auction/Disposal</td><td align="left">Cycle Stand Auction FY 2026-27</td><td align="left">Services</td><td align="left">06 Nov 2026</td><td align="left">26 Nov 2026</td><td align="left">THQ Hospital, Liaquat Pur</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0611202607281722617118258787.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl62_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td><td align="center" class="MyImageButton">
-<a href="BiddingDocuments/50485054/4949/0511202608352328038261258705.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl62_HyperLink1" target="_blank"></a>
+<a href="BiddingDocuments/50485054/4949/0611202607281717643165258787.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl62_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td>
 </tr><tr class="rgRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__30" style="text-align:left;">
-<td align="left">Tender Notice</td><td align="left">Tender Notice</td><td align="left">Work</td><td align="left">05 Nov 2026</td><td align="left">20 Nov 2026</td><td align="left">Lahore College for Women University, Lahore</td><td align="left"> </td><td align="center" class="MyImageButton">
-<a href="Tenders/50485054/4949/0511202609191327140240258706.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl64_lnkILetter" target="_blank"></a>
+<td align="left">Tender Notice</td><td align="left">AR/SR Works</td><td align="left">Work</td><td align="left">06 Nov 2026</td><td align="left">24 Nov 2026</td><td align="left">Govt. College of Technology (Glass, Ceramics &amp; Pottery Development), Shahdara (GCPD Shahdara)</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0611202607421840587864258788.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl64_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td><td align="center" class="MyImageButton">
-<a href="BiddingDocuments/50485054/4949/0511202609191313848733258706.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl64_HyperLink1" target="_blank"></a>
+<a href="BiddingDocuments/50485054/4949/0611202607421804351774258788.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl64_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td>
 </tr><tr class="rgAltRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__31">
-<td align="left">Tender Notice</td><td align="left">HIRING OF HUMAN RESOURCE SERVICES FOR DIRECTORATE GENERAL SOCIAL WELFARE &amp; BAIT-UL-MAAL, PUNJAB, LAHORE  (FINANCIALYEAR 2026 &amp; 27)</td><td align="left">Services</td><td align="left">05 Nov 2026</td><td align="left">23 Nov 2026</td><td align="left">Social Welfare and Bait-Ul-Maal</td><td align="left"> </td><td align="center" class="MyImageButton">
-<a href="Tenders/50485054/4949/0511202609224347544216258707.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl66_lnkILetter" target="_blank"></a>
+<td align="left">Tender Notice</td><td align="left">Directorate of social Security Shahdara(Medical). 65, G.T road Shahdara, Lahore</td><td align="left">Goods</td><td align="left">06 Nov 2026</td><td align="left">28 Nov 2026</td><td align="left">Directorate of Social Security, Shahdara</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0611202607423311344751258789.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl66_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td><td align="center" class="MyImageButton">
-<a href="BiddingDocuments/50485054/4949/0511202609224311681010258707.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl66_HyperLink1" target="_blank"></a>
+<a href="BiddingDocuments/50485054/4949/0611202607423342577136258789.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl66_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td>
 </tr><tr class="rgRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__32" style="text-align:left;">
-<td align="left">Tender Notice</td><td align="left">Tender Notice for Arrangements of Qawali Night Event in Kotli Sattian</td><td align="left">Goods</td><td align="left">05 Nov 2026</td><td align="left">20 Nov 2026</td><td align="left">Municipal Committee, Kotli Sattian</td><td align="left"> </td><td align="center" class="MyImageButton">
-<a href="Tenders/50485054/4949/0511202609322534188427258708.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl68_lnkILetter" target="_blank"></a>
+<td align="left">Tender Notice</td><td align="left">Purchase of Uniform</td><td align="left">Goods</td><td align="left">06 Nov 2026</td><td align="left">26 Nov 2026</td><td align="left">Govt. Special Education Centre Quaidabad District Khushab</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0611202607425421087156258790.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl68_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td><td align="center" class="MyImageButton">
-<a href="BiddingDocuments/50485054/4949/0511202609322512670168258708.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl68_HyperLink1" target="_blank"></a>
+<a href="BiddingDocuments/50485054/4949/0611202607425451175045258790.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl68_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td>
 </tr><tr class="rgAltRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__33">
-<td align="left">Tender Notice</td><td align="left">HIRING OF SECURITY SERVICES FOR DIRECTORATE GENERAL SOCIAL WELFARE &amp;  BAIT-UL-MAAL, PUNJAB, LAHORE  (FINANCIALYEAR 2026 &amp; 27)</td><td align="left">Services</td><td align="left">05 Nov 2026</td><td align="left">23 Nov 2026</td><td align="left">Social Welfare and Bait-Ul-Maal</td><td align="left"> </td><td align="center" class="MyImageButton">
-<a href="Tenders/50485054/4949/0511202609345435335542258709.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl70_lnkILetter" target="_blank"></a>
+<td align="left">Corrigendum</td><td align="left">PREQUALIFICATION FOR PROCUREMENT AND SUPPLY OF GENEAL SURGICAL DISPOSABLE CONSUMABLES FOR PKLI &amp; RC LAHORE AND PKLI RAWALPINDI. (<a href="ActiveTendersDetail.aspx?id=258204" style="font-weight:bold;color:#F28300;" target="_blank">View Tender Detail</a>) </td><td align="left">Goods</td><td align="left">06 Nov 2026</td><td align="left">23 Nov 2026</td><td align="left">Pakistan Kidney  Liver Institute and Research Center Trust</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0611202607491286758828258793.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl70_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td><td align="center" class="MyImageButton">
-<a href="BiddingDocuments/50485054/4949/0511202609345464272424258709.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl70_HyperLink1" target="_blank"></a>
+<a href="BiddingDocuments/50485054/4949/0611202607491282001451258793.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl70_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td>
 </tr><tr class="rgRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__34" style="text-align:left;">
-<td align="left">Tender Notice</td><td align="left">INVITATION TO BID FOR PROVISION OF UMRAH SERVICES FOR FY 2026-27 Contract No. PIE/P&amp;C/Umrah/26/52</td><td align="left">Services</td><td align="left">05 Nov 2026</td><td align="left">20 Nov 2026</td><td align="left">Punjab Industrial Estate Development and Management Company</td><td align="left"> </td><td align="center" class="MyImageButton">
-<a href="Tenders/50485054/4949/0511202609511575203612258710.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl72_lnkILetter" target="_blank"></a>
+<td align="left">Tender Notice</td><td align="left">Local Purchase of Medicine (Day to Day) &amp; Surgical Disposable items &amp; Sehat suhulat program/Universal health insurance Medicine &amp; surgical Disposable items</td><td align="left">Services</td><td align="left">06 Nov 2026</td><td align="left">23 Nov 2026</td><td align="left">THQ Hospital Thal (MNS), Layyah.</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0611202607491761163630258794.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl72_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td><td align="center" class="MyImageButton">
-<a href="BiddingDocuments/50485054/4949/0511202609511556703367258710.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl72_HyperLink1" target="_blank"></a>
+<a href="BiddingDocuments/50485054/4949/0611202607491745374658258794.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl72_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td>
 </tr><tr class="rgAltRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__35">
-<td align="left">Tender Notice</td><td align="left">Construction of Cricket Arena, Futsal Court at Pakpattan.</td><td align="left">Work</td><td align="left">05 Nov 2026</td><td align="left">20 Nov 2026</td><td align="left">District Council, Pakpattan</td><td align="left"> </td><td align="center" class="MyImageButton">
-<a href="Tenders/50485054/4949/0511202609594052684652258711.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl74_lnkILetter" target="_blank"></a>
+<td align="left">Sales/Auction/Disposal</td><td align="left">Auction of Canteen Services</td><td align="left">Services</td><td align="left">06 Nov 2026</td><td align="left">23 Nov 2026</td><td align="left">THQ Hospital Thal (MNS), Layyah.</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0611202607560243517762258795.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl74_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td><td align="center" class="MyImageButton">
-<a href="BiddingDocuments/50485054/4949/0511202609594067871505258711.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl74_HyperLink1" target="_blank"></a>
+<a href="BiddingDocuments/50485054/4949/0611202607560280527767258795.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl74_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td>
 </tr><tr class="rgRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__36" style="text-align:left;">
-<td align="left">Tender Notice</td><td align="left">Purchase of Different Lab. Equipment and Hardware for Different Section and Freezer</td><td align="left">Goods</td><td align="left">05 Nov 2026</td><td align="left">20 Nov 2026</td><td align="left">Director (A&amp;F), Forensic Science Agency, Lahore</td><td align="left"> </td><td align="center" class="MyImageButton">
-<a href="Tenders/50485054/4949/0511202610020343577814258712.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl76_lnkILetter" target="_blank"></a>
+<td align="left">Tender Notice</td><td align="left">Store Articles, Durable Goods, Machinery &amp; Equipment, High-resolution Satellite  Imagery/Software, etc. under the Non-Development Budget and Development  scheme</td><td align="left">Goods</td><td align="left">06 Nov 2026</td><td align="left">25 Nov 2026</td><td align="left">GIS Lab, Punjab Forest Department, Forest &amp; Wildlife Punjab</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0611202607573905534774258796.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl76_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td><td align="center" class="MyImageButton">
-<a href="BiddingDocuments/50485054/4949/0511202610020388762863258712.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl76_HyperLink1" target="_blank"></a>
+<a href="BiddingDocuments/50485054/4949/0611202607573978668812258796.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl76_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td>
 </tr><tr class="rgAltRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__37">
-<td align="left">Tender Notice</td><td align="left">Procurement of Instruments and Components for Digital Logic Design (DLD) Labs  (TENDER NO. 0012/2026-27)</td><td align="left">Goods</td><td align="left">05 Nov 2026</td><td align="left">20 Nov 2026</td><td align="left">University of Veterinary and Animal Sciences, Lahore.</td><td align="left"> </td><td align="center" class="MyImageButton">
-<a href="Tenders/50485054/4949/0511202610162452008020258714.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl78_lnkILetter" target="_blank"></a>
+<td align="left">Tender Notice</td><td align="left">Rehabilitation of PCC Road from Saherpur to AbdullahPur, Tehsil PD Khan District Jhelum</td><td align="left">Work</td><td align="left">06 Nov 2026</td><td align="left">24 Nov 2026</td><td align="left">District Council, Jhelum</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0611202608243453265857258797.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl78_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td><td align="center" class="MyImageButton">
-<a href="BiddingDocuments/50485054/4949/0511202610162420008516258714.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl78_HyperLink1" target="_blank"></a>
+<a href="BiddingDocuments/50485054/4949/0611202608243465375136258797.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl78_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td>
 </tr><tr class="rgRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__38" style="text-align:left;">
-<td align="left">Tender Notice</td><td align="left">Purchase of Uniform</td><td align="left">Goods</td><td align="left">05 Nov 2026</td><td align="left">23 Nov 2026</td><td align="left">Govt. Special Education Centre Khiali Shahpur Town Gujranwala</td><td align="left"> </td><td align="center" class="MyImageButton">
-<a href="Tenders/50485054/4949/0511202610172054671160258715.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl80_lnkILetter" target="_blank"></a>
+<td align="left">Tender Notice</td><td align="left">Superinttending Engineer</td><td align="left">Work</td><td align="left">06 Nov 2026</td><td align="left">25 Nov 2026</td><td align="left">Executive Engineer, Highway Division, Sheikhupura</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0611202609272934420375258798.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl80_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td><td align="center" class="MyImageButton">
-<a href="BiddingDocuments/50485054/4949/0511202610172020412101258715.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl80_HyperLink1" target="_blank"></a>
+<a href="BiddingDocuments/50485054/4949/0611202609272965534842258798.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl80_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td>
 </tr><tr class="rgAltRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__39">
-<td align="left">Tender Notice</td><td align="left">PROCUREMENT OF STANDALONE DIGITAL AUDIO CONFERENCE ROOM SYSTEM FOR PHIMC OFFICE</td><td align="left">Goods</td><td align="left">05 Nov 2026</td><td align="left">24 Nov 2026</td><td align="left">Punjab Health Initiative Management Company</td><td align="left"> </td><td align="center" class="MyImageButton">
-<a href="Tenders/50485054/4949/0511202610184808856522258716.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl82_lnkILetter" target="_blank"></a>
+<td align="left">Tender Notice</td><td align="left">SUPPLY OF PLANTS INCLUDING LOADING / UNLOADING &amp; CARRIAGE AT SITE. UNDER REPLENISHMEANT COST PLAN LODHRAN TO KEHROR PACCA ROAD KM 02-03/LR TO 24-25/LR</td><td align="left">Goods</td><td align="left">06 Nov 2026</td><td align="left">24 Nov 2026</td><td align="left">Divisional Forest Officer, Multan</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0611202609354375382256258799.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl82_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td><td align="center" class="MyImageButton">
-<a href="BiddingDocuments/50485054/4949/0511202610184863758132258716.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl82_HyperLink1" target="_blank"></a>
+<a href="BiddingDocuments/50485054/4949/0611202609354384042841258799.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl82_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td>
 </tr><tr class="rgRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__40" style="text-align:left;">
-<td align="left">Tender Notice</td><td align="left">PROCURMENT OF HOUSEKEEPING CONSUMABLES FOR PKLI&amp;RC (PRO-246-2026)</td><td align="left">Goods</td><td align="left">05 Nov 2026</td><td align="left">23 Nov 2026</td><td align="left">Pakistan Kidney  Liver Institute and Research Center Trust</td><td align="left"> </td><td align="center" class="MyImageButton">
-<a href="Tenders/50485054/4949/0511202610203502541324258717.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl84_lnkILetter" target="_blank"></a>
+<td align="left">Tender Notice</td><td align="left">Superinttending Engineer</td><td align="left">Work</td><td align="left">06 Nov 2026</td><td align="left">25 Nov 2026</td><td align="left">Executive Engineer, Highway Division, Sheikhupura</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0611202609365973563540258800.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl84_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td><td align="center" class="MyImageButton">
-<a href="BiddingDocuments/50485054/4949/0511202610203578313227258717.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl84_HyperLink1" target="_blank"></a>
+<a href="BiddingDocuments/50485054/4949/0611202609365966652656258800.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl84_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td>
 </tr><tr class="rgAltRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__41">
-<td align="left">Tender Notice</td><td align="left">Procurement of Uniform of Special Studetns F.Y 2026-27</td><td align="left">Goods</td><td align="left">05 Nov 2026</td><td align="left">24 Nov 2026</td><td align="left">Govt. Institute for Slow Learners Muzaffargarh</td><td align="left"> </td><td align="center" class="MyImageButton">
-<a href="Tenders/50485054/4949/0511202610340916376518258718.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl86_lnkILetter" target="_blank"></a>
+<td align="left">Tender Notice</td><td align="left">Procurement of Software</td><td align="left">Goods</td><td align="left">06 Nov 2026</td><td align="left">30 Nov 2026</td><td align="left">Directorate of Agriculture (E&amp;M) Punjab</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0611202609443037161002258801.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl86_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td><td align="center" class="MyImageButton">
-<a href="BiddingDocuments/50485054/4949/0511202610340900141707258718.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl86_HyperLink1" target="_blank"></a>
+<a href="BiddingDocuments/50485054/4949/0611202609443056533545258801.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl86_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td>
 </tr><tr class="rgRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__42" style="text-align:left;">
-<td align="left">Tender Notice</td><td align="left">IT Items for HEC NRPU Project of History Department, IT Items for Examination Branch</td><td align="left">Goods</td><td align="left">05 Nov 2026</td><td align="left">02 Dec 2026</td><td align="left">The Islamia University of Bahawalpur.</td><td align="left"> </td><td align="center" class="MyImageButton">
-<a href="Tenders/50485054/4949/0511202610342451257102258719.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl88_lnkILetter" target="_blank"></a>
+<td align="left">Tender Notice</td><td align="left">Purchase of polythene tubes 10" X 12", Purchase Grow Bags Size 10" X 12" &amp; Cost of silt including loading, unloading and carriage at site</td><td align="left">Services</td><td align="left">06 Nov 2026</td><td align="left">24 Nov 2026</td><td align="left">Divisional Forest Officer, Rajanpur.</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0611202609501626721167258802.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl88_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td><td align="center" class="MyImageButton">
-<a href="BiddingDocuments/50485054/4949/0511202610342424755120258719.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl88_HyperLink1" target="_blank"></a>
+<a href="BiddingDocuments/50485054/4949/0611202609501624802702258802.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl88_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td>
 </tr><tr class="rgAltRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__43">
-<td align="left">Tender Notice</td><td align="left">Tender for Security Services</td><td align="left">Services</td><td align="left">05 Nov 2026</td><td align="left">20 Nov 2026</td><td align="left">Govt. Special Education Centre Hasilpur Bahawalpur</td><td align="left"> </td><td align="center" class="MyImageButton">
-<a href="Tenders/50485054/4949/0511202610364426855230258720.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl90_lnkILetter" target="_blank"></a>
+<td align="left">Tender Notice</td><td align="left">Essential Equipment for the Pakistan Rescue Team</td><td align="left">Goods</td><td align="left">06 Nov 2026</td><td align="left">24 Nov 2026</td><td align="left">Punjab Emergency Service (Rescue 1122), Lahore</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0611202609503386055647258803.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl90_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td><td align="center" class="MyImageButton">
-<a href="BiddingDocuments/50485054/4949/0511202610364443003300258720.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl90_HyperLink1" target="_blank"></a>
+<a href="BiddingDocuments/50485054/4949/0611202609503385740330258803.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl90_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td>
 </tr><tr class="rgRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__44" style="text-align:left;">
-<td align="left">Tender Notice</td><td align="left">Hire charges of Temporary Illumination To Litup the Different Buildings of Various Sites</td><td align="left">Work</td><td align="left">05 Nov 2026</td><td align="left">20 Nov 2026</td><td align="left">Parks and Horticulture Authority Lahore</td><td align="left"> </td><td align="center" class="MyImageButton">
-<a href="Tenders/50485054/4949/0511202610550532871317258721.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl92_lnkILetter" target="_blank"></a>
+<td align="left">Tender Notice</td><td align="left">PROCUREMENT OF PLASMA ORGANIZER</td><td align="left">Goods</td><td align="left">06 Nov 2026</td><td align="left">23 Nov 2026</td><td align="left">Pakistan Kidney  Liver Institute and Research Center Trust</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0611202609562575374525258804.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl92_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td><td align="center" class="MyImageButton">
-<a href="BiddingDocuments/50485054/4949/0511202610550550544003258721.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl92_HyperLink1" target="_blank"></a>
+<a href="BiddingDocuments/50485054/4949/0611202609562572376381258804.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl92_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td>
 </tr><tr class="rgAltRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__45">
-<td align="left">Tender Notice</td><td align="left">Tender Notice</td><td align="left">Work</td><td align="left">05 Nov 2026</td><td align="left">21 Nov 2026</td><td align="left">Local Government and Community Development, Circle, Multan</td><td align="left"> </td><td align="center" class="MyImageButton">
-<a href="Tenders/50485054/4949/0511202610575946070511258722.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl94_lnkILetter" target="_blank"></a>
+<td align="left">Tender Notice</td><td align="left">SECURITY RELATED WORKS FOR OPERATIONALIZATION OF HOSTEL AT FATIMA JINNAH WOMEN UNIVERSITY (FJWU), CAMPUS-II, CHAKRI ROAD, RAWALPINDI</td><td align="left">Work</td><td align="left">06 Nov 2026</td><td align="left">01 Dec 2026</td><td align="left">Fatima Jinnah Women University, Rawalpindi</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0611202610033162314326258805.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl94_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td><td align="center" class="MyImageButton">
-<a href="BiddingDocuments/50485054/4949/0511202610575941573270258722.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl94_HyperLink1" target="_blank"></a>
+<a href="BiddingDocuments/50485054/4949/0611202610033123472011258805.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl94_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td>
 </tr><tr class="rgRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__46" style="text-align:left;">
-<td align="left">Tender Notice</td><td align="left">Purchase of Dietary Articles</td><td align="left">Goods</td><td align="left">05 Nov 2026</td><td align="left">20 Nov 2026</td><td align="left">Central Jail, Rawalpindi</td><td align="left"> </td><td align="center" class="MyImageButton">
-<a href="Tenders/50485054/4949/0511202611040908375846258723.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl96_lnkILetter" target="_blank"></a>
+<td align="left">Tender Notice</td><td align="left">PURCHASE OF VARIOUS PRINTED MATERIALS ITEMS</td><td align="left">Goods</td><td align="left">06 Nov 2026</td><td align="left">23 Nov 2026</td><td align="left">Board of Intermediate and Secondary Education, Rawalpindi</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0611202610225984823336258806.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl96_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td><td align="center" class="MyImageButton">
-<a href="BiddingDocuments/50485054/4949/0511202611040937103018258723.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl96_HyperLink1" target="_blank"></a>
+<a href="BiddingDocuments/50485054/4949/0611202610225935380616258806.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl96_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td>
 </tr><tr class="rgAltRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__47">
-<td align="left">Tender Notice</td><td align="left">TENDER FOR REPAIR, RENOVATION AND BRANDING OF STUDENT BUSES OF UNIVERSITY OF NAROWAL</td><td align="left">Services</td><td align="left">05 Nov 2026</td><td align="left">24 Nov 2026</td><td align="left">University of Narowal</td><td align="left"> </td><td align="center" class="MyImageButton">
-<a href="Tenders/50485054/4949/0511202611172380184300258724.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl98_lnkILetter" target="_blank"></a>
+<td align="left">Tender Notice</td><td align="left">Lease of Land for Agricultural Purpose at Fasialabad Campus of UET Lahore</td><td align="left">Services</td><td align="left">06 Nov 2026</td><td align="left">30 Nov 2026</td><td align="left">University of Engineering and Technology, Faisalabad Campus</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0611202610423167347673258807.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl98_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td><td align="center" class="MyImageButton">
-<a href="BiddingDocuments/50485054/4949/0511202611172384726003258724.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl98_HyperLink1" target="_blank"></a>
+<a href="BiddingDocuments/50485054/4949/0611202610423188437205258807.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl98_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td>
 </tr><tr class="rgRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__48" style="text-align:left;">
-<td align="left">Tender Notice</td><td align="left">TENDER NO. P&amp;S/25.01/6991 – INSTALLATION OF NEW TUBEWELL 02-CFS CAPACITY AT FOOTBALL GROUND, GULSHANE- RAVI, LAHORE</td><td align="left">Work</td><td align="left">05 Nov 2026</td><td align="left">20 Nov 2026</td><td align="left">Water and Sanitation Agency Lahore</td><td align="left"> </td><td align="center" class="MyImageButton">
-<a href="Tenders/50485054/4949/0511202611305231351320258725.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl100_lnkILetter" target="_blank"></a>
+<td align="left">Tender Notice</td><td align="left">Civil work</td><td align="left">Work</td><td align="left">06 Nov 2026</td><td align="left">26 Nov 2026</td><td align="left">Third Provincial Buildings Division Lahore</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0611202610502777270845258808.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl100_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td><td align="center" class="MyImageButton">
-<a href="BiddingDocuments/50485054/4949/0511202611305206075310258725.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl100_HyperLink1" target="_blank"></a>
+<a href="BiddingDocuments/50485054/4949/0611202610502784816734258808.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl100_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td>
 </tr><tr class="rgAltRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__49">
-<td align="left">Tender Notice</td><td align="left">Tender Notice</td><td align="left">Work</td><td align="left">05 Nov 2026</td><td align="left">25 Nov 2026</td><td align="left">Executive Engineer, Buildings Division, Rajanpur</td><td align="left"> </td><td align="center" class="MyImageButton">
-<a href="Tenders/50485054/4949/0511202611412782181284258726.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl102_lnkILetter" target="_blank"></a>
+<td align="left">Tender Notice</td><td align="left">HIRING OF SECURITY SERVICES FOR MODEL CATTLE MARKETS OF PCMMDC FAISALABAD DIVISION</td><td align="left">Services</td><td align="left">06 Nov 2026</td><td align="left">23 Nov 2026</td><td align="left">Faisalabad Cattle Market Management Company</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0611202611223044245827258809.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl102_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td><td align="center" class="MyImageButton">
-<a href="BiddingDocuments/50485054/4949/0511202611412785147222258726.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl102_HyperLink1" target="_blank"></a>
+<a href="BiddingDocuments/50485054/4949/0611202611223063437724258809.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl102_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td>
+</tr><tr class="rgRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__50" style="text-align:left;">
+<td align="left">Request for Proposal</td><td align="left">Leasing of Commercial Property at Old Burger King Site Gulgasht Colony  Brand Road Multan</td><td align="left">Services</td><td align="left">06 Nov 2026</td><td align="left">25 Nov 2026</td><td align="left">Water and Sanitation Agency Multan</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0611202611230135633873258810.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl104_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td><td align="center" class="MyImageButton">
+<a href="BiddingDocuments/50485054/4949/0611202611230155117885258810.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl104_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td>
+</tr><tr class="rgAltRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__51">
+<td align="left">Tender Notice</td><td align="left">Purchase of 40ft Containers</td><td align="left">Services</td><td align="left">06 Nov 2026</td><td align="left">23 Nov 2026</td><td align="left">The Bank of Punjab</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0611202611385108257050258811.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl106_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td><td align="center" class="MyImageButton">
+<a href="BiddingDocuments/50485054/4949/0611202611385181450363258811.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl106_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td>
+</tr><tr class="rgRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__52" style="text-align:left;">
+<td align="left">Tender Notice</td><td align="left">HIRING OF SECURITY SERVICES FOR MODEL CATTLE MARKETS OF PCMMDC FAISALABAD DIVISION</td><td align="left">Services</td><td align="left">06 Nov 2026</td><td align="left">23 Nov 2026</td><td align="left">Faisalabad Cattle Market Management Company</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0611202611385406641355258812.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl108_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td><td align="center" class="MyImageButton">
+<a href="BiddingDocuments/50485054/4949/0611202611385483643855258812.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl108_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td>
+</tr><tr class="rgAltRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__53">
+<td align="left">Tender Notice</td><td align="left">BEAUTIFICATION WORKS AT ENTRY/EXIT POINTS OF EASTERN BYPASS IN THE JURISDICTION OF DISTRICT COUNCIL SAHIWAL.</td><td align="left">Work</td><td align="left">06 Nov 2026</td><td align="left">24 Nov 2026</td><td align="left">Municipal Committee, Chichawatni</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0611202611450464513735258813.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl110_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td><td align="center" class="MyImageButton">
+<a href="BiddingDocuments/50485054/4949/0611202611450428874585258813.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl110_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td>
+</tr><tr class="rgRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__54" style="text-align:left;">
+<td align="left">Tender Notice</td><td align="left">procurement of Stationery items</td><td align="left">Goods</td><td align="left">06 Nov 2026</td><td align="left">25 Nov 2026</td><td align="left">Punjab Board of Technical Education</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0611202611523316617284258815.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl112_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td><td align="center" class="MyImageButton">
+<a href="BiddingDocuments/50485054/4949/0611202611523344327138258815.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl112_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td>
+</tr><tr class="rgAltRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__55">
+<td align="left">Tender Notice</td><td align="left">Invitation for Bids/Quotations Supply of Fuel  Bid Ref No. Secy/PPC/Supply of Fuel/4/2026 27</td><td align="left">Goods</td><td align="left">06 Nov 2026</td><td align="left">24 Nov 2026</td><td align="left">Mir Chakar Khan Rind University of Technology, Dera Ghazi Khan.</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0611202612182103247205258816.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl114_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td><td align="center" class="MyImageButton">
+<a href="BiddingDocuments/50485054/4949/0611202612182110702101258816.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl114_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td>
+</tr><tr class="rgRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__56" style="text-align:left;">
+<td align="left">Tender Notice</td><td align="left">PROCUREMENT OF LUBRICANTS, BRUSHES, FILTERS FY 2026-27 THROUGH FRAMEWORK AGREEMENT FOR SLEF OPEARTIONS FOR SPA MULTAN</td><td align="left">Goods</td><td align="left">06 Nov 2026</td><td align="left">23 Nov 2026</td><td align="left">Suthra Punjab Agency, Multan</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0611202612371556833765258817.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl116_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td><td align="center" class="MyImageButton">
+<a href="BiddingDocuments/50485054/4949/0611202612371503341732258817.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl116_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td>
+</tr><tr class="rgAltRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__57">
+<td align="left">Tender Notice</td><td align="left">Purchase of Uniform</td><td align="left">Goods</td><td align="left">06 Nov 2026</td><td align="left">26 Nov 2026</td><td align="left">Govt. Special Education Center, Sargodha</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0611202612551147231250258818.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl118_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td><td align="center" class="MyImageButton">
+<a href="BiddingDocuments/50485054/4949/0611202612551142677680258818.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl118_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td>
+</tr><tr class="rgRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__58" style="text-align:left;">
+<td align="left">Tender Notice</td><td align="left">Tender notice</td><td align="left">Work</td><td align="left">06 Nov 2026</td><td align="left">23 Nov 2026</td><td align="left">Municipal Committee, Khanewal</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0611202601212234847085258819.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl120_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td><td align="center" class="MyImageButton">
+<a href="BiddingDocuments/50485054/4949/0611202601212204276506258819.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl120_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td>
+</tr><tr class="rgAltRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__59">
+<td align="left">Tender Notice</td><td align="left">ANNUAL REPAIR TO ROADS HIGHWAYS SUB DIVISION SAHIWAL &amp; CHICHAWATNI (S/O MATERIAL)</td><td align="left">Services</td><td align="left">06 Nov 2026</td><td align="left">25 Nov 2026</td><td align="left">Executive Engineer, Highway Division, Sahiwal</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0611202601464385617283258820.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl122_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td><td align="center" class="MyImageButton">
+<a href="BiddingDocuments/50485054/4949/0611202601464373371257258820.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl122_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td>
+</tr><tr class="rgRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__60" style="text-align:left;">
+<td align="left">Tender Notice</td><td align="left">Speical Repair of road in Chak No. 273/JB Faisalabad Length = 0.31 KM</td><td align="left">Work</td><td align="left">06 Nov 2026</td><td align="left">23 Nov 2026</td><td align="left">Executive Engineer, Road Construction Division, Faisalabad</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0611202601541880602810258821.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl124_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td><td align="center" class="MyImageButton">
+<a href="BiddingDocuments/50485054/4949/0611202601541852274111258821.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl124_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td>
+</tr><tr class="rgAltRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__61">
+<td align="left">Tender Notice</td><td align="left">Tender Notice 2026-27</td><td align="left">Work</td><td align="left">06 Nov 2026</td><td align="left">26 Nov 2026</td><td align="left">Municipal Committee Malakwal</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0611202602425345320622258822.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl126_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td><td align="center" class="MyImageButton">
+<a href="BiddingDocuments/50485054/4949/0611202602425342760130258822.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl126_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td>
+</tr><tr class="rgRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__62" style="text-align:left;">
+<td align="left">Tender Notice</td><td align="left">Supply of tractor operated bushes roots &amp; unwanted tree plant along road side with cutting horizontally &amp; vertically adjustable mechanism as desire with Two spare blades.</td><td align="left">Goods</td><td align="left">06 Nov 2026</td><td align="left">21 Nov 2026</td><td align="left">District Council, Hafizabad</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0611202603005561757683258823.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl128_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td><td align="center" class="MyImageButton">
+<a href="BiddingDocuments/50485054/4949/0611202603005500727884258823.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl128_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td>
+</tr><tr class="rgAltRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__63">
+<td align="left">Tender Notice</td><td align="left">HIRING OF SECURITY SERVICES (GUARDS) FOR PCMMDC  FOR FY 2026-27 (FRAMEWORK)</td><td align="left">Services</td><td align="left">06 Nov 2026</td><td align="left">23 Nov 2026</td><td align="left">Punjab Cattle Market Management &amp; Development Co.</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0611202603093088812828258824.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl130_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td><td align="center" class="MyImageButton">
+<a href="BiddingDocuments/50485054/4949/0611202603093066170874258824.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl130_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td>
+</tr><tr class="rgRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__64" style="text-align:left;">
+<td align="left">Corrigendum</td><td align="left">HIRING OF INTERNATIONAL CONSULTANT FOR HOSPITAL PLANNING OF NAWAZ SHARIF INSTITUTE OF GENETICS &amp; BLOOD DISEASES AND BONE MARROW TRANSPLANTATION (NAWAZ SHARIF MEDICAL DISTRICT), LAHORE (<a href="ActiveTendersDetail.aspx?id=257190" style="font-weight:bold;color:#F28300;" target="_blank">View Tender Detail</a>) </td><td align="left">Services</td><td align="left">05 Nov 2026</td><td align="left">12 Nov 2026</td><td align="left">Infrastructure Development Authority of the Punjab - IDAP</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0511202610103916431812258713.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl132_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td><td align="center" class="MyImageButton">
+<a href="BiddingDocuments/50485054/4949/0511202610103938566723258713.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl132_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td>
+</tr><tr class="rgAltRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__65">
+<td align="left">Corrigendum</td><td align="left">Re-Construction Of Dangerous Classrooms Across The Punjab – North Zone (Gujranwala, Gujrat, Rawalpindi &amp; Sargodha Divisions) (<a href="ActiveTendersDetail.aspx?id=258595" style="font-weight:bold;color:#F28300;" target="_blank">View Tender Detail</a>) </td><td align="left">Work</td><td align="left">05 Nov 2026</td><td align="left">16 Nov 2026</td><td align="left">Strategic Management Unit, School Education Department, Lahore</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0511202601154406175161258733.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl134_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td><td align="center" class="MyImageButton">
+<a href="BiddingDocuments/50485054/4949/0511202601154476384602258733.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl134_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td>
+</tr><tr class="rgRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__66" style="text-align:left;">
+<td align="left">Corrigendum</td><td align="left">Re-Construction Of Dangerous Classrooms Across The Punjab – Central Zone (Lahore, Faislabad &amp; Sahiwal Divisions) (<a href="ActiveTendersDetail.aspx?id=258438" style="font-weight:bold;color:#F28300;" target="_blank">View Tender Detail</a>) </td><td align="left">Work</td><td align="left">05 Nov 2026</td><td align="left">16 Nov 2026</td><td align="left">Strategic Management Unit, School Education Department, Lahore</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0511202601345648348636258736.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl136_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td><td align="center" class="MyImageButton">
+<a href="BiddingDocuments/50485054/4949/0511202601345643315002258736.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl136_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td>
+</tr><tr class="rgAltRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__67">
+<td align="left">Corrigendum</td><td align="left">Re-Construction of Dangerous Classrooms Across The Punjab” – South Zone (Bahawalpur, Dg Khan &amp; Multan Divisions) (<a href="ActiveTendersDetail.aspx?id=258440" style="font-weight:bold;color:#F28300;" target="_blank">View Tender Detail</a>) </td><td align="left">Work</td><td align="left">05 Nov 2026</td><td align="left">16 Nov 2026</td><td align="left">Strategic Management Unit, School Education Department, Lahore</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0511202601451961085413258739.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl138_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td><td align="center" class="MyImageButton">
+<a href="BiddingDocuments/50485054/4949/0511202601451932303736258739.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl138_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td>
+</tr><tr class="rgRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__68" style="text-align:left;">
+<td align="left">Tender Notice</td><td align="left">Procurement of Lab Equipment for Maryam Nawaz Sharif Medical College Mainwali</td><td align="left">Goods</td><td align="left">05 Nov 2026</td><td align="left">20 Nov 2026</td><td align="left">Sargodha Medical College</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0511202603390341678485258677.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl140_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td><td align="center" class="MyImageButton">
+<a href="BiddingDocuments/50485054/4949/0511202603390374116321258677.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl140_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td>
+</tr><tr class="rgAltRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__69">
+<td align="left">Tender Notice</td><td align="left">Tender Notice</td><td align="left">Work</td><td align="left">05 Nov 2026</td><td align="left">20 Nov 2026</td><td align="left">Municipal Committee, Zafarwal</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0511202604001802134632258678.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl142_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td><td align="center" class="MyImageButton">
+<a href="BiddingDocuments/50485054/4949/0511202604001808264085258678.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl142_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td>
+</tr><tr class="rgRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__70" style="text-align:left;">
+<td align="left">Tender Notice</td><td align="left">Supply / Installation / commissioning of Air Conditioners</td><td align="left">Goods</td><td align="left">05 Nov 2026</td><td align="left">20 Nov 2026</td><td align="left">University of Agriculture Faisalabad</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0511202604102875134384258679.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl144_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td><td align="center" class="MyImageButton">
+<a href="BiddingDocuments/50485054/4949/0511202604102805400544258679.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl144_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td>
+</tr><tr class="rgAltRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__71">
+<td align="left">Tender Notice</td><td align="left">PROCUREMENT OF  OF LIBRARY BOOKS FOR FJWUCAMPUS-I &amp; II</td><td align="left">Goods</td><td align="left">05 Nov 2026</td><td align="left">23 Nov 2026</td><td align="left">Fatima Jinnah Women University, Rawalpindi</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0511202604304254074220258680.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl146_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td><td align="center" class="MyImageButton">
+<a href="BiddingDocuments/50485054/4949/0511202604304286307271258680.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl146_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td>
+</tr><tr class="rgRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__72" style="text-align:left;">
+<td align="left">Tender Notice</td><td align="left">Purchase of G.Store items, Drugs and Medicines, Lab Kits Reagents &amp;Surgical Disposable items</td><td align="left">Goods</td><td align="left">05 Nov 2026</td><td align="left">23 Nov 2026</td><td align="left">Pak Italian Burn Center, Nishtar Medical University, Multan.</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0511202604444834613643258681.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl148_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td><td align="center" class="MyImageButton">
+<a href="BiddingDocuments/50485054/4949/0511202604444832248832258681.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl148_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td>
+</tr><tr class="rgAltRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__73">
+<td align="left">Tender Notice</td><td align="left">Purchase of Dietary Articles</td><td align="left">Goods</td><td align="left">05 Nov 2026</td><td align="left">20 Nov 2026</td><td align="left">Central Jail, Rawalpindi</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0511202604495852226430258682.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl150_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td><td align="center" class="MyImageButton">
+<a href="BiddingDocuments/50485054/4949/0511202604495877363830258682.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl150_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td>
+</tr><tr class="rgRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__74" style="text-align:left;">
+<td align="left">Tender Notice</td><td align="left">Provision of whole body multi slice CT Scan machine (128-Slice) with EEG and NCS/EMG machine in Punjab Institute of neurosciences Lahore under CM stroke program</td><td align="left">Goods</td><td align="left">05 Nov 2026</td><td align="left">24 Nov 2026</td><td align="left">Punjab Institute of Neurosciences (PINS), Lahore.</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0511202604565207553265258683.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl152_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td><td align="center" class="MyImageButton">
+<a href="BiddingDocuments/50485054/4949/0511202604565218502158258683.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl152_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td>
+</tr><tr class="rgAltRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__75">
+<td align="left">Tender Notice</td><td align="left">Executive Engineer</td><td align="left">Work</td><td align="left">05 Nov 2026</td><td align="left">25 Nov 2026</td><td align="left">Executive Engineer, Building Division, Khushab.</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0511202604580736168646258684.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl154_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td><td align="center" class="MyImageButton">
+<a href="BiddingDocuments/50485054/4949/0511202604580771547255258684.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl154_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td>
+</tr><tr class="rgRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__76" style="text-align:left;">
+<td align="left">Tender Notice</td><td align="left">Procurement of Uniform 2026-27</td><td align="left">Goods</td><td align="left">05 Nov 2026</td><td align="left">23 Nov 2026</td><td align="left">Govt. Institute for Slow learners, Khushab</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0511202605102737220572258685.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl156_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td><td align="center" class="MyImageButton">
+<a href="BiddingDocuments/50485054/4949/0511202605102758835383258685.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl156_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td>
+</tr><tr class="rgAltRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__77">
+<td align="left">Tender Notice</td><td align="left">Framework Contract for Procurement of Liquefied Petroleum Gas (LPG)</td><td align="left">Goods</td><td align="left">05 Nov 2026</td><td align="left">24 Nov 2026</td><td align="left">Fatima Jinnah Women University, Rawalpindi</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0511202605221121361175258686.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl158_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td><td align="center" class="MyImageButton">
+<a href="BiddingDocuments/50485054/4949/0511202605221106773743258686.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl158_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td>
+</tr><tr class="rgRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__78" style="text-align:left;">
+<td align="left">Tender Notice</td><td align="left">Tender for Procurement of Printing Items</td><td align="left">Goods</td><td align="left">05 Nov 2026</td><td align="left">20 Nov 2026</td><td align="left">Queen Mary College, Lahore</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0511202605361404452570258687.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl160_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td><td align="center" class="MyImageButton">
+<a href="BiddingDocuments/50485054/4949/0511202605361405763335258687.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl160_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td>
+</tr><tr class="rgAltRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__79">
+<td align="left">Corrigendum</td><td align="left">PROCUREMENT OF CRYOSTAT AND BIO-SAETY CABINET FOR PKLI &amp; RC RAWALPINDI PRO/241/2026 (<a href="ActiveTendersDetail.aspx?id=258289" style="font-weight:bold;color:#F28300;" target="_blank">View Tender Detail</a>) </td><td align="left">Goods</td><td align="left">05 Nov 2026</td><td align="left">27 Nov 2026</td><td align="left">Pakistan Kidney  Liver Institute and Research Center Trust</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0511202605393270878140258688.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl162_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td><td align="center" class="MyImageButton">
+<a href="BiddingDocuments/50485054/4949/0511202605393226481145258688.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl162_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td>
+</tr><tr class="rgRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__80" style="text-align:left;">
+<td align="left">Sales/Auction/Disposal</td><td align="left">Retender Notice For Auction of Canteen at THQ Hospital Choa Saiden Shah for the Year 2026-27</td><td align="left">Services</td><td align="left">05 Nov 2026</td><td align="left">24 Nov 2026</td><td align="left">THQ Hospital Choa Saidan Shah Chakwal</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0511202605523808407225258689.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl164_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td><td align="center" class="MyImageButton">
+<a href="BiddingDocuments/50485054/4949/0511202605523881232154258689.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl164_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td>
+</tr><tr class="rgAltRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__81">
+<td align="left">Tender Notice</td><td align="left">Tender Notice District Council Mandi Bahauddin (Dhal)</td><td align="left">Work</td><td align="left">05 Nov 2026</td><td align="left">23 Nov 2026</td><td align="left">District Council, Mandi Bahauddin</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0511202606052278441328258690.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl166_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td><td align="center" class="MyImageButton">
+<a href="BiddingDocuments/50485054/4949/0511202606052231065335258690.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl166_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td>
+</tr><tr class="rgRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__82" style="text-align:left;">
+<td align="left">Tender Notice</td><td align="left">Auction Notice for CANTEEN OF Social Security Hospital Sialkot for the year 2026-27</td><td align="left">Services</td><td align="left">05 Nov 2026</td><td align="left">25 Nov 2026</td><td align="left">Labor and Human Resource</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0511202606321057381614258691.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl168_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td><td align="center" class="MyImageButton">
+<a href="BiddingDocuments/50485054/4949/0511202606321013731748258691.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl168_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td>
+</tr><tr class="rgAltRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__83">
+<td align="left">Tender Notice</td><td align="left">ANNUAL REPAIR &amp; MAINTENACE OF 64 NO. TUBEWELLS IN WATER SUPPLY EAST ZONE FOR YEAR 2026-27 WASA RAWALPINDI</td><td align="left">Work</td><td align="left">05 Nov 2026</td><td align="left">24 Nov 2026</td><td align="left">Water and Sanitation Agency Rawalpindi</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0511202606424587386260258692.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl170_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td><td align="center" class="MyImageButton">
+<a href="BiddingDocuments/50485054/4949/0511202606424554021715258692.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl170_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td>
+</tr><tr class="rgRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__84" style="text-align:left;">
+<td align="left">Tender Notice</td><td align="left">Tender Notice District Council Vehari</td><td align="left">Work</td><td align="left">05 Nov 2026</td><td align="left">21 Nov 2026</td><td align="left">District Council, Vehari</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0511202606511545755101258693.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl172_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td><td align="center" class="MyImageButton">
+<a href="BiddingDocuments/50485054/4949/0511202606511545106138258693.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl172_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td>
+</tr><tr class="rgAltRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__85">
+<td align="left">Tender Notice</td><td align="left">Procurement of Food Processing Unit + Ion Analyzer for Hydroponics under PSDP Funded Project ENCIB</td><td align="left">Goods</td><td align="left">05 Nov 2026</td><td align="left">20 Nov 2026</td><td align="left">Arid Agriculture University Rawalpini</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0511202606561881614435258694.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl174_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td><td align="center" class="MyImageButton">
+<a href="BiddingDocuments/50485054/4949/0511202606561880721886258694.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl174_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td>
+</tr><tr class="rgRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__86" style="text-align:left;">
+<td align="left">Tender Notice</td><td align="left">E-Tender Notice</td><td align="left">Work</td><td align="left">05 Nov 2026</td><td align="left">25 Nov 2026</td><td align="left">Executive Engineer, Buildings Division No. 1, Gujranwala</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0511202607140805177130258695.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl176_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td><td align="center" class="MyImageButton">
+<a href="BiddingDocuments/50485054/4949/0511202607140875283003258695.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl176_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td>
+</tr><tr class="rgAltRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__87">
+<td align="left">Sales/Auction/Disposal</td><td align="left">Old Building Material Auction</td><td align="left">Services</td><td align="left">05 Nov 2026</td><td align="left">20 Nov 2026</td><td align="left">Govt. Truama Centre Lalamusa Gujrat</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0511202607375660355404258696.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl178_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td><td align="center" class="MyImageButton">
+<a href="BiddingDocuments/50485054/4949/0511202607375606861807258696.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl178_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td>
+</tr><tr class="rgRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__88" style="text-align:left;">
+<td align="left">Tender Notice</td><td align="left">SUPPLY AND INSTALLATION OF VIDEO INTERCOM CAMERA &amp; ACCESSORIES FOR ELEVATORS IN PKLI &amp; RC RAWALPINDI PRO-179-2026</td><td align="left">Goods</td><td align="left">05 Nov 2026</td><td align="left">24 Nov 2026</td><td align="left">Pakistan Kidney  Liver Institute and Research Center Trust</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0511202607390874473372258697.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl180_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td><td align="center" class="MyImageButton">
+<a href="BiddingDocuments/50485054/4949/0511202607390833878371258697.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl180_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td>
+</tr><tr class="rgAltRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__89">
+<td align="left">Tender Notice</td><td align="left">Frame work Contract for Year 2026-27</td><td align="left">Work</td><td align="left">05 Nov 2026</td><td align="left">23 Nov 2026</td><td align="left">Municipal Committee, Nowshera Virkan</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0511202607440616033728258698.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl182_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td><td align="center" class="MyImageButton">
+<a href="BiddingDocuments/50485054/4949/0511202607440663467236258698.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl182_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td>
+</tr><tr class="rgRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__90" style="text-align:left;">
+<td align="left">Tender Notice</td><td align="left">TENDER FOR PROCUREMENT OF STATIONERY ITEMS FOR CHOLISTAN MOBILE SCHOOLS (CMS) FY 2026-27</td><td align="left">Goods</td><td align="left">05 Nov 2026</td><td align="left">25 Nov 2026</td><td align="left">Punjab Education Foundation</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0511202607490761430804258699.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl184_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td><td align="center" class="MyImageButton">
+<a href="BiddingDocuments/50485054/4949/0511202607490711885435258699.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl184_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td>
+</tr><tr class="rgAltRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__91">
+<td align="left">Tender Notice</td><td align="left">Tender Notice</td><td align="left">Work</td><td align="left">05 Nov 2026</td><td align="left">20 Nov 2026</td><td align="left">First Buildings Division, Lahore</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0511202608234253036150258700.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl186_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td><td align="center" class="MyImageButton">
+<a href="BiddingDocuments/50485054/4949/0511202608234246256038258700.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl186_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td>
+</tr><tr class="rgRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__92" style="text-align:left;">
+<td align="left">Tender Notice</td><td align="left">Annual Framework Contract of Drugs / Medicines (Not Quoted Items) for the Financial Year 2026-27.</td><td align="left">Goods</td><td align="left">05 Nov 2026</td><td align="left">23 Nov 2026</td><td align="left">Services Hospital, Jail Road, Lahore</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0511202608234938182102258701.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl188_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td><td align="center" class="MyImageButton">
+<a href="BiddingDocuments/50485054/4949/0511202608234985150122258701.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl188_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td>
+</tr><tr class="rgAltRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__93">
+<td align="left">Tender Notice</td><td align="left">Purchase/Installation of Solar System 120KW+35 KW (155KW) under PSDP Funded Project ENCIB</td><td align="left">Goods</td><td align="left">05 Nov 2026</td><td align="left">20 Nov 2026</td><td align="left">Arid Agriculture University Rawalpini</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0511202608245988312846258702.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl190_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td><td align="center" class="MyImageButton">
+<a href="BiddingDocuments/50485054/4949/0511202608245907462825258702.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl190_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td>
+</tr><tr class="rgRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__94" style="text-align:left;">
+<td align="left">Tender Notice</td><td align="left">Procurement of I.T Equipment's</td><td align="left">Goods</td><td align="left">05 Nov 2026</td><td align="left">20 Nov 2026</td><td align="left">Punjab Information Commission</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0511202608261551237833258703.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl192_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td><td align="center" class="MyImageButton">
+<a href="BiddingDocuments/50485054/4949/0511202608261528023660258703.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl192_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td>
+</tr><tr class="rgAltRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__95">
+<td align="left">Tender Notice</td><td align="left">Annual Framework Contract of Surgical Disposables / Medical Devices &amp; Surgical Sutures (Not Quoted Items) for the Financial Year 2026-27.</td><td align="left">Goods</td><td align="left">05 Nov 2026</td><td align="left">23 Nov 2026</td><td align="left">Services Hospital, Jail Road, Lahore</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0511202608302573376542258704.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl194_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td><td align="center" class="MyImageButton">
+<a href="BiddingDocuments/50485054/4949/0511202608302556041151258704.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl194_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td>
+</tr><tr class="rgRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__96" style="text-align:left;">
+<td align="left">Tender Notice</td><td align="left">Frame work contract for General Store MIsc Items</td><td align="left">Goods</td><td align="left">05 Nov 2026</td><td align="left">26 Nov 2026</td><td align="left">District Health Officer, District Health Authority, Rawalpindi</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0511202608352362580610258705.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl196_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td><td align="center" class="MyImageButton">
+<a href="BiddingDocuments/50485054/4949/0511202608352328038261258705.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl196_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td>
+</tr><tr class="rgAltRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__97">
+<td align="left">Tender Notice</td><td align="left">Tender Notice</td><td align="left">Work</td><td align="left">05 Nov 2026</td><td align="left">20 Nov 2026</td><td align="left">Lahore College for Women University, Lahore</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0511202609191327140240258706.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl198_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td><td align="center" class="MyImageButton">
+<a href="BiddingDocuments/50485054/4949/0511202609191313848733258706.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl198_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td>
+</tr><tr class="rgRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__98" style="text-align:left;">
+<td align="left">Tender Notice</td><td align="left">HIRING OF HUMAN RESOURCE SERVICES FOR DIRECTORATE GENERAL SOCIAL WELFARE &amp; BAIT-UL-MAAL, PUNJAB, LAHORE  (FINANCIALYEAR 2026 &amp; 27)</td><td align="left">Services</td><td align="left">05 Nov 2026</td><td align="left">23 Nov 2026</td><td align="left">Social Welfare and Bait-Ul-Maal</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0511202609224347544216258707.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl200_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td><td align="center" class="MyImageButton">
+<a href="BiddingDocuments/50485054/4949/0511202609224311681010258707.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl200_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td>
+</tr><tr class="rgAltRow" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00__99">
+<td align="left">Tender Notice</td><td align="left">Tender Notice for Arrangements of Qawali Night Event in Kotli Sattian</td><td align="left">Goods</td><td align="left">05 Nov 2026</td><td align="left">20 Nov 2026</td><td align="left">Municipal Committee, Kotli Sattian</td><td align="left"> </td><td align="center" class="MyImageButton">
+<a href="Tenders/50485054/4949/0511202609322534188427258708.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl202_lnkILetter" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
+</td><td align="center" class="MyImageButton">
+<a href="BiddingDocuments/50485054/4949/0511202609322512670168258708.pdf" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ctl00_ctl202_HyperLink1" target="_blank"><img border="none" src="images/icon_view.gif"/></a>
 </td>
 </tr>
 </tbody>
@@ -5526,9 +784,24 @@
 <ul class="rmActive rmVertical rmGroup rmLevel1" style="float: left;">
 <li class="rmItem rmFirst"><a class="rmLink" href="#" style="width: 206px;"><span class="rmText">NoFilter</span></a></li><li class="rmItem"><a class="rmLink" href="#" style="width: 206px;"><span class="rmText">Contains</span></a></li><li class="rmItem"><a class="rmLink" href="#" style="width: 206px;"><span class="rmText">DoesNotContain</span></a></li><li class="rmItem"><a class="rmLink" href="#" style="width: 206px;"><span class="rmText">StartsWith</span></a></li><li class="rmItem"><a class="rmLink" href="#" style="width: 206px;"><span class="rmText">EndsWith</span></a></li><li class="rmItem"><a class="rmLink" href="#" style="width: 206px;"><span class="rmText">EqualTo</span></a></li><li class="rmItem"><a class="rmLink" href="#" style="width: 206px;"><span class="rmText">NotEqualTo</span></a></li><li class="rmItem"><a class="rmLink" href="#" style="width: 206px;"><span class="rmText">GreaterThan</span></a></li><li class="rmItem"><a class="rmLink" href="#" style="width: 206px;"><span class="rmText">LessThan</span></a></li><li class="rmItem"><a class="rmLink" href="#" style="width: 206px;"><span class="rmText">GreaterThanOrEqualTo</span></a></li><li class="rmItem"><a class="rmLink" href="#" style="width: 206px;"><span class="rmText">LessThanOrEqualTo</span></a></li><li class="rmItem"><a class="rmLink" href="#" style="width: 206px;"><span class="rmText">Between</span></a></li><li class="rmItem"><a class="rmLink" href="#" style="width: 206px;"><span class="rmText">NotBetween</span></a></li><li class="rmItem"><a class="rmLink" href="#" style="width: 206px;"><span class="rmText">IsEmpty</span></a></li><li class="rmItem"><a class="rmLink" href="#" style="width: 206px;"><span class="rmText">NotIsEmpty</span></a></li><li class="rmItem"><a class="rmLink" href="#" style="width: 206px;"><span class="rmText">IsNull</span></a></li><li class="rmItem"><a class="rmLink" href="#" style="width: 206px;"><span class="rmText">NotIsNull</span></a></li><li class="rmItem rmLast"><a class="rmLink" href="#" style="width: 206px;"><span class="rmText">Custom</span></a></li>
 </ul>
-</div><input autocomplete="off" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_rfltMenu_ClientState" name="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_rfltMenu_ClientState" type="hidden" value=""/>
-</div><input autocomplete="off" id="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ClientState" name="ctl00_ContentPlaceHolderSRIS_rdgrdManageTender_ClientState" type="hidden" value=""/>
 </div>
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td>
+                 </td>
+</tr>
+<tr>
+<td>
+                 </td>
+</tr>
+</tbody></table>
+</div>
+</td>
+</tr>
+</tbody></table>
 </td>
 </tr>
 </tbody></table>

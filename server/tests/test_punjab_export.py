@@ -1,6 +1,6 @@
 """Punjab workbook and storage tests. These use the database and remove their own rows."""
 
-from datetime import date, datetime, timezone
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
 import openpyxl
@@ -102,7 +102,30 @@ def test_summary_reports_what_was_removed(tmp_path):
     assert "skipped closing sooner: 360" in summary["Closing Guard"]
     assert summary["Repeated Rows Skipped"] == "2"
     assert summary["Total Reported by Portal"] == "934"
-    assert summary["Closing Dates Searched"] == "2026-11-05 to 2028-11-04"
+    assert summary["Closing Date Filter"] == "2026-11-05 to 2028-11-04"
+
+
+def test_summary_shows_a_finished_run_as_complete(tmp_path):
+    repository.upsert_bids(RUN_ID, 1, [record("1", "A")])
+    _, book = build(tmp_path)
+    summary = {row[0].value: row[1].value for row in book["Run Summary"].iter_rows(min_row=2)}
+    assert summary["Completeness"] == "All tenders read"
+
+
+def test_summary_shows_why_a_run_is_incomplete(tmp_path):
+    repository.update_run_progress(RUN_ID, checkpoint={"incomplete": "Stopped at page 3 of 9"})
+    repository.upsert_bids(RUN_ID, 1, [record("1", "A")])
+    _, book = build(tmp_path)
+    summary = {row[0].value: row[1].value for row in book["Run Summary"].iter_rows(min_row=2)}
+    assert summary["Completeness"] == "Stopped at page 3 of 9"
+
+
+def test_summary_says_when_the_minimum_was_not_applied(tmp_path):
+    repository.update_run_progress(RUN_ID, closing_to=date.today() + timedelta(days=2))
+    repository.upsert_bids(RUN_ID, 1, [record("1", "A")])
+    _, book = build(tmp_path)
+    summary = {row[0].value: row[1].value for row in book["Run Summary"].iter_rows(min_row=2)}
+    assert summary["Closing Guard"].startswith("Not applied")
 
 
 def test_shared_download_path_builds_the_punjab_workbook():

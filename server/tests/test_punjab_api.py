@@ -1,13 +1,13 @@
-"""Punjab request validation, search dates, and keeping portals apart."""
+"""Punjab request validation and keeping portals apart."""
 
-from datetime import date
+from datetime import date, timedelta
 
 import pytest
 from fastapi import HTTPException
 from pydantic import ValidationError
 
 from app.core import exports, run_manager
-from app.scrapers.punjab import filters, router
+from app.scrapers.punjab import router
 from app.scrapers.punjab.schemas import PunjabFilters, PunjabOptions, PunjabScrapeRequest
 
 
@@ -20,9 +20,12 @@ from app.scrapers.punjab.schemas import PunjabFilters, PunjabOptions, PunjabScra
         {"filters": {"unknown": "1"}},
         {"filters": {"closing_from": "not-a-date"}},
         {"filters": {"closing_from": "2026-12-01", "closing_to": "2026-11-01"}},
+        {"filters": {"published_from": "not-a-date"}},
+        {"filters": {"published_from": "2026-11-05", "published_to": "2026-11-01"}},
         {"options": {"closing_runway_days": 366}},
         {"options": {"delay_ms": 0}},
         {"filters": {"procurement_title": "5"}},
+        {"filters": {"procurement_category": "1"}},
     ],
 )
 def test_bad_requests_are_refused(payload):
@@ -48,26 +51,33 @@ def test_options_keep_the_meaning_the_console_expects():
     assert PunjabOptions().exclude_auctions is True
 
 
-def test_default_search_is_live_tenders_only():
-    first, last = filters.search_dates(PunjabFilters(), today=date(2026, 11, 5))
-    assert first == date(2026, 11, 5)
-    assert last == date(2028, 11, 4)
+def test_a_publish_range_in_the_past_is_allowed():
+    PunjabScrapeRequest(filters={"published_from": "2026-11-01", "published_to": "2026-11-05"})
 
 
-def test_user_dates_are_kept():
-    wanted = PunjabFilters(closing_from="2026-11-10", closing_to="2026-11-20")
-    assert filters.search_dates(wanted, today=date(2026, 11, 5)) == (date(2026, 11, 10), date(2026, 11, 20))
+def test_the_filename_shows_the_publish_range():
+    run = {"scraper": "punjab", "run_id": "a", "started_at": "2026-11-06T10:00:00",
+           "filters": {"published_from": "2026-11-01", "published_to": "2026-11-05"}}
+    assert exports.excel_name(run) == "Punjab_Tenders(01-11-2026 to 05-11-2026).xlsx"
 
 
-def test_a_past_end_date_never_gives_an_inverted_range():
-    first, last = filters.search_dates(PunjabFilters(closing_to="2026-10-01"), today=date(2026, 11, 5))
-    assert first <= last
+def test_a_closing_range_in_the_past_is_refused_with_a_readable_message():
+    request = PunjabScrapeRequest(filters={"closing_to": str(date.today() - timedelta(days=3))})
+    with pytest.raises(HTTPException) as caught:
+        router.start_scrape(request)
+    assert caught.value.status_code == 422 and "only open tenders" in caught.value.detail
 
 
-def test_site_dates_are_day_first_and_the_last_day_is_covered():
-    assert filters.site_date(date(2026, 11, 5)) == "05/11/2026"
-    # The site leaves out the To date, so a last day of 31 Dec sends 1 Jan.
-    assert filters.site_to_date(date(2026, 12, 31)) == "01/01/2027"
+def test_old_runs_with_no_category_can_be_read_back():
+    assert PunjabFilters(procurement_category=None).procurement_category is None
+
+
+def test_refreshing_an_old_run_that_used_category_says_why_it_cannot(monkeypatch):
+    old = {"scraper": "punjab", "filters": {"procurement_category": "1"}, "options": {}}
+    monkeypatch.setattr(run_manager, "get_run", lambda run_id: old)
+    with pytest.raises(HTTPException) as caught:
+        router.refresh_scrape("old-run")
+    assert caught.value.status_code == 422
 
 
 def test_refresh_refuses_a_ppra_run(monkeypatch):

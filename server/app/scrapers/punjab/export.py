@@ -57,10 +57,13 @@ def _day(value: Any) -> str:
 
 
 def excel_name(run: dict[str, Any]) -> str:
-    """`Punjab_Tenders(05-11-2026 to 31-12-2026, Goods).xlsx`: the closing date range,
-    then any other filter. With no filters, named after the run's start in PKT."""
+    """`Punjab_Tenders(01-11-2026 to 05-11-2026, Goods).xlsx`: the publish date range
+    (closing dates on older runs), then any other filter. With no filters, named
+    after the run's start in PKT."""
     filters = run.get("filters") or {}
-    start, end = _day(filters.get("closing_from")), _day(filters.get("closing_to"))
+    start, end = _day(filters.get("published_from")), _day(filters.get("published_to"))
+    if not (start or end):
+        start, end = _day(filters.get("closing_from")), _day(filters.get("closing_to"))
     parts: list[str] = []
     if start and end:
         parts.append(start if start == end else f"{start} to {end}")
@@ -132,19 +135,37 @@ def _summary_rows(run_id: str, run: PunjabRun | None, count: int, start: datetim
         if runway is None
         else f"{runway} days (skipped closing sooner: {skipped}, kept with unreadable date: {unverified})"
     )
+    if runway is not None and run and run.closing_to and (run.closing_to - start.date()).days < runway:
+        guard = f"Not applied — every tender in the closing date range closes within {runway} days"
     applied = " · ".join(f"{FIELD_NAMES[field]}: {label}" for field, label in filter_labels(filters))
-    searched = f"{run.closing_from} to {run.closing_to}" if run and run.closing_from else "—"
+    searched = (
+        f"{run.closing_from or 'any'} to {run.closing_to or 'any'}"
+        if run and (run.closing_from or run.closing_to)
+        else "All"
+    )
+    published = (
+        f"{filters.get('published_from') or 'any'} to {filters.get('published_to') or 'any'}"
+        if filters.get("published_from") or filters.get("published_to")
+        else "All"
+    )
     auctions = f"Excluded ({run.skipped_auction if run else 0} removed)" if options.exclude_auctions else "Included"
+
+    finished = not run or run.status == "completed"
+    completeness = ((run.checkpoint if run else None) or {}).get("incomplete") or (
+        "All tenders read" if finished else "Partial — the run did not finish"
+    )
 
     return [
         ("Run ID", run_id),
         ("Status", (run.status if run else "completed").capitalize()),
+        ("Completeness", completeness),
         ("Scrape Started (PKT)", start.strftime("%Y-%m-%d %H:%M:%S")),
         ("Scrape Finished (PKT)", finish.strftime("%Y-%m-%d %H:%M:%S") if finish else "—"),
         ("Duration", duration),
         ("Source Portal", settings.punjab_base_url.rstrip("/") + settings.punjab_search_path),
         ("Search Filters Applied", applied or "All live tenders"),
-        ("Closing Dates Searched", searched),
+        ("Publish Date Filter", published),
+        ("Closing Date Filter", searched),
         ("Closing Guard", guard),
         ("Sales/Auction/Disposal", auctions),
         ("Repeated Rows Skipped", run.skipped_repeat if run else 0),
