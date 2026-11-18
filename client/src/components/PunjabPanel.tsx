@@ -2,9 +2,18 @@
 
 import { useEffect, useState } from "react";
 
-import RunStatusPanel from "@/components/RunStatus";
+import RunStatusPanel, { IdleRunSheet } from "@/components/RunStatus";
 import PunjabResults from "@/components/PunjabResults";
-import { Card, ErrorBanner, LaunchBar, SearchSelect, SelectField, StartButton } from "@/components/ui";
+import {
+  Card,
+  CheckboxField,
+  ClosingRunwayField,
+  ErrorBanner,
+  LaunchBar,
+  SearchSelect,
+  SelectField,
+  StartButton,
+} from "@/components/ui";
 import LiveMonitor from "@/components/LiveMonitor";
 import StopButton from "@/components/StopButton";
 import DateField from "@/components/DateField";
@@ -98,11 +107,28 @@ export default function PunjabPanel() {
     );
   };
 
+  const launchBar = (
+    <LaunchBar summary="PPRA Punjab live tenders scraper ready with cooperative pause/resume and live tracking.">
+      <>
+        <StopButton run={run} onError={setError} />
+        <LiveMonitor run={run} portal="punjab" />
+        <ScraperControls run={run} onError={setError} onStatusChange={applyStatus} />
+        <RefreshButton run={run} hasSession={hasSession} onReset={reset} />
+        <StartButton onClick={handleStart} disabled={starting || isRunning} running={isRunning} starting={starting}>
+          Start Punjab Scrape
+        </StartButton>
+      </>
+    </LaunchBar>
+  );
+
   return (
     <div className="space-y-6">
       {error && <ErrorBanner message={error} />}
 
+      {/* Search sheet beside the run sheet on wide screens; stacked below that. */}
+      <div className="grid items-start gap-6 xl:grid-cols-[minmax(0,1fr)_440px]">
       <Card
+        footer={launchBar}
         title="PPRA Punjab Search & Filter Criteria"
         description="Reads every open tender from the Active Tenders page (eproc.punjab.gov.pk), then keeps the ones matching these filters."
       >
@@ -136,8 +162,8 @@ export default function PunjabPanel() {
           </div>
 
           <div className="sm:col-span-2">
-            <p className="mb-2 text-sm font-semibold text-ink-800">Publish Date Range</p>
-            <div className="grid gap-4 sm:grid-cols-2">
+            <p className="mb-2 text-sm font-semibold text-ink-800" id="punjab-publish-range">Publish Date Range</p>
+            <div className="grid gap-4 sm:grid-cols-2" role="group" aria-labelledby="punjab-publish-range">
               <DateField label="From" value={publishedFrom} onChange={setPublishedFrom} disabled={isRunning} />
               <DateField label="To" value={publishedTo} onChange={setPublishedTo} disabled={isRunning} />
             </div>
@@ -147,54 +173,19 @@ export default function PunjabPanel() {
           </div>
         </div>
 
-        <div className="mt-4 flex items-center gap-3 border-t border-ink-100 pt-4">
-          <label className="shrink-0 text-xs font-medium text-ink-700">Min. days until closing</label>
-          <input
-            type="number"
-            min={0}
-            max={365}
-            value={closingRunwayDays ?? ""}
-            onChange={(e) => {
-              const v = e.target.value;
-              setClosingRunwayDays(v === "" ? null : Math.min(365, Math.max(0, parseInt(v, 10) || 0)));
-            }}
+        <ClosingRunwayField days={closingRunwayDays} onChange={setClosingRunwayDays} disabled={isRunning}>
+          <CheckboxField
+            label="Exclude Sales/Auction/Disposal"
+            checked={excludeAuctions}
+            onChange={toggleAuctions}
             disabled={isRunning}
-            placeholder="off"
-            className="w-24 rounded-lg border border-ink-200 bg-white px-3 py-1.5 text-xs text-ink-800 focus:border-ink-400 focus:outline-none"
           />
-          <span className="text-xs text-ink-500">
-            {closingRunwayDays === null
-              ? "Filter off — all tenders included"
-              : closingRunwayDays === 0
-                ? "All tenders (0-day minimum)"
-                : `Skip tenders closing in < ${closingRunwayDays} day${closingRunwayDays !== 1 ? "s" : ""}`}
-          </span>
-          <label className="ml-auto flex items-center gap-2 text-xs font-medium text-ink-700">
-            <input
-              type="checkbox"
-              checked={excludeAuctions}
-              onChange={(e) => toggleAuctions(e.target.checked)}
-              disabled={isRunning}
-              className="h-4 w-4 rounded border-ink-300"
-            />
-            Exclude Sales/Auction/Disposal
-          </label>
-        </div>
+        </ClosingRunwayField>
       </Card>
+      {run ? <RunStatusPanel run={run} /> : <IdleRunSheet portal="punjab" />}
+      </div>
 
-      <LaunchBar summary="PPRA Punjab live tenders scraper ready with cooperative pause/resume and live tracking.">
-        <div className="flex items-center gap-2">
-          <StopButton run={run} onError={setError} />
-          <LiveMonitor run={run} portal="punjab" />
-          <ScraperControls run={run} onError={setError} onStatusChange={applyStatus} />
-          <RefreshButton run={run} hasSession={hasSession} onReset={reset} />
-          <StartButton onClick={handleStart} disabled={starting || isRunning} running={isRunning} starting={starting}>
-            Start Punjab Scrape
-          </StartButton>
-        </div>
-      </LaunchBar>
 
-      {run && <RunStatusPanel run={run} />}
       <SessionActivity portal="punjab" />
       {run && <PunjabResults key={run.run_id} runId={run.run_id} />}
     </div>

@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<title>PK-Hub · Stamp Paper</title>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&family=Red+Hat+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{--intaglio:#12402f;--intaglio-2:#1d5a43;--ground:#eef2e6;--sheet:#f8faf4;--rule:#cfd9c6;--ink:#18231d;--ink-2:#4a5a4f;--serial:#c4262e;--iris:#d9a441}
+*{box-sizing:border-box;margin:0}
+body{width:1440px;height:900px;overflow:hidden;font:14px/1.45 "Hanken Grotesk",sans-serif;color:var(--ink);background:var(--ground);display:grid;grid-template-columns:248px 1fr}
+.mono{font-family:"Red Hat Mono",monospace;font-variant-numeric:tabular-nums}
+aside{background:var(--intaglio);color:#e7efe6;display:flex;flex-direction:column;position:relative}
+aside::after{content:"";position:absolute;right:0;top:0;bottom:0;width:6px;background:repeating-linear-gradient(0deg,#2c6b52 0 1px,transparent 1px 3px)}
+.brand{display:flex;align-items:center;gap:10px;padding:22px 22px 26px;font-weight:700;font-size:17px;letter-spacing:.01em}
+.brand i{width:30px;height:30px;border-radius:50%;border:1.5px solid var(--iris);display:grid;place-items:center;font-style:normal;font-size:11px;color:var(--iris)}
+.grp{padding:0 22px 8px;font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:#9fd6b6}
+.portal{margin:2px 12px;padding:10px 12px;border-radius:8px;display:grid;grid-template-columns:1fr auto;gap:2px 8px}
+.portal b{font-weight:600}.portal small{grid-column:1;color:#a6d9bb;font-size:12px}
+.portal.on{background:#0b2e21;box-shadow:inset 3px 0 0 var(--iris)}
+.live{grid-row:1/3;grid-column:2;align-self:center;font-size:11px;color:#ffd7d9;background:var(--serial);border-radius:99px;padding:2px 8px}
+.side-foot{margin-top:auto;padding:18px 22px;font-size:12px;color:#9fd6b6;border-top:1px solid #1f5440}
+header{display:flex;align-items:center;gap:28px;padding:0 32px;height:60px;border-bottom:1px solid var(--rule);background:var(--sheet)}
+header a{color:var(--ink-2);text-decoration:none;font-weight:500}
+header a.on{color:var(--ink);font-weight:700;box-shadow:inset 0 -2px 0 var(--intaglio);padding:19px 0}
+header .sp{flex:1}
+.btn{display:inline-flex;align-items:center;gap:8px;border-radius:8px;padding:9px 16px;font-weight:600;font-size:14px;border:1px solid var(--rule);background:#fff;color:var(--ink)}
+.btn.pri{background:var(--intaglio);border-color:var(--intaglio);color:#fff}
+.btn.warn{background:#fff7e6;border-color:#e8c27a;color:#7a4f06}
+.btn.stop{color:#9b1c22;border-color:#e7b9bb}
+main{padding:24px 32px;display:grid;grid-template-columns:1fr 420px;gap:24px;align-content:start}
+.card{background:var(--sheet);border:1px solid var(--rule);border-radius:12px}
+.card h2{font-size:15px;font-weight:700}
+.hd{display:flex;justify-content:space-between;align-items:baseline;padding:16px 20px;border-bottom:1px solid var(--rule)}
+.hd p{color:var(--ink-2);font-size:12px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px 16px;padding:18px 20px}
+label{display:block;font-size:12px;font-weight:600;margin-bottom:5px}
+.f{height:38px;border:1px solid var(--rule);border-radius:8px;background:#fff;padding:0 12px;display:flex;align-items:center;justify-content:space-between;color:#6b7a70}
+.f.v{color:var(--ink)}
+.span2{grid-column:span 2}
+.runway{display:flex;align-items:center;gap:12px;padding:14px 20px;border-top:1px solid var(--rule);font-size:12px;color:var(--ink-2)}
+.runway .f{width:76px;height:32px;color:var(--ink)}
+.launch{display:flex;justify-content:flex-end;gap:10px;padding:14px 20px;border-top:1px solid var(--rule);background:#eef3e9;border-radius:0 0 12px 12px}
+.run{position:relative;overflow:hidden}
+.serial{display:flex;justify-content:space-between;align-items:center;padding:16px 20px 0}
+.serial .no{color:var(--serial);font-size:22px;font-weight:700;letter-spacing:.06em}
+.badge{font-size:12px;font-weight:600;border-radius:99px;padding:3px 10px;background:#fbe9ea;color:#9b1c22;border:1px solid #efc2c4}
+.rosette{display:grid;grid-template-columns:150px 1fr;gap:16px;align-items:center;padding:8px 20px 6px}
+.counts{display:grid;grid-template-columns:1fr 1fr;gap:10px 18px}
+.counts b{display:block;white-space:nowrap;font-size:40px;line-height:1;font-weight:700;letter-spacing:-.02em}
+.counts span{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
+.step{margin:4px 20px 16px;padding:10px 12px;border-radius:8px;background:#fff;border:1px dashed var(--rule);font-size:13px}
+.note{margin:0 20px 18px;padding:10px 12px;border-radius:8px;background:#fff7e6;border:1px solid #f0d7a5;font-size:12px;color:#6b4705}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+th{text-align:left;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2);font-weight:600;padding:8px 12px;border-bottom:1px solid var(--rule)}
+td{padding:7px 12px;border-bottom:1px solid #e3e9dc;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:280px}
+.results{grid-column:1/3}
+</style></head>
+<body>
+<aside>
+  <div class="brand"><i>PK</i>PK-Hub</div>
+  <div class="grp">Portals</div>
+  <div class="portal"><b>PPRA Pakistan</b><small>Federal EPMS</small></div>
+  <div class="portal on"><b>PPRA Punjab</b><small>e-Proc Active Tenders</small><span class="live mono">PB-0042</span></div>
+  <div class="side-foot">2 runs in flight · 1 of 2 slots free</div>
+</aside>
+<div>
+<header>
+  <a class="on">Console</a><a>History</a><a>Downloads</a><span class="sp"></span>
+  <span class="btn">API docs</span>
+</header>
+<main>
+  <section class="card">
+    <div class="hd"><h2>Punjab search</h2><p>Reads every open tender on eproc.punjab.gov.pk, keeps the matches</p></div>
+    <div class="grid">
+      <div><label>Procurement type</label><div class="f v">Goods <span>▾</span></div></div>
+      <div><label>Procurement title</label><div class="f">All titles <span>▾</span></div></div>
+      <div><label>Publish date from</label><div class="f v">06 Nov 2026</div></div>
+      <div class="span2"><label>Department</label><div class="f">All departments <span>▾</span></div></div>
+      <div><label>Publish date to</label><div class="f v">18 Nov 2026</div></div>
+    </div>
+    <div class="runway">Min. days until closing <span class="f mono">9</span> Skip tenders closing in under 9 days <span style="flex:1"></span>☑ Exclude Sales/Auction/Disposal</div>
+    <div class="launch"><span class="btn stop">■ Stop</span><span class="btn warn">❚❚ Pause</span><span class="btn">Live preview</span><span class="btn pri">▶ Start Punjab run</span></div>
+  </section>
+  <section class="card run">
+    <div class="serial"><span class="no mono">PB-0042</span><span class="badge">Running</span></div>
+    <div class="rosette">
+      <svg viewBox="-75 -75 150 150" width="150" height="150" aria-hidden="true">
+        <defs><ellipse id="e" rx="62" ry="24" fill="none" stroke="#12402f" stroke-width=".6"/><ellipse id="r" rx="62" ry="24" fill="none" stroke="#c4262e" stroke-width=".8"/></defs>
+        <g opacity=".85">
+          <use href="#r"/><use href="#r" transform="rotate(15)"/><use href="#r" transform="rotate(30)"/><use href="#r" transform="rotate(45)"/><use href="#r" transform="rotate(60)"/><use href="#r" transform="rotate(75)"/><use href="#r" transform="rotate(90)"/><use href="#r" transform="rotate(105)"/><use href="#r" transform="rotate(120)"/><use href="#r" transform="rotate(135)"/>
+          <use href="#e" transform="rotate(150)"/><use href="#e" transform="rotate(165)"/>
+        </g>
+        <circle r="70" fill="none" stroke="#cfd9c6" stroke-dasharray="2 3"/>
+        <text y="5" text-anchor="middle" font-family="Red Hat Mono" font-size="15" font-weight="700" fill="#18231d">6/8</text>
+      </svg>
+      <div class="counts">
+        <div><b class="mono">612</b><span>Tenders read</span></div>
+        <div><b class="mono">31</b><span>Kept</span></div>
+        <div><b class="mono">14</b><span>Auctions removed</span></div>
+        <div><b class="mono">2m 41s</b><span>Elapsed</span></div>
+      </div>
+    </div>
+    <div class="step">Reading page 6 of 8 · each ring of the rosette is one page</div>
+    <div class="note">1 closing sooner than 9 days was skipped.</div>
+  </section>
+  <section class="card results">
+    <div class="hd"><h2>Kept so far <span class="mono" style="color:#4a5a4f">31</span></h2><p>Newest first · filter rows</p></div>
+    <table><thead><tr><th>Tender ID</th><th>Title</th><th>Department</th><th>Type</th><th>Closing</th><th>Documents</th></tr></thead><tbody>
+      <tr><td class="mono">259234</td><td>Framework Contract for the Procurement of Stationery</td><td>University of Health Sciences, Lahore</td><td>Goods</td><td class="mono">02 Dec 2026</td><td>Notice · Bidding</td></tr>
+      <tr><td class="mono">259232</td><td>Procurement of Echocardiography Machine</td><td>Pakistan Kidney Liver Institute</td><td>Goods</td><td class="mono">01 Dec 2026</td><td>Notice · Bidding</td></tr>
+      <tr><td class="mono">259227</td><td>Supply of I.T Equipments for the use of WASA Khanewal</td><td>Water and Sanitation Agency, Khanewal</td><td>Goods</td><td class="mono">28 Nov 2026</td><td>Notice</td></tr>
+    </tbody></table>
+  </section>
+</main>
+</div>
+</body></html>

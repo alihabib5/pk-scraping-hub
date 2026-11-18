@@ -3,36 +3,28 @@ import type { Portal } from "@/lib/api";
 export interface PortalMeta {
   key: Portal;
   label: string;
+  /** Two-letter prefix on every run serial from this portal. */
+  code: string;
   tagline: string;
   description: string;
-  accent: {
-    tile: string;
-    dot: string;
-  };
 }
 
 export const PORTALS: PortalMeta[] = [
   {
     key: "ppra",
     label: "PPRA Pakistan",
-    tagline: "Federal e-Procurement active tenders",
+    code: "PK",
+    tagline: "Federal EPMS",
     description:
       "Automate public tender discovery across Pakistan's federal e-Procurement system (EPMS), filter by organization, sector, category and closing date, and export all matching active notices into structured Excel workbooks.",
-    accent: {
-      tile: "bg-emerald-50 text-emerald-800 ring-emerald-200",
-      dot: "bg-emerald-500",
-    },
   },
   {
     key: "punjab",
     label: "PPRA Punjab",
-    tagline: "Punjab e-Procurement live tenders",
+    code: "PB",
+    tagline: "e-Proc Active Tenders",
     description:
       "Collect live tenders from the Punjab e-Procurement portal, filter by type, title, department and closing date, leave out auctions, and export every match with its notice and bidding document links into structured Excel workbooks.",
-    accent: {
-      tile: "bg-sky-50 text-sky-800 ring-sky-200",
-      dot: "bg-sky-500",
-    },
   },
 ];
 
@@ -46,4 +38,19 @@ export function portalMeta(portal: Portal): PortalMeta {
 
 export function pluralize(count: number, singular: string, plural: string): string {
   return count === 1 ? `${count} ${singular}` : `${count} ${plural}`;
+}
+
+/**
+ * A run's serial, printed like a security document's: the portal's code and
+ * the run id in groups of four. `PB · C5C9 F5F7 64BD`. The run id is the
+ * server's own; nothing here is invented.
+ */
+export function runSerial(portal: Portal, runId: string): string {
+  const groups = runId.toUpperCase().match(/.{1,4}/g) ?? [runId];
+  return `${portalMeta(portal).code} · ${groups.join(" ")}`;
+}
+
+/** The short form for chips and narrow rows: `PB-C5C9`. */
+export function runSerialShort(portal: Portal, runId: string): string {
+  return `${portalMeta(portal).code}-${runId.slice(0, 4).toUpperCase()}`;
 }

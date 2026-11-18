@@ -2,10 +2,13 @@
 
 import { useEffect, useState } from "react";
 
-import RunStatusPanel from "@/components/RunStatus";
+import RunStatusPanel, { IdleRunSheet } from "@/components/RunStatus";
 import PpraResults from "@/components/PpraResults";
 import {
+  Button,
   Card,
+  CheckboxField,
+  ClosingRunwayField,
   ErrorBanner,
   Field,
   LaunchBar,
@@ -149,15 +152,37 @@ export default function PpraPanel() {
       ),
     );
 
+  const launchBar = (
+    <LaunchBar summary="PPRA active tenders scraper ready with cooperative pause/resume and live tracking.">
+      <>
+        <StopButton run={run} onError={setError} />
+        <LiveMonitor run={run} portal="ppra" />
+        <ScraperControls run={run} onError={setError} onStatusChange={applyStatus} />
+        <RefreshButton run={run} hasSession={hasSession} onReset={reset} />
+        <StartButton
+          onClick={handleStart}
+          disabled={starting || isRunning}
+          running={isRunning}
+          starting={starting}
+        >
+          Start PPRA Scrape
+        </StartButton>
+      </>
+    </LaunchBar>
+  );
+
   return (
     <div className="space-y-6">
       {error && <ErrorBanner message={error} />}
 
+      {/* Search sheet beside the run sheet on wide screens; stacked below that. */}
+      <div className="grid items-start gap-6 xl:grid-cols-[minmax(0,1fr)_440px]">
       <Card
+        footer={launchBar}
         title="PPRA Search & Filter Criteria"
         description="Filter active federal tenders published by the Public Procurement Regulatory Authority (epms.ppra.gov.pk)."
         actions={
-          <div className="flex items-center gap-2 text-xs text-ink-500">
+          <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-ink-500">
             <span>
               {!lists
                 ? "Loading lists…"
@@ -165,15 +190,16 @@ export default function PpraPanel() {
                   ? `Lists from the site, ${formatTimestamp(lists.refreshed_at)}`
                   : "Built-in lists"}
             </span>
-            <button
-              type="button"
+            <Button
+              variant="ghost"
+              size="sm"
               onClick={reloadLists}
-              disabled={refreshingLists || isRunning}
+              loading={refreshingLists}
+              disabled={isRunning}
               title="Re-read every dropdown from epms.ppra.gov.pk"
-              className="rounded-md px-2 py-1 font-medium text-ink-600 transition hover:bg-ink-50 hover:text-ink-900 disabled:cursor-not-allowed disabled:opacity-40"
             >
               {refreshingLists ? "Refreshing…" : "Refresh lists"}
-            </button>
+            </Button>
           </div>
         }
       >
@@ -246,59 +272,19 @@ export default function PpraPanel() {
           />
         </div>
 
-        <div className="mt-4 flex items-center gap-3 border-t border-ink-100 pt-4">
-          <label className="shrink-0 text-xs font-medium text-ink-700">Min. days until closing</label>
-          <input
-            type="number"
-            min={0}
-            max={365}
-            value={closingRunwayDays ?? ""}
-            onChange={(e) => {
-              const v = e.target.value;
-              setClosingRunwayDays(v === "" ? null : Math.min(365, Math.max(0, parseInt(v, 10) || 0)));
-            }}
+        <ClosingRunwayField days={closingRunwayDays} onChange={setClosingRunwayDays} disabled={isRunning}>
+          <CheckboxField
+            label="Exclude Karachi"
+            checked={excludeKarachi}
+            onChange={setExcludeKarachi}
             disabled={isRunning}
-            placeholder="off"
-            className="w-24 rounded-lg border border-ink-200 bg-white px-3 py-1.5 text-xs text-ink-800 focus:border-ink-400 focus:outline-none"
           />
-          <span className="text-xs text-ink-500">
-            {closingRunwayDays === null
-              ? "Filter off — all tenders included"
-              : closingRunwayDays === 0
-                ? "All tenders (0-day minimum)"
-                : `Skip tenders closing in < ${closingRunwayDays} day${closingRunwayDays !== 1 ? "s" : ""}`}
-          </span>
-          <label className="ml-auto flex items-center gap-2 text-xs font-medium text-ink-700">
-            <input
-              type="checkbox"
-              checked={excludeKarachi}
-              onChange={(e) => setExcludeKarachi(e.target.checked)}
-              disabled={isRunning}
-              className="h-4 w-4 rounded border-ink-300"
-            />
-            Exclude Karachi
-          </label>
-        </div>
+        </ClosingRunwayField>
       </Card>
+      {run ? <RunStatusPanel run={run} /> : <IdleRunSheet portal="ppra" />}
+      </div>
 
-      <LaunchBar summary="PPRA active tenders scraper ready with cooperative pause/resume and live tracking.">
-        <div className="flex items-center gap-2">
-          <StopButton run={run} onError={setError} />
-          <LiveMonitor run={run} portal="ppra" />
-          <ScraperControls run={run} onError={setError} onStatusChange={applyStatus} />
-          <RefreshButton run={run} hasSession={hasSession} onReset={reset} />
-          <StartButton
-            onClick={handleStart}
-            disabled={starting || isRunning}
-            running={isRunning}
-            starting={starting}
-          >
-            Start PPRA Scrape
-          </StartButton>
-        </div>
-      </LaunchBar>
 
-      {run && <RunStatusPanel run={run} />}
       <SessionActivity portal="ppra" />
       {run && <PpraResults key={run.run_id} runId={run.run_id} />}
     </div>

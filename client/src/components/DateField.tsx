@@ -10,8 +10,8 @@ import { Button, CONTROL } from "@/components/ui";
  * with the rest of the form.
  *
  * Shape: the rounded-selected-day calendar (shadcn "calendar-13"), recoloured
- * for PK-Hub. Navy marks the chosen day because navy is this app's committing
- * colour; gold ring marks today because gold is accent only. Day circles are
+ * for PK-Hub. Intaglio green fills the chosen day because it is this app's
+ * committing colour; a green ring marks today. Day circles are
  * 36px and the card is 288px so it sits comfortably under a `text-sm` control.
  *
  * The value stays a plain "YYYY-MM-DD" string ("" = no date), exactly what the
@@ -48,13 +48,13 @@ export function formatDate(iso: string): string {
 }
 
 const NAV_BUTTON =
-  "flex h-8 w-8 items-center justify-center rounded-full text-ink-600 transition hover:bg-ink-50 hover:text-ink-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold-500";
+  "flex h-8 w-8 items-center justify-center rounded-full text-ink-600 transition hover:bg-ink-50 hover:text-ink-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-intaglio-700";
 
 function dayClass(selected: boolean, today: boolean, outside: boolean): string {
   const base =
-    "mx-auto flex h-9 w-9 items-center justify-center rounded-full text-sm transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-gold-500";
-  if (selected) return `${base} bg-ink-900 font-semibold text-white hover:bg-ink-800`;
-  if (today) return `${base} font-semibold text-ink-900 ring-2 ring-inset ring-gold-500 hover:bg-gold-50`;
+    "mx-auto flex h-9 w-9 items-center justify-center rounded-full text-sm transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-intaglio-700";
+  if (selected) return `${base} bg-intaglio-900 font-semibold text-white hover:bg-intaglio-800`;
+  if (today) return `${base} font-semibold text-ink-900 ring-2 ring-inset ring-intaglio-700 hover:bg-intaglio-50`;
   return `${base} font-medium ${outside ? "text-ink-500" : "text-ink-900"} hover:bg-ink-100`;
 }
 
@@ -192,7 +192,7 @@ export default function DateField({
           onClick={() => (open ? close(true) : openPicker())}
           className={`${CONTROL} flex items-center justify-between gap-2 text-left`}
         >
-          <span className={value ? "" : "text-ink-400"}>{formatDate(value) || placeholder}</span>
+          <span className={value ? "" : "text-ink-500"}>{formatDate(value) || placeholder}</span>
           <svg viewBox="0 0 24 24" className="h-4 w-4 shrink-0 text-ink-500" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden>
             <path d="M5 5h14v15H5zM5 10h14M9 3v4M15 3v4" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
@@ -204,7 +204,7 @@ export default function DateField({
             role="dialog"
             aria-label={`Choose ${label.toLowerCase()}`}
             onKeyDown={onKeyDown}
-            className={`absolute z-30 mt-1 w-72 rounded-[1.75rem] border border-ink-200 bg-white p-3 shadow-lg shadow-ink-900/[0.08] ${
+            className={`absolute z-30 mt-1 w-72 rounded-2xl border border-ink-200 bg-sheet p-3 shadow-lg shadow-ink-900/[0.08] ${
               alignRight ? "right-0" : "left-0"
             }`}
           >
@@ -238,11 +238,11 @@ export default function DateField({
                           setView("days");
                           refocus.current = true;
                         }}
-                        className={`h-10 rounded-full text-sm transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold-500 ${
+                        className={`h-10 rounded-full text-sm transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-intaglio-700 ${
                           selected
-                            ? "bg-ink-900 font-semibold text-white hover:bg-ink-800"
+                            ? "bg-intaglio-900 font-semibold text-white hover:bg-intaglio-800"
                             : thisMonth
-                              ? "font-semibold text-ink-900 ring-2 ring-inset ring-gold-500 hover:bg-gold-50"
+                              ? "font-semibold text-ink-900 ring-2 ring-inset ring-intaglio-700 hover:bg-intaglio-50"
                               : "font-medium text-ink-900 hover:bg-ink-100"
                         }`}
                       >
@@ -266,7 +266,7 @@ export default function DateField({
                       refocus.current = true;
                     }}
                     aria-label={`${MONTHS[month]} ${year}, choose month`}
-                    className="rounded-full px-3 py-1 font-display text-base text-ink-900 transition hover:bg-ink-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold-500"
+                    className="rounded-full px-3 py-1 font-display text-base text-ink-900 transition hover:bg-ink-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-intaglio-700"
                   >
                     {MONTHS[month]} {year}
                   </button>

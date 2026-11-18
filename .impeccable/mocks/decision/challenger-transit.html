@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<title>PK-Hub · Transit Line</title>
+<link href="https://fonts.googleapis.com/css2?family=Overpass:wght@400;600;700;800&family=Overpass+Mono:wght@600&display=swap" rel="stylesheet">
+<style>
+:root{--mid:#13224a;--mid-2:#1c2f63;--porc:#f6f5f0;--ink:#121a33;--ink-2:#4a5374;--hair:#d9d8d0;--scarlet:#d6332b;--cobalt:#2f5bd3;--amber:#e6a817;--green:#2e9a5b}
+*{box-sizing:border-box;margin:0}
+body{width:1440px;height:900px;overflow:hidden;background:var(--porc);color:var(--ink);font:14px/1.45 Overpass,sans-serif;display:grid;grid-template-columns:240px 1fr}
+.mono{font-family:"Overpass Mono",monospace}
+aside{background:var(--mid);color:#e8ecf7;padding:22px 0}
+.brand{padding:0 22px 26px;font-weight:800;font-size:18px;display:flex;gap:10px;align-items:center}
+.brand i{width:26px;height:26px;border-radius:50%;background:#fff;border:6px solid var(--cobalt)}
+.line{display:flex;align-items:center;gap:12px;padding:12px 22px;font-weight:600}
+.line i{width:28px;height:8px;border-radius:4px}
+.line.on{background:var(--mid-2)}
+.line small{display:block;font-weight:400;font-size:12px;color:#aeb8d6}
+header{display:flex;align-items:center;gap:6px;padding:0 32px;height:60px;border-bottom:1px solid var(--hair);background:#fff}
+header span{padding:8px 14px;border-radius:99px;font-weight:600;color:var(--ink-2)}
+header .on{background:var(--mid);color:#fff}
+main{padding:22px 32px;display:grid;grid-template-columns:1fr 1fr;gap:22px;align-content:start}
+.card{background:#fff;border:1px solid var(--hair);border-radius:14px;padding:18px 20px}
+.card h2{font-size:16px;font-weight:800;margin-bottom:12px;display:flex;align-items:center;gap:10px}
+.card h2 i{width:22px;height:6px;border-radius:3px;background:var(--cobalt)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px 14px}
+label{display:block;font-size:12px;font-weight:700;margin-bottom:4px}
+.f{height:38px;border:1.5px solid var(--hair);border-radius:10px;padding:0 12px;display:flex;align-items:center;justify-content:space-between;color:var(--ink-2)}
+.f.v{color:var(--ink)}
+.full{grid-column:1/3}
+.acts{display:flex;justify-content:flex-end;gap:10px;margin-top:14px}
+.b{padding:9px 16px;border-radius:99px;border:1.5px solid var(--hair);font-weight:700;background:#fff}
+.b.pri{background:var(--mid);border-color:var(--mid);color:#fff}
+.journey{grid-column:1/3}
+.track{position:relative;height:120px;margin:6px 10px 0}
+.track .rail{position:absolute;left:0;right:0;top:40px;height:10px;border-radius:5px;background:#dfe3ee}
+.track .done{position:absolute;left:0;width:72%;top:40px;height:10px;border-radius:5px;background:var(--cobalt)}
+.st{position:absolute;top:31px;width:28px;height:28px;margin-left:-14px;border-radius:50%;background:#fff;border:5px solid #c9cfdf}
+.st.v{border-color:var(--cobalt)}.st.now{border-color:var(--cobalt);box-shadow:0 0 0 6px rgba(47,91,211,.2)}
+.st b{position:absolute;top:36px;left:50%;transform:translateX(-50%);white-space:nowrap;font-size:12px;font-weight:700}
+.st small{position:absolute;top:-24px;left:50%;transform:translateX(-50%);white-space:nowrap;font-size:11px;color:var(--ink-2)}
+.counts{display:flex;gap:40px;margin-top:4px}
+.counts b{display:block;font-size:34px;font-weight:800;line-height:1}
+.counts span{font-size:12px;color:var(--ink-2)}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+th{text-align:left;font-size:11px;font-weight:700;color:var(--ink-2);padding:6px 10px;border-bottom:2px solid var(--mid)}
+td{padding:7px 10px;border-bottom:1px solid #ecebe5;white-space:nowrap}
+</style></head>
+<body>
+<aside>
+  <div class="brand"><i></i>PK-Hub</div>
+  <div class="line"><i style="background:var(--green)"></i><div>PPRA Pakistan<small>Federal line</small></div></div>
+  <div class="line on"><i style="background:var(--cobalt)"></i><div>PPRA Punjab<small>1 run on the line</small></div></div>
+</aside>
+<div>
+<header><span class="on">Console</span><span>History</span><span>Downloads</span></header>
+<main>
+  <section class="card">
+    <h2><i></i>Punjab search</h2>
+    <div class="grid">
+      <div><label>Procurement type</label><div class="f v">Goods ▾</div></div>
+      <div><label>Procurement title</label><div class="f">All titles ▾</div></div>
+      <div class="full"><label>Department</label><div class="f">All departments ▾</div></div>
+      <div><label>Published from</label><div class="f v">06 Nov 2026</div></div>
+      <div><label>Published to</label><div class="f v">18 Nov 2026</div></div>
+    </div>
+    <div class="acts"><span class="b">Stop</span><span class="b">Pause</span><span class="b pri">Start Punjab run</span></div>
+  </section>
+  <section class="card">
+    <h2>Kept so far · 31</h2>
+    <table><thead><tr><th>Tender ID</th><th>Title</th><th>Closing</th></tr></thead><tbody>
+      <tr><td class="mono">259234</td><td>Framework Contract for Stationery</td><td>02 Dec 2026</td></tr>
+      <tr><td class="mono">259232</td><td>Echocardiography Machine</td><td>01 Dec 2026</td></tr>
+      <tr><td class="mono">259227</td><td>I.T Equipments, WASA Khanewal</td><td>28 Nov 2026</td></tr>
+      <tr><td class="mono">259226</td><td>Tender Notice, Highways Division</td><td>27 Nov 2026</td></tr>
+      <tr><td class="mono">259223</td><td>SSP/PHP Lahore Region</td><td>30 Nov 2026</td></tr>
+    </tbody></table>
+  </section>
+  <section class="card journey">
+    <h2><i></i>Run PB-0042 · Punjab line</h2>
+    <div class="track">
+      <div class="rail"></div><div class="done"></div>
+      <div class="st v" style="left:0%"><small>21:02</small><b>Queued</b></div>
+      <div class="st v" style="left:12%"><small>21:02</small><b>Opening portal</b></div>
+      <div class="st v" style="left:24%"><b>Page 1</b></div>
+      <div class="st v" style="left:36%"><b>Page 2</b></div>
+      <div class="st v" style="left:48%"><b>Page 4</b></div>
+      <div class="st now" style="left:72%"><small>now</small><b>Page 6 of 8</b></div>
+      <div class="st" style="left:86%"><b>Packaging Excel</b></div>
+      <div class="st" style="left:100%"><b>Arrived</b></div>
+    </div>
+    <div class="counts"><div><b>612</b><span>tenders read</span></div><div><b>31</b><span>kept</span></div><div><b>14</b><span>auctions removed</span></div><div><b>2m 41s</b><span>on the line</span></div></div>
+  </section>
+</main>
+</div>
+</body></html>

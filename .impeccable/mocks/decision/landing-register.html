@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>PK-Hub · The register</title>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=Red+Hat+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{--g:#12402f;--g9:#0b2e21;--g8:#1d5a43;--stamp:#eef2e6;--sheet:#f8faf4;--rule:#cfd9c6;--ink:#18231d;--ink6:#4a5a4f;--red:#c4262e;--ochre:#d9a441}
+*{box-sizing:border-box;margin:0}
+body{width:1440px;height:900px;overflow:hidden;background:var(--stamp);color:var(--ink);font:15px/1.5 "Hanken Grotesk",sans-serif}
+.mono{font-family:"Red Hat Mono",monospace;font-variant-numeric:tabular-nums}
+.band{background:var(--g);color:#fff;padding:0 64px 40px}
+.bar{height:64px;display:flex;align-items:center;gap:32px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:18px}
+.seal{width:32px;height:32px;border-radius:50%;background:var(--g9);border:1.5px solid var(--ochre)}
+.bar nav{display:flex;gap:28px;color:#c9e8d4;font-weight:500}.bar .sp{flex:1}
+.cta{background:#fff;color:var(--g);font-weight:700;padding:10px 18px;border-radius:8px}
+.hero{display:flex;align-items:flex-end;justify-content:space-between;gap:40px;margin-top:36px}
+h1{font-size:60px;line-height:1.02;letter-spacing:-.03em;font-weight:800;max-width:780px}
+h1 span{color:#9fd6b6}
+.hero p{max-width:440px;color:#c9e8d4;font-size:16px}
+.reg{margin:-1px 64px 0;background:var(--sheet);border:1px solid var(--rule);border-top:0;border-radius:0 0 12px 12px}
+.reghead{display:flex;justify-content:space-between;align-items:baseline;padding:18px 24px;border-bottom:1px solid var(--rule)}
+.reghead h2{font-size:15px;font-weight:700}
+.reghead span{font-size:13px;color:var(--ink6)}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink6);padding:10px 24px;border-bottom:1px solid var(--rule)}
+td{padding:12px 24px;border-bottom:1px solid #e2e9db;font-size:14px}
+td.n{text-align:right}th.n{text-align:right}
+.ser{font-weight:700}
+tr.new td{padding:20px 24px}
+tr.new .big{font-size:36px;font-weight:700;line-height:1}
+.badge{font-size:12px;font-weight:600;border-radius:99px;padding:3px 10px;background:#f1f8f3;color:#12402f;border:1px solid #c9e8d4}
+.open{font-weight:700;color:var(--g8);text-decoration:underline;text-underline-offset:4px}
+</style></head><body>
+<div class="band">
+  <div class="bar"><span class="brand"><span class="seal"></span>PK-Hub</span><nav><span>Portals</span><span>How a run works</span><span>API docs</span></nav><span class="sp"></span><span class="cta">Open console →</span></div>
+  <div class="hero"><h1>Every public bid.<br><span>Found automatically.</span></h1><p>PK-Hub runs the tender searches on Pakistan's federal and Punjab portals, page by page, and issues each run as a numbered spreadsheet. This is the register.</p></div>
+</div>
+<section class="reg">
+  <div class="reghead"><h2>Run register · latest six of 65</h2><span>Read = tenders the portal listed · Kept = after your filters</span></div>
+  <table><thead><tr><th>Serial</th><th>Portal</th><th>Issued</th><th>Status</th><th class="n">Read</th><th class="n">Kept</th><th></th></tr></thead><tbody>
+    <tr class="new"><td class="mono ser">PB · AE89 91F3 9472</td><td>PPRA Punjab</td><td class="mono">18 Nov 2026, 21:38</td><td><span class="badge">Completed</span></td><td class="n mono big">765</td><td class="n mono big">101</td><td class="open">Open</td></tr>
+    <tr><td class="mono ser">PK · A528 9E87 887D</td><td>PPRA Pakistan</td><td class="mono">18 Nov 2026, 21:37</td><td><span class="badge">Completed</span></td><td class="n mono">91</td><td class="n mono">82</td><td class="open">Open</td></tr>
+    <tr><td class="mono ser">PB · C5C9 C5F7 64BD</td><td>PPRA Punjab</td><td class="mono">17 Nov 2026, 19:57</td><td><span class="badge">Completed</span></td><td class="n mono">775</td><td class="n mono">39</td><td class="open">Open</td></tr>
+    <tr><td class="mono ser">PK · DC57 719D 9134</td><td>PPRA Pakistan</td><td class="mono">17 Nov 2026, 19:51</td><td><span class="badge">Completed</span></td><td class="n mono">46</td><td class="n mono">38</td><td class="open">Open</td></tr>
+    <tr><td class="mono ser">PB · 6198 F80F 479E</td><td>PPRA Punjab</td><td class="mono">16 Nov 2026, 20:18</td><td><span class="badge">Completed</span></td><td class="n mono">787</td><td class="n mono">58</td><td class="open">Open</td></tr>
+    <tr><td class="mono ser">PK · 31A7 DA22 A43A</td><td>PPRA Pakistan</td><td class="mono">16 Nov 2026, 20:11</td><td><span class="badge">Completed</span></td><td class="n mono">99</td><td class="n mono">74</td><td class="open">Open</td></tr>
+  </tbody></table>
+</section>
+</body></html>

@@ -21,12 +21,12 @@ export async function fetchRunsState(portal: Portal, what: string): Promise<Runs
   }
 }
 
-/** `2026-07-17T00:29:11` → `17 Jul 2026, 00:29`. */
+/** `2026-07-17T00:29:11` → `17 Jul 2026, 00:29`, whatever the browser's locale. */
 export function formatTimestamp(value: string | null): string {
   if (!value) return "—";
   const date = new Date(value);
   if (Number.isNaN(date.getTime())) return value;
-  return date.toLocaleString(undefined, {
+  return date.toLocaleString("en-GB", {
     day: "2-digit",
     month: "short",
     year: "numeric",
@@ -34,6 +34,19 @@ export function formatTimestamp(value: string | null): string {
     minute: "2-digit",
   });
 }
+
+/** A date or date-time from the API (`2026-12-03`, `2026-12-03 11:00`) shown
+ *  as `03 Dec 2026` or `03 Dec 2026, 11:00`. Anything else passes through. */
+export function formatDay(value: string | null | undefined): string {
+  if (!value) return "—";
+  const m = /^(\d{4})-(\d{2})-(\d{2})(?:[ T](\d{2}:\d{2}))?/.exec(value);
+  if (!m) return value;
+  const month = MONTHS[Number(m[2]) - 1];
+  if (!month) return value;
+  return `${m[3]} ${month} ${m[1]}${m[4] ? `, ${m[4]}` : ""}`;
+}
+
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 /** Wall-clock length of a run, or "—" while it is still going. */
 export function formatDuration(run: RunStatus): string {

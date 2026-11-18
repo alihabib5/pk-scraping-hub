@@ -1,193 +1,121 @@
+import { ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { ArrowRight, Database, Moon } from "lucide-react";
 
-import LandingHero from "@/components/LandingHero";
+import IssueSheet from "@/components/IssueSheet";
+import Logo from "@/components/Logo";
+import RunStrip from "@/components/RunStrip";
+import { apiDocsUrl } from "@/lib/api";
+import { PORTALS } from "@/lib/portals";
+
+const NAV = [
+  { label: "Portals", href: "#portals" },
+  { label: "How a run works", href: "#how" },
+];
+
+const HOSTS: Record<string, string> = { ppra: "epms.ppra.gov.pk", punjab: "eproc.punjab.gov.pk" };
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-[#faf8f5] flex flex-col justify-between">
-      <LandingHero />
-
-      <main className="max-w-6xl mx-auto px-6 py-16 w-full flex-1">
-        {/* Portal Source Card Section */}
-        <section id="sources" className="mb-24">
-          <div className="mb-8">
-            <h2 className="font-serif text-3xl font-normal text-[#0f1f38] mb-2">
-              2 Pakistani portals, one console.
-            </h2>
-            <p className="text-xs md:text-sm text-zinc-500 max-w-2xl">
-              Federal and Punjab search filters, paging and closing dates, behind one interface.
-            </p>
-          </div>
-
-          <div className="grid gap-6 md:grid-cols-2">
-          <div className="bg-white border border-[#e8e4dc] rounded-2xl p-8 shadow-xs hover:border-zinc-300 transition-colors">
-            <div className="flex items-center justify-between mb-5">
-              <div className="w-10 h-10 rounded-xl bg-emerald-50 ring-1 ring-emerald-200/80 text-emerald-700 flex items-center justify-center">
-                <Moon className="w-5 h-5 fill-emerald-600/20 text-emerald-700" />
-              </div>
-              <Link
-                href="/console/ppra"
-                aria-label="Open the PPRA Pakistan console"
-                className="-m-2.5 flex h-10 w-10 items-center justify-center rounded-full text-zinc-400 transition-colors hover:bg-zinc-50 hover:text-zinc-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#b47834]"
-              >
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-            </div>
-
-            <h3 className="font-serif text-2xl font-normal text-[#0f1f38] mb-1">
-              PPRA Pakistan
-            </h3>
-            <div className="text-xs text-zinc-400 mb-4">
-              Public Procurement Regulatory Authority
-            </div>
-
-            <p className="text-xs md:text-sm text-zinc-600 leading-relaxed mb-6">
-              Automate public tender discovery across Pakistan's federal e-Procurement system (EPMS), filter by organization, sector, category and closing date, and export all matching active notices into structured Excel workbooks.
-            </p>
-
-            <div className="flex flex-wrap gap-2 mb-8">
-              {[
-                "Tender & Corrigendum grid",
-                "Multi-filter discovery",
-                "Live table tracking",
-                "Excel workbook",
-              ].map((badge) => (
-                <span
-                  key={badge}
-                  className="px-3 py-1 rounded-full text-[11px] font-medium bg-[#f0f6fa] text-[#245275] border border-[#dce8f0]"
-                >
-                  {badge}
-                </span>
-              ))}
-            </div>
-
-            <div className="text-xs font-mono text-zinc-400">
-              epms.ppra.gov.pk
-            </div>
-          </div>
-
-          <div className="bg-white border border-[#e8e4dc] rounded-2xl p-8 shadow-xs hover:border-zinc-300 transition-colors">
-            <div className="flex items-center justify-between mb-5">
-              <div className="w-10 h-10 rounded-xl bg-sky-50 ring-1 ring-sky-200/80 text-sky-700 flex items-center justify-center">
-                <Moon className="w-5 h-5 fill-sky-600/20 text-sky-700" />
-              </div>
-              <Link
-                href="/console/punjab"
-                aria-label="Open the PPRA Punjab console"
-                className="-m-2.5 flex h-10 w-10 items-center justify-center rounded-full text-zinc-400 transition-colors hover:bg-zinc-50 hover:text-zinc-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#b47834]"
-              >
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-            </div>
-
-            <h3 className="font-serif text-2xl font-normal text-[#0f1f38] mb-1">
-              PPRA Punjab
-            </h3>
-            <div className="text-xs text-zinc-400 mb-4">
-              Punjab Procurement Regulatory Authority
-            </div>
-
-            <p className="text-xs md:text-sm text-zinc-600 leading-relaxed mb-6">
-              Collect live tenders from the Punjab e-Procurement portal, filter by type, title, department and closing date, leave out auctions, and export every match with its PDF links into structured Excel workbooks.
-            </p>
-
-            <div className="flex flex-wrap gap-2 mb-8">
-              {[
-                "Auctions excluded",
-                "Notice & bidding PDFs",
-                "Live table tracking",
-                "Excel workbook",
-              ].map((badge) => (
-                <span
-                  key={badge}
-                  className="px-3 py-1 rounded-full text-[11px] font-medium bg-[#f0f6fa] text-[#245275] border border-[#dce8f0]"
-                >
-                  {badge}
-                </span>
-              ))}
-            </div>
-
-            <div className="text-xs font-mono text-zinc-400">
-              eproc.punjab.gov.pk
-            </div>
-          </div>
-          </div>
-        </section>
-
-        {/* How It Works Section */}
-        <section id="how-it-works" className="mb-24 pt-8 border-t border-[#e8e4dc]">
-          <div className="flex items-center gap-2 mb-4">
-            <span className="w-4 h-[1.5px] bg-[#b47834]" />
-            <span className="text-[11px] font-bold tracking-widest text-[#b47834] uppercase">
-              HOW IT WORKS
-            </span>
-          </div>
-
-          <h2 className="font-serif text-3xl font-normal text-[#0f1f38] mb-12">
-            Set the scope. Walk away.
-          </h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="border-t border-[#e8e4dc] pt-6">
-              <div className="font-serif text-sm font-medium text-[#b47834] mb-3">01</div>
-              <h3 className="font-serif text-lg text-[#0f1f38] mb-2 font-normal">
-                Choose a source and scope
-              </h3>
-              <p className="text-xs text-zinc-600 leading-relaxed">
-                Narrow by keyword, category, sector, organization, city or advertise date. Every filter mirrors the portal's own search.
-              </p>
-            </div>
-
-            <div className="border-t border-[#e8e4dc] pt-6">
-              <div className="font-serif text-sm font-medium text-[#b47834] mb-3">02</div>
-              <h3 className="font-serif text-lg text-[#0f1f38] mb-2 font-normal">
-                The crawler does the reading
-              </h3>
-              <p className="text-xs text-zinc-600 leading-relaxed">
-                A headless browser runs the search on epms.ppra.gov.pk and pages through every result, skipping tenders that close too soon.
-              </p>
-            </div>
-
-            <div className="border-t border-[#e8e4dc] pt-6">
-              <div className="font-serif text-sm font-medium text-[#b47834] mb-3">03</div>
-              <h3 className="font-serif text-lg text-[#0f1f38] mb-2 font-normal">
-                Take away a spreadsheet
-              </h3>
-              <p className="text-xs text-zinc-600 leading-relaxed">
-                Results land in the database and an Excel workbook named after your filters — with the run's full history kept so you can audit what happened.
-              </p>
-            </div>
-          </div>
-        </section>
-
-        {/* Midnight Callout Banner */}
-        <section className="bg-[#0f1f38] rounded-3xl p-12 md:p-16 text-center text-white shadow-md">
-          <h2 className="font-serif text-3xl md:text-4xl font-normal mb-4">
-            Stop reading procurement portals.
-          </h2>
-          <p className="text-xs md:text-sm text-zinc-300 max-w-xl mx-auto mb-8 leading-relaxed">
-            Pick a source, choose your keywords, and let the crawler bring the work back to you.
-          </p>
+    <div className="flex min-h-screen flex-col bg-stamp">
+      <header data-surface="dark" className="relative bg-intaglio-900 text-white">
+        <span aria-hidden className="absolute inset-x-0 bottom-0 h-1 [background-image:repeating-linear-gradient(90deg,var(--color-intaglio-700)_0_1px,transparent_1px_3px)]" />
+        <div className="mx-auto flex min-h-16 w-full max-w-[1312px] flex-wrap items-center gap-x-8 gap-y-2 px-4 py-3 sm:px-8 xl:px-16">
+          <Link href="/" className="flex items-center gap-2.5">
+            <Logo />
+            <span className="text-lg font-bold tracking-tight">PK-Hub</span>
+          </Link>
+          <nav aria-label="Primary" className="hidden items-center gap-7 text-[15px] font-medium text-intaglio-200 md:flex">
+            {NAV.map((l) => (
+              <a key={l.href} href={l.href} className="transition hover:text-white">
+                {l.label}
+              </a>
+            ))}
+            <a href={apiDocsUrl()} target="_blank" rel="noreferrer" className="transition hover:text-white">
+              API docs
+            </a>
+          </nav>
           <Link
             href="/console/ppra"
-            className="inline-flex min-h-11 items-center gap-2 px-6 py-2.5 rounded-lg bg-white hover:bg-zinc-100 text-[#0f1f38] text-xs font-semibold transition-colors"
+            className="ml-auto inline-flex min-h-10 items-center gap-1.5 rounded-lg bg-white px-4 text-sm font-bold text-intaglio-900 transition hover:bg-intaglio-50"
           >
-            Open console <ArrowRight className="w-3.5 h-3.5" />
+            Open console <ArrowRight className="h-4 w-4" aria-hidden />
           </Link>
+        </div>
+      </header>
+
+      <main className="flex-1">
+        <IssueSheet />
+
+        <section id="how" aria-labelledby="how-title" className="scroll-mt-6 border-t border-ink-200 bg-sheet">
+          <div className="mx-auto w-full max-w-[1312px] px-4 py-16 sm:px-8 xl:px-16">
+            <h2 id="how-title" className="font-display text-3xl tracking-tight text-intaglio-950">
+              How a run works
+            </h2>
+            <RunStrip />
+          </div>
+        </section>
+
+        <section id="portals" aria-labelledby="portals-title" className="scroll-mt-6 border-t border-ink-200">
+          <div className="mx-auto w-full max-w-[1312px] px-4 py-16 sm:px-8 xl:px-16">
+            <h2 id="portals-title" className="font-display text-3xl tracking-tight text-intaglio-950">
+              Two Pakistani portals, one console
+            </h2>
+            <ul className="mt-8 divide-y divide-ink-200 border-y border-ink-200">
+              {PORTALS.map((p) => (
+                <li key={p.key} className="grid gap-x-10 gap-y-3 py-8 md:grid-cols-[240px_minmax(0,1fr)_auto] md:items-start">
+                  <div>
+                    <p className="font-mono text-sm font-bold tracking-wide text-ink-500">{p.code}</p>
+                    <h3 className="mt-1 text-2xl font-bold tracking-tight text-ink-950">{p.label}</h3>
+                    <p className="mt-0.5 font-mono text-[13px] text-ink-600">{HOSTS[p.key]}</p>
+                  </div>
+                  <p className="max-w-[62ch] text-[15px] leading-relaxed text-ink-700">{p.description}</p>
+                  <Link
+                    href={`/console/${p.key}`}
+                    className="inline-flex min-h-11 items-center gap-1.5 justify-self-start rounded-lg bg-white px-4 text-sm font-bold text-intaglio-900 ring-1 ring-ink-200 transition hover:ring-intaglio-700 md:justify-self-end"
+                  >
+                    Open {p.label} <ArrowRight className="h-4 w-4" aria-hidden />
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+
+        <section data-surface="dark" className="bg-intaglio-900 text-white">
+          <div className="mx-auto flex w-full max-w-[1312px] flex-wrap items-center justify-between gap-6 px-4 py-14 sm:px-8 xl:px-16">
+            <div>
+              <h2 className="text-3xl font-bold tracking-tight md:text-4xl">Stop reading procurement portals.</h2>
+              <p className="mt-2 max-w-xl text-[15px] text-intaglio-200">
+                Pick a source, choose your keywords, and let the crawler bring the work back to you.
+              </p>
+            </div>
+            <Link
+              href="/console/ppra"
+              className="inline-flex min-h-12 items-center gap-2 rounded-lg bg-white px-6 text-base font-bold text-intaglio-900 transition hover:bg-intaglio-50"
+            >
+              Open console <ArrowRight className="h-4 w-4" aria-hidden />
+            </Link>
+          </div>
         </section>
       </main>
 
-      {/* Footer */}
-      <footer className="border-t border-[#e8e4dc] bg-white py-8 px-6">
-        <div className="max-w-6xl mx-auto flex items-center justify-between text-xs text-zinc-500">
-          <div className="flex items-center gap-2 font-semibold text-[#0f1f38]">
-            <div className="w-5 h-5 rounded bg-[#0f1f38] flex items-center justify-center text-white text-[10px]">
-              <Database className="w-3 h-3" />
-            </div>
-            Scraping Hub
-          </div>
-          <div>Automated bid collection for public procurement portals.</div>
+      <footer className="border-t border-ink-200 bg-sheet">
+        <div className="mx-auto flex w-full max-w-[1312px] flex-wrap items-center justify-between gap-x-6 gap-y-2 px-4 py-6 text-sm text-ink-600 sm:px-8 xl:px-16">
+          <span className="flex items-center gap-2 font-bold text-ink-950">
+            <Logo className="h-6 w-6" />
+            PK-Hub
+          </span>
+          <nav aria-label="Footer" className="flex flex-wrap gap-x-5 gap-y-1">
+            {NAV.map((l) => (
+              <a key={l.href} href={l.href} className="underline-offset-4 hover:text-ink-950 hover:underline">
+                {l.label}
+              </a>
+            ))}
+            <a href={apiDocsUrl()} target="_blank" rel="noreferrer" className="underline-offset-4 hover:text-ink-950 hover:underline">
+              API docs
+            </a>
+          </nav>
+          <span className="basis-full text-ink-500 sm:basis-auto">Automated bid collection for Pakistan&apos;s public procurement portals.</span>
         </div>
       </footer>
     </div>

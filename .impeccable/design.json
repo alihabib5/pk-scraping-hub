@@ -1,0 +1,149 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-18T00:00:00Z",
+  "title": "Design System: PK-Hub",
+  "extensions": {
+    "colorMeta": {
+      "intaglio-900": { "role": "primary", "displayName": "Intaglio Green", "canonical": "#12402f", "tonalRamp": ["#0b2e21", "#12402f", "#1d5a43", "#2c6b52", "#9fd6b6", "#c9e8d4", "#e3f2e8", "#f1f8f3"] },
+      "intaglio-950": { "role": "primary", "displayName": "Deep Intaglio", "canonical": "#0b2e21" },
+      "intaglio-800": { "role": "primary", "displayName": "Engraver's Green", "canonical": "#1d5a43" },
+      "intaglio-700": { "role": "primary", "displayName": "Engraver's Green (focus)", "canonical": "#2c6b52" },
+      "intaglio-50": { "role": "primary", "displayName": "Validation Tint", "canonical": "#f1f8f3" },
+      "serial-600": { "role": "secondary", "displayName": "Serial Red", "canonical": "#c4262e", "tonalRamp": ["#9b1c22", "#c4262e", "#efc2c4", "#fbe9ea"] },
+      "ochre-400": { "role": "tertiary", "displayName": "Seal Ochre", "canonical": "#d9a441", "tonalRamp": ["#7a5410", "#9a6b12", "#c08a2a", "#d9a441", "#e8c27a", "#f2dcae", "#f8ecd3", "#fcf6ea"] },
+      "stamp": { "role": "neutral", "displayName": "Stamp Paper", "canonical": "#eef2e6" },
+      "sheet": { "role": "neutral", "displayName": "Sheet", "canonical": "#f8faf4" },
+      "ink-900": { "role": "neutral", "displayName": "Ink", "canonical": "#18231d", "tonalRamp": ["#0d1712", "#18231d", "#24332b", "#34463c", "#4a5a4f", "#5a6a5f", "#879587", "#b3c0b2", "#cfd9c6", "#e2e9db", "#f1f5ec"] },
+      "ink-200": { "role": "neutral", "displayName": "Hairline", "canonical": "#cfd9c6" },
+      "hold-amber-800": { "role": "status", "displayName": "Hold Amber", "canonical": "oklch(47.3% 0.137 46.201)" },
+      "fault-red-800": { "role": "status", "displayName": "Fault Red", "canonical": "oklch(44.4% 0.177 26.899)" }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Page titles (Run history, Run detail)." },
+      "headline": { "displayName": "Sheet title", "purpose": "Card, table caption and empty-state titles." },
+      "body": { "displayName": "Body", "purpose": "Form text, notices, step lines." },
+      "table": { "displayName": "Table", "purpose": "Results and register tables." },
+      "label": { "displayName": "Label", "purpose": "Uppercase column heads, stat labels, rail group heading." },
+      "serial": { "displayName": "Serial", "purpose": "Run serial heading, e.g. PB · C5C9 F5F7 64BD." },
+      "count": { "displayName": "Count", "purpose": "Poster-scale run counts on the run sheet." },
+      "data-mono": { "displayName": "Data mono", "purpose": "Dates, durations, slot counts, chips, log lines." }
+    },
+    "shadows": [
+      { "name": "sheet-rest", "value": "0 1px 3px 0 rgb(24 35 29 / 0.03), 0 1px 2px -1px rgb(24 35 29 / 0.03)", "purpose": "Cards, run sheets, tables." },
+      { "name": "control-rest", "value": "0 1px 2px 0 rgb(0 0 0 / 0.05)", "purpose": "Inputs and secondary buttons." },
+      { "name": "primary-press", "value": "0 1px 3px 0 rgb(11 46 33 / 0.2)", "purpose": "Primary button." },
+      { "name": "float", "value": "0 10px 15px -3px rgb(24 35 29 / 0.08), 0 4px 6px -4px rgb(24 35 29 / 0.08)", "purpose": "Date popover and option list." },
+      { "name": "jobs-bar", "value": "0 -4px 16px rgba(11,46,33,0.18)", "purpose": "Sticky jobs bar over scrolled content." }
+    ],
+    "motion": [
+      { "name": "ring-trace", "value": "1.2s cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "Newest rosette ring traces in once as its page lands; off under reduced motion." },
+      { "name": "status-pulse", "value": "1.8s ease-in-out infinite", "purpose": "Live status dots (opacity 1 to 0.45, scale 1 to 0.88); off under reduced motion; never on paused runs." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "lg", "value": "1024px", "purpose": "Rail appears; mobile switcher hides; launch row stops being sticky." },
+      { "name": "xl", "value": "1280px", "purpose": "Search sheet and 440px run sheet sit side by side." }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The one committing action on a view: Start, Download Excel.",
+      "html": "<button class=\"ds-btn-primary\"><svg viewBox=\"0 0 16 16\" width=\"14\" height=\"14\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"M4 3.5v9a.5.5 0 0 0 .77.42l7-4.5a.5.5 0 0 0 0-.84l-7-4.5A.5.5 0 0 0 4 3.5Z\"/></svg>Start scraper</button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; gap: 8px; padding: 12px 20px; border: 0; border-radius: 8px; background: var(--color-intaglio-900, #12402f); color: #fff; box-shadow: 0 0 0 1px var(--color-intaglio-900, #12402f), 0 1px 3px 0 rgb(11 46 33 / 0.2); font: 600 14px 'Hanken Grotesk', system-ui, sans-serif; cursor: pointer; transition: background 0.15s, box-shadow 0.15s; } .ds-btn-primary:hover { background: var(--color-intaglio-800, #1d5a43); box-shadow: 0 0 0 1px var(--color-intaglio-800, #1d5a43), 0 1px 3px 0 rgb(11 46 33 / 0.2); } .ds-btn-primary:focus-visible { outline: 2px solid var(--color-intaglio-700, #2c6b52); outline-offset: 2px; }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Every non-committing action: Live preview, Refresh, API docs.",
+      "html": "<button class=\"ds-btn-secondary\">Live preview</button>",
+      "css": ".ds-btn-secondary { display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; border: 0; border-radius: 8px; background: #fff; color: var(--color-ink-800, #24332b); box-shadow: 0 0 0 1px var(--color-ink-200, #cfd9c6), 0 1px 2px 0 rgb(24 35 29 / 0.04); font: 600 14px 'Hanken Grotesk', system-ui, sans-serif; cursor: pointer; transition: background 0.15s, box-shadow 0.15s; } .ds-btn-secondary:hover { background: var(--color-ink-50, #f1f5ec); box-shadow: 0 0 0 1px var(--color-ink-300, #b3c0b2); } .ds-btn-secondary:focus-visible { outline: 2px solid var(--color-intaglio-700, #2c6b52); outline-offset: 2px; }"
+    },
+    {
+      "name": "Hold Button",
+      "kind": "button",
+      "refersTo": "button-hold",
+      "description": "Pause: a reversible interruption beside Stop.",
+      "html": "<button class=\"ds-btn-hold\">Pause scraper</button>",
+      "css": ".ds-btn-hold { display: inline-flex; align-items: center; padding: 12px 20px; border: 0; border-radius: 8px; background: oklch(98.7% 0.022 95.277); color: oklch(47.3% 0.137 46.201); box-shadow: 0 0 0 1px oklch(87.9% 0.169 91.605); font: 600 14px 'Hanken Grotesk', system-ui, sans-serif; cursor: pointer; } .ds-btn-hold:hover { background: oklch(96.2% 0.059 95.617); } .ds-btn-hold:focus-visible { outline: 2px solid #2c6b52; outline-offset: 2px; }"
+    },
+    {
+      "name": "Text Field",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Shared form control with label above.",
+      "html": "<label class=\"ds-field\"><span class=\"ds-field-label\">Procurement Title</span><input class=\"ds-input\" placeholder=\"All Titles\"></label>",
+      "css": ".ds-field { display: block; font-family: 'Hanken Grotesk', system-ui, sans-serif; } .ds-field-label { display: block; margin-bottom: 6px; font-size: 12px; font-weight: 600; color: var(--color-ink-700, #34463c); } .ds-input { width: 100%; padding: 8px 12px; border: 1px solid var(--color-ink-200, #cfd9c6); border-radius: 8px; background: #fff; color: var(--color-ink-900, #18231d); font: 14px 'Hanken Grotesk', system-ui, sans-serif; box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05); transition: border-color 0.15s, box-shadow 0.15s; } .ds-input::placeholder { color: var(--color-ink-500, #5a6a5f); } .ds-input:hover { border-color: var(--color-ink-300, #b3c0b2); } .ds-input:focus { outline: none; border-color: var(--color-intaglio-700, #2c6b52); box-shadow: 0 0 0 2px rgb(44 107 82 / 0.2); }"
+    },
+    {
+      "name": "Portal Rail",
+      "kind": "nav",
+      "refersTo": "rail",
+      "description": "Intaglio rail with seal, PORTALS group, ochre-marked active row, serial chip on a portal with a run in flight, engraved right edge.",
+      "html": "<nav class=\"ds-rail\"><span class=\"ds-rail-edge\"></span><div class=\"ds-rail-brand\"><svg viewBox=\"-20 -20 40 40\" width=\"32\" height=\"32\" aria-hidden=\"true\"><circle r=\"19\" fill=\"#0b2e21\" stroke=\"#d9a441\" stroke-width=\"1.2\"/><g fill=\"none\" stroke=\"#d9a441\" stroke-width=\"0.7\"><ellipse rx=\"14\" ry=\"5.5\"/><ellipse rx=\"14\" ry=\"5.5\" transform=\"rotate(22.5)\"/><ellipse rx=\"14\" ry=\"5.5\" transform=\"rotate(45)\"/><ellipse rx=\"14\" ry=\"5.5\" transform=\"rotate(67.5)\"/><ellipse rx=\"14\" ry=\"5.5\" transform=\"rotate(90)\"/><ellipse rx=\"14\" ry=\"5.5\" transform=\"rotate(112.5)\"/><ellipse rx=\"14\" ry=\"5.5\" transform=\"rotate(135)\"/><ellipse rx=\"14\" ry=\"5.5\" transform=\"rotate(157.5)\"/></g><circle r=\"2.4\" fill=\"#e8c27a\"/></svg>PK-Hub</div><p class=\"ds-rail-group\">Portals</p><a class=\"ds-rail-item\" href=\"#\"><span><b>PPRA Pakistan</b><small>Federal EPMS</small></span></a><a class=\"ds-rail-item is-active\" href=\"#\" aria-current=\"page\"><span><b>PPRA Punjab</b><small>e-Proc Active Tenders</small></span><span class=\"ds-serial-chip\">PB-C5C9</span></a></nav>",
+      "css": ".ds-rail { position: relative; width: 248px; padding: 20px 12px 16px; background: #12402f; color: #e3f2e8; font-family: 'Hanken Grotesk', system-ui, sans-serif; } .ds-rail-edge { position: absolute; top: 0; bottom: 0; right: 0; width: 6px; background-image: repeating-linear-gradient(0deg, #2c6b52 0 1px, transparent 1px 3px); } .ds-rail-brand { display: flex; align-items: center; gap: 10px; padding: 0 8px 28px; font-size: 17px; font-weight: 700; color: #fff; } .ds-rail-group { margin: 0; padding: 0 8px 8px; font-size: 11px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: #9fd6b6; } .ds-rail-item { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 8px; color: inherit; text-decoration: none; transition: background 0.15s; } .ds-rail-item span:first-child { flex: 1; min-width: 0; } .ds-rail-item b { display: block; font-size: 14px; font-weight: 600; color: #fff; } .ds-rail-item small { display: block; font-size: 12px; color: #9fd6b6; } .ds-rail-item:hover { background: #1d5a43; } .ds-rail-item.is-active { background: #0b2e21; box-shadow: inset 3px 0 0 #d9a441; } .ds-rail-item:focus-visible { outline: 2px solid #d9a441; outline-offset: 2px; } .ds-serial-chip { flex-shrink: 0; padding: 2px 8px; border-radius: 9999px; background: #c4262e; color: #fff; font: 700 11px 'Red Hat Mono', ui-monospace, monospace; font-variant-numeric: tabular-nums slashed-zero; }"
+    },
+    {
+      "name": "Section Tabs",
+      "kind": "nav",
+      "refersTo": "tabs",
+      "description": "Top bar tabs on the sheet; active tab carries an intaglio underline.",
+      "html": "<nav class=\"ds-tabs\"><a href=\"#\" aria-current=\"page\" class=\"is-active\">Console</a><a href=\"#\">History</a><a href=\"#\">Downloads</a></nav>",
+      "css": ".ds-tabs { display: flex; gap: 24px; height: 60px; padding: 0 32px; background: rgb(248 250 244 / 0.95); border-bottom: 1px solid #cfd9c6; font-family: 'Hanken Grotesk', system-ui, sans-serif; } .ds-tabs a { display: flex; align-items: center; font-size: 14px; font-weight: 500; color: #4a5a4f; text-decoration: none; transition: color 0.15s; } .ds-tabs a:hover { color: #0d1712; } .ds-tabs a.is-active { font-weight: 700; color: #0d1712; box-shadow: inset 0 -2px 0 #12402f; } .ds-tabs a:focus-visible { outline: 2px solid #2c6b52; outline-offset: 2px; }"
+    },
+    {
+      "name": "Run Badges",
+      "kind": "chip",
+      "refersTo": "badge-running",
+      "description": "Run lifecycle badges: Running in serial red with a pulse, Completed in intaglio, Paused in hold amber.",
+      "html": "<span class=\"ds-badge ds-badge-running\"><i></i>Running</span> <span class=\"ds-badge ds-badge-completed\">Completed</span> <span class=\"ds-badge ds-badge-paused\">Paused</span>",
+      "css": ".ds-badge { display: inline-flex; align-items: center; gap: 6px; padding: 2px 10px; border: 1px solid; border-radius: 9999px; font: 500 12px 'Hanken Grotesk', system-ui, sans-serif; white-space: nowrap; } .ds-badge i { width: 6px; height: 6px; border-radius: 9999px; background: currentColor; animation: ds-pulse 1.8s ease-in-out infinite; } .ds-badge-running { border-color: #efc2c4; background: #fbe9ea; color: #9b1c22; } .ds-badge-completed { border-color: #c9e8d4; background: #f1f8f3; color: #12402f; } .ds-badge-paused { border-color: oklch(87.9% 0.169 91.605); background: oklch(98.7% 0.022 95.277); color: oklch(47.3% 0.137 46.201); } @keyframes ds-pulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.45; transform: scale(0.88); } } @media (prefers-reduced-motion: reduce) { .ds-badge i { animation: none; } }"
+    },
+    {
+      "name": "Run Sheet",
+      "kind": "card",
+      "refersTo": "sheet",
+      "description": "Signature: serial heading, badge, guilloché rosette, poster-scale mono counts, dashed step line.",
+      "html": "<section class=\"ds-run\"><header><h2 class=\"ds-run-serial\">PB · C5C9 F5F7 64BD</h2><span class=\"ds-run-badge\">Running</span></header><p class=\"ds-run-meta\">PPRA Punjab · all live tenders</p><div class=\"ds-run-body\"><svg viewBox=\"-75 -75 150 150\" width=\"120\" height=\"120\" aria-label=\"5 of 8 pages read\"><circle r=\"71\" fill=\"none\" stroke=\"#cfd9c6\" stroke-dasharray=\"2 3\"/><g fill=\"none\" stroke-width=\"0.9\" stroke=\"#c4262e\" stroke-opacity=\"0.9\"><ellipse rx=\"62\" ry=\"24\"/><ellipse rx=\"62\" ry=\"24\" transform=\"rotate(22.5)\"/><ellipse rx=\"62\" ry=\"24\" transform=\"rotate(45)\"/><ellipse rx=\"62\" ry=\"24\" transform=\"rotate(67.5)\"/><ellipse rx=\"62\" ry=\"24\" transform=\"rotate(90)\"/></g><g fill=\"none\" stroke-width=\"0.5\" stroke=\"#cfd9c6\" stroke-opacity=\"0.7\"><ellipse rx=\"62\" ry=\"24\" transform=\"rotate(112.5)\"/><ellipse rx=\"62\" ry=\"24\" transform=\"rotate(135)\"/><ellipse rx=\"62\" ry=\"24\" transform=\"rotate(157.5)\"/></g><circle r=\"21\" fill=\"#f8faf4\" stroke=\"#cfd9c6\" stroke-width=\"0.8\"/><text y=\"5\" text-anchor=\"middle\" font-family=\"Red Hat Mono, monospace\" font-size=\"14\" font-weight=\"700\" fill=\"#18231d\">5/8</text></svg><dl><div><dd>612</dd><dt>Tenders found</dt></div><div><dd>31</dd><dt>Saved</dt></div></dl></div><div class=\"ds-run-step\"><i></i>Reading page 5 of 8</div></section>",
+      "css": ".ds-run { max-width: 440px; border: 1px solid #cfd9c6; border-radius: 12px; background: #f8faf4; box-shadow: 0 1px 3px 0 rgb(24 35 29 / 0.03); font-family: 'Hanken Grotesk', system-ui, sans-serif; color: #18231d; } .ds-run header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; padding: 16px 20px 0; } .ds-run-serial { margin: 0; font: 700 20px 'Red Hat Mono', ui-monospace, monospace; letter-spacing: 0.025em; color: #c4262e; font-variant-numeric: tabular-nums slashed-zero; } .ds-run-badge { padding: 2px 10px; border: 1px solid #efc2c4; border-radius: 9999px; background: #fbe9ea; color: #9b1c22; font-size: 12px; font-weight: 500; } .ds-run-meta { margin: 4px 20px 0; font-size: 12px; color: #4a5a4f; } .ds-run-body { display: flex; align-items: center; gap: 20px; padding: 16px 20px; } .ds-run dl { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 16px; margin: 0; } .ds-run dl div { display: flex; flex-direction: column-reverse; } .ds-run dd { margin: 0; font: 700 40px/1 'Red Hat Mono', ui-monospace, monospace; letter-spacing: -0.025em; color: #0d1712; font-variant-numeric: tabular-nums slashed-zero; } .ds-run dt { margin-top: 4px; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: #4a5a4f; } .ds-run-step { display: flex; align-items: center; gap: 10px; margin: 0 20px 16px; padding: 10px 12px; border: 1px dashed #b3c0b2; border-radius: 8px; background: #fff; font-size: 14px; font-weight: 500; color: #24332b; } .ds-run-step i { width: 8px; height: 8px; border-radius: 9999px; background: #c4262e; animation: ds-step 1.8s ease-in-out infinite; } @keyframes ds-step { 50% { opacity: 0.45; transform: scale(0.88); } } @media (prefers-reduced-motion: reduce) { .ds-run-step i { animation: none; } }"
+    }
+  ],
+  "narrative": {
+    "northStar": "Stamp Paper",
+    "overview": "PK-Hub is printed like a Pakistani stamp paper or banknote: an intaglio-green shell framing pale security-print ground, with near-white sheets laid on it and ruled in green-grey hairlines. Each scrape is issued as a numbered document. It gets a serial set in mono, a denomination (the counts it found) and a validation (the badge turns from red to green when it completes). Guilloché linework is the world's one ornament. It appears in exactly three places: the seal mark, the rosette that draws one ring per page read, and the engraved edge of the rail.\n\nThe console is dense and works at office-desktop distance. Forms, run sheets and results tables sit at full width with hairline rules rather than heavy cards, and counts are set at poster scale so you can read a run's progress from across the room. Colour is used sparingly and has a job. Green means the shell and the committing action. Serial red means a run is in flight right now. Ochre is the dark rail's accent. Everything else is green-tinted ink on paper.\n\nThe world rejects the category default of white cards, a grey canvas and a single blue accent. It also rejects the navy-and-gold look it replaced.",
+    "keyCharacteristics": [
+      "An intaglio-green rail and jobs bar frame a stamp-paper ground; content lives on near-white sheets.",
+      "Every neutral is tinted from the green, so nothing on screen is plain grey.",
+      "Serial red is reserved for the run in flight.",
+      "Mono is used for every serial, count, ID and date, with tabular, slashed-zero figures.",
+      "Guilloché appears only in the rosette, the seal and the rail edge."
+    ],
+    "rules": [
+      { "name": "The Serial Red Rule", "body": "Serial red marks one thing only: a run that is in flight right now. A finished run's serial prints in ink-900 and its rosette in intaglio-800. Never use serial red for errors, emphasis or decoration.", "section": "colors" },
+      { "name": "The Ochre Stays Dark Rule", "body": "Ochre appears only on the intaglio surfaces (the rail, the seal and the jobs bar). It is never used as a fill or as text on a light sheet.", "section": "colors" },
+      { "name": "The Tinted Neutral Rule", "body": "Greys come from the ink ramp, which is tinted green. Plain Tailwind grey or slate is not part of this world.", "section": "colors" },
+      { "name": "The Printed Number Rule", "body": "Serials, counts, IDs, dates and durations are set in Red Hat Mono with tabular, slashed-zero figures. Words are set in Hanken.", "section": "typography" },
+      { "name": "The Day-Month-Year Rule", "body": "Dates read `06 Nov 2026`, and times are appended as `, 11:00`. Never use a locale-dependent or numeric-only date.", "section": "typography" },
+      { "name": "The Paper Stack Rule", "body": "Sheets separate from the ground by hairline and tone, not by shadow. If you can clearly see a shadow on a sheet at rest, it is too strong.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do frame every view with the intaglio-900 rail (or the mobile switcher) and the stamp ground. Content goes on sheet-coloured sheets with ink-200 hairlines.",
+      "Do print every serial, count, ID, date and duration in Red Hat Mono with tabular, slashed-zero figures.",
+      "Do keep one intaglio-900 primary button per view, for the committing action.",
+      "Do switch a run's serial and rosette from serial red to ink and intaglio the moment it stops being in flight.",
+      "Do use ochre-400 for focus and active markers on the dark surfaces, and intaglio-700 on light ones.",
+      "Do use dashed ink-300 borders for \"nothing issued yet\" and \"in progress\" states."
+    ],
+    "donts": [
+      "Don't use serial red for anything except a run in flight. That rules out errors (use fault red), highlights and decoration.",
+      "Don't put guilloché anywhere except the rosette, the seal and the rail edge.",
+      "Don't use ochre on light sheets or as a button fill.",
+      "Don't introduce plain grey or slate neutrals, white page grounds or a blue accent.",
+      "Don't give sheets visible resting shadows. Only floating layers and the jobs bar are lifted.",
+      "Don't write dates in numeric or locale-dependent formats. Use `06 Nov 2026`."
+    ]
+  }
+}

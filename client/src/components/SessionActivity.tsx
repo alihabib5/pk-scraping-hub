@@ -34,19 +34,19 @@ export default function SessionActivity({ portal }: { portal: Portal }) {
   if (!session?.runId) return null;
 
   return (
-    <section className="overflow-hidden rounded-xl border border-ink-200 bg-white shadow-sm">
+    <section className="overflow-hidden rounded-xl border border-ink-200 bg-sheet shadow-sm shadow-ink-900/[0.03]">
       <header className="flex flex-wrap items-center justify-between gap-3 border-b border-ink-100 px-5 py-3">
         <div className="flex min-w-0 items-center gap-2.5">
           {live ? (
             <span className="relative flex h-2 w-2 shrink-0" aria-hidden>
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-serial-600/60" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-serial-600" />
             </span>
           ) : (
             <span className="h-2 w-2 shrink-0 rounded-full bg-ink-300" aria-hidden />
           )}
-          <h3 className="text-sm font-semibold text-ink-900">Live activity</h3>
-          <span className="text-xs text-ink-500">
+          <h2 className="font-display text-[15px] text-ink-950">Live activity</h2>
+          <span className="font-mono text-xs text-ink-600">
             {lines.length > 0
               ? `${lines.length}${lines.length === 500 ? "+" : ""} line${lines.length === 1 ? "" : "s"}`
               : live
@@ -71,7 +71,7 @@ export default function SessionActivity({ portal }: { portal: Portal }) {
           // the tail on request, not have every scraped row read at it.
           aria-live="polite"
           aria-label={`${portal} run log`}
-          className="max-h-64 overflow-y-auto bg-ink-900 px-4 py-3 font-mono text-[11px] leading-relaxed text-ink-100"
+          className="max-h-64 overflow-y-auto bg-intaglio-950 px-4 py-3 font-mono text-[11.5px] leading-relaxed text-intaglio-100"
         >
           {lines.length === 0
             ? live

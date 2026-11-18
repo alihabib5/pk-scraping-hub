@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { Button } from "@/components/ui";
 import { isRunActive, stopScrape, type RunStatus } from "@/lib/api";
@@ -37,7 +37,18 @@ export default function RefreshButton({
 }) {
   const [confirming, setConfirming] = useState(false);
   const [busy, setBusy] = useState(false);
+  const cancelRef = useRef<HTMLButtonElement>(null);
   const active = isRunActive(run);
+
+  useEffect(() => {
+    if (!confirming) return;
+    cancelRef.current?.focus();
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && !busy) setConfirming(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [confirming, busy]);
 
   if (!hasSession) {
     return (
@@ -90,11 +101,11 @@ export default function RefreshButton({
           role="dialog"
           aria-modal
           aria-labelledby="refresh-confirm-title"
-          className="fixed inset-0 z-50 flex items-center justify-center bg-ink-900/40 px-4"
+          className="fixed inset-0 z-50 flex items-center justify-center bg-intaglio-950/50 px-4"
           onClick={() => !busy && setConfirming(false)}
         >
           <div
-            className="w-full max-w-sm rounded-xl border border-ink-200 bg-white p-5 shadow-xl"
+            className="w-full max-w-sm rounded-xl border border-ink-200 bg-sheet p-5 shadow-xl"
             onClick={(e) => e.stopPropagation()}
           >
             <h3 id="refresh-confirm-title" className="font-display text-base text-ink-900">
@@ -105,7 +116,7 @@ export default function RefreshButton({
               this tab&apos;s logs and results. Proceed?
             </p>
             <div className="mt-5 flex justify-end gap-2">
-              <Button variant="ghost" size="md" onClick={() => setConfirming(false)} disabled={busy}>
+              <Button ref={cancelRef} variant="ghost" size="md" onClick={() => setConfirming(false)} disabled={busy}>
                 Cancel
               </Button>
               <Button variant="danger" size="md" onClick={handleConfirm} loading={busy}>

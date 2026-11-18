@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { Button, DataTable, EmptyState, ErrorBanner, LinkButton, Spinner } from "@/components/ui";
 import { runDownloadUrl } from "@/lib/api";
 import { fetchRunsState, formatTimestamp, runDownloadable, runTarget, RUNS_LOADING, type RunsState } from "@/lib/runs";
-import type { PortalMeta } from "@/lib/portals";
+import { runSerial, type PortalMeta } from "@/lib/portals";
 
 /** Per-run Excel downloads for past runs (`GET /runs/{id}/download`). */
 export default function ExportsPanel({ meta }: { meta: PortalMeta }) {
@@ -30,10 +30,10 @@ export default function ExportsPanel({ meta }: { meta: PortalMeta }) {
 
   return (
     <div className="space-y-5">
-      <div className="flex items-center justify-between gap-3">
+      <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h2 className="font-display text-2xl text-ink-900">Downloads</h2>
-          <p className="mt-1 text-sm text-ink-500">
+          <h1 className="font-display text-2xl text-ink-950">Downloads</h1>
+          <p className="mt-1 text-sm text-ink-600">
             {`Every completed ${meta.label} run as its Excel report.`}
           </p>
         </div>
@@ -54,7 +54,7 @@ export default function ExportsPanel({ meta }: { meta: PortalMeta }) {
       {error && <ErrorBanner message={error} />}
 
       {runs === null && loading && (
-        <div className="flex items-center justify-center gap-2 rounded-xl border border-ink-200 bg-white py-14 text-sm text-ink-500">
+        <div className="flex items-center justify-center gap-2 rounded-xl border border-ink-200 bg-sheet py-14 text-sm text-ink-600">
           <Spinner />
           Loading downloads…
         </div>
@@ -76,6 +76,7 @@ export default function ExportsPanel({ meta }: { meta: PortalMeta }) {
         <DataTable
           caption={`${downloadable.length} ${downloadable.length === 1 ? "download" : "downloads"}`}
           headers={[
+            { label: "Serial" },
             { label: "Produced" },
             { label: "Searched for" },
             { label: "Bids", className: "text-right" },
@@ -84,15 +85,18 @@ export default function ExportsPanel({ meta }: { meta: PortalMeta }) {
         >
           {downloadable.map((run) => {
             return (
-              <tr key={run.run_id} className="transition hover:bg-ink-50">
-                <td className="tabular-nums whitespace-nowrap px-4 py-3 text-xs text-ink-600">
+              <tr key={run.run_id} className="transition hover:bg-intaglio-50">
+                <td className="whitespace-nowrap px-4 py-2.5 font-mono text-[13px] font-bold text-ink-950">
+                  {runSerial(run.scraper, run.run_id)}
+                </td>
+                <td className="whitespace-nowrap px-4 py-2.5 font-mono text-xs text-ink-700">
                   {formatTimestamp(run.finished_at ?? run.started_at)}
                 </td>
-                <td className="max-w-xs truncate px-4 py-3 text-sm text-ink-700" title={runTarget(run)}>
+                <td className="max-w-xs truncate px-4 py-2.5 text-ink-800" title={runTarget(run)}>
                   {runTarget(run)}
                 </td>
-                <td className="tabular-nums px-4 py-3 text-right text-sm text-ink-700">{run.bids_found}</td>
-                <td className="px-4 py-3 text-right">
+                <td className="px-4 py-2.5 text-right font-mono text-ink-900">{run.bids_found.toLocaleString()}</td>
+                <td className="px-4 py-2.5 text-right">
                   <LinkButton
                     href={runDownloadUrl(run.run_id)}
                     size="sm"

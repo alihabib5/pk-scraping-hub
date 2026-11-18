@@ -1,0 +1,14 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "design-system-font",
+        "value": "grotesk\",sans-serif",
+        "createdAt": "2026-11-18T16:48:04.882Z",
+        "reason": "Claude: false positive; the value is the tail of \"Hanken Grotesk\",sans-serif and Hanken Grotesk is the DESIGN.md UI face"
+      }
+    ]
+  }
+}

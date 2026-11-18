@@ -1,23 +1,32 @@
 "use client";
 
-import { useEffect, useRef, useState, type AnchorHTMLAttributes, type ButtonHTMLAttributes, type ReactNode } from "react";
+import {
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  type AnchorHTMLAttributes,
+  type ButtonHTMLAttributes,
+  type ReactNode,
+  type Ref,
+} from "react";
 
 import type { RunStatus } from "@/lib/api";
 
 /**
- * The button scale. `primary` (navy) is reserved for the one committing action
- * on a view; everything else is `secondary` or `ghost`, so a page never has two
- * things competing to be pressed. Gold appears only as accent, never as a fill.
+ * The button scale. `primary` (intaglio green) is reserved for the one
+ * committing action on a view; everything else is `secondary` or `ghost`, so a
+ * page never has two things competing to be pressed.
  */
 type Variant = "primary" | "secondary" | "ghost" | "danger" | "warning" | "success";
 
 const VARIANTS: Record<Variant, string> = {
   primary:
-    "bg-ink-900 text-white ring-1 ring-ink-900 shadow-sm hover:bg-ink-800 hover:ring-ink-800 disabled:bg-ink-100 disabled:text-ink-400 disabled:ring-ink-100 disabled:shadow-none",
+    "bg-intaglio-900 text-white ring-1 ring-intaglio-900 shadow-sm shadow-intaglio-950/20 hover:bg-intaglio-800 hover:ring-intaglio-800 disabled:bg-ink-100 disabled:text-ink-500 disabled:ring-ink-200 disabled:shadow-none",
   secondary:
-    "bg-white text-ink-800 ring-1 ring-ink-200 shadow-sm hover:bg-ink-50 hover:ring-ink-300 disabled:text-ink-300 disabled:shadow-none",
+    "bg-white text-ink-800 ring-1 ring-ink-200 shadow-sm shadow-ink-900/[0.04] hover:bg-ink-50 hover:ring-ink-300 disabled:bg-sheet disabled:text-ink-400 disabled:shadow-none",
   ghost: "text-ink-600 hover:bg-ink-50 hover:text-ink-900 disabled:text-ink-300",
-  danger: "bg-white text-red-700 ring-1 ring-red-200 shadow-sm hover:bg-red-50 disabled:text-red-300",
+  danger: "bg-white text-red-800 ring-1 ring-red-200 shadow-sm hover:bg-red-50 disabled:text-red-300",
   // Hold, not stop. Amber and outlined so it reads as a reversible interruption
   // sitting next to Stop's red without competing with it.
   warning:
@@ -25,17 +34,17 @@ const VARIANTS: Record<Variant, string> = {
   // Release. Filled green, because a parked run has exactly one obvious next
   // move and it should look like the thing to press.
   success:
-    "bg-emerald-600 text-white ring-1 ring-emerald-600 shadow-sm hover:bg-emerald-700 hover:ring-emerald-700 disabled:bg-emerald-200 disabled:ring-emerald-200 disabled:shadow-none",
+    "bg-intaglio-800 text-white ring-1 ring-intaglio-800 shadow-sm hover:bg-intaglio-900 hover:ring-intaglio-900 disabled:bg-intaglio-200 disabled:ring-intaglio-200 disabled:shadow-none",
 };
 
 const SIZES = {
   sm: "px-2.5 py-1.5 text-xs gap-1.5",
   md: "px-4 py-2.5 text-sm gap-2",
-  lg: "px-5 py-3 text-sm gap-2",
+  lg: "px-4 py-3 text-sm gap-2 sm:px-5",
 };
 
 const BUTTON_BASE =
-  "inline-flex items-center justify-center rounded-lg font-medium transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold-500 disabled:cursor-not-allowed";
+  "inline-flex items-center justify-center rounded-lg font-semibold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-intaglio-700 disabled:cursor-not-allowed";
 
 export function Button({
   variant = "secondary",
@@ -50,6 +59,8 @@ export function Button({
   size?: keyof typeof SIZES;
   loading?: boolean;
   icon?: ReactNode;
+  /** React 19 passes `ref` as a plain prop; it reaches the <button> via the spread. */
+  ref?: Ref<HTMLButtonElement>;
 }) {
   return (
     <button
@@ -121,13 +132,13 @@ export function EmptyState({
   action?: ReactNode;
 }) {
   return (
-    <div className="flex flex-col items-center rounded-xl border border-dashed border-ink-200 bg-white/70 px-6 py-16 text-center">
+    <div className="flex flex-col items-center rounded-xl border border-dashed border-ink-300 bg-sheet px-6 py-16 text-center">
       {icon && (
-        <span className="mb-4 flex h-11 w-11 items-center justify-center rounded-full bg-gold-50 text-gold-600 ring-1 ring-gold-100">
+        <span className="mb-4 flex h-11 w-11 items-center justify-center rounded-full bg-intaglio-50 text-intaglio-800 ring-1 ring-intaglio-100">
           {icon}
         </span>
       )}
-      <h3 className="font-display text-lg text-ink-900">{title}</h3>
+      <h3 className="font-display text-base text-ink-900">{title}</h3>
       <p className="mt-1.5 max-w-sm text-sm leading-relaxed text-ink-500">{description}</p>
       {action && <div className="mt-6">{action}</div>}
     </div>
@@ -141,9 +152,12 @@ export function StartButton({
   children,
   ...props
 }: ButtonHTMLAttributes<HTMLButtonElement> & { running?: boolean; starting?: boolean }) {
-  const label = running ? "Run in progress…" : starting ? "Starting…" : children;
+  // While a run is in flight the button could only say so, disabled; the run
+  // sheet already says it, and the row needs the room for Stop and Pause.
+  if (running) return null;
+  const label = starting ? "Starting…" : children;
   return (
-    <Button {...props} variant="primary" size="lg" loading={running || starting} icon={<PlayIcon />}>
+    <Button {...props} variant="primary" size="lg" loading={starting} icon={<PlayIcon />}>
       {label}
     </Button>
   );
@@ -170,31 +184,35 @@ export function Card({
   description,
   actions,
   children,
+  footer,
 }: {
   title?: string;
   description?: string;
   actions?: ReactNode;
   children: ReactNode;
+  /** A tinted strip under the body, for the sheet's own actions. */
+  footer?: ReactNode;
 }) {
   return (
-    <section className="rounded-xl border border-ink-200/70 bg-white shadow-sm shadow-ink-900/[0.03]">
+    <section className="rounded-xl border border-ink-200 bg-sheet shadow-sm shadow-ink-900/[0.03]">
       {(title || actions) && (
-        <header className="flex items-start justify-between gap-4 border-b border-ink-100 px-5 py-4">
-          <div>
-            {title && <h3 className="font-display text-base text-ink-900">{title}</h3>}
+        <header className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2 border-b border-ink-200 px-5 py-4">
+          <div className="min-w-0 max-w-prose flex-1 basis-64">
+            {title && <h2 className="font-display text-[15px] text-ink-950">{title}</h2>}
             {description && <p className="mt-0.5 text-xs leading-relaxed text-ink-500">{description}</p>}
           </div>
-          {actions && <div className="flex shrink-0 items-center gap-1">{actions}</div>}
+          {actions && <div className="flex items-center gap-1">{actions}</div>}
         </header>
       )}
       <div className="p-5">{children}</div>
+      {footer}
     </section>
   );
 }
 
 /** The shared look of every form control. */
 export const CONTROL =
-  "w-full rounded-lg border border-ink-200 bg-white px-3 py-2 text-sm text-ink-900 shadow-sm transition placeholder:text-ink-400 focus:border-gold-400 focus:outline-none focus:ring-2 focus:ring-gold-400/25 disabled:cursor-not-allowed disabled:bg-ink-50 disabled:text-ink-400";
+  "w-full rounded-lg border border-ink-200 bg-white px-3 py-2 text-sm text-ink-900 shadow-sm transition placeholder:text-ink-500 hover:border-ink-300 focus:border-intaglio-700 focus:outline-none focus:ring-2 focus:ring-intaglio-700/20 disabled:cursor-not-allowed disabled:bg-ink-50 disabled:text-ink-400";
 
 /** Text input with a label, matching the form language of the rest of the app. */
 export function Field({
@@ -214,10 +232,12 @@ export function Field({
   placeholder?: string;
   type?: string;
 }) {
+  const id = useId();
   return (
     <div>
-      <label className="mb-1.5 block text-xs font-semibold text-ink-700">{label}</label>
+      <label htmlFor={id} className="mb-1.5 block text-xs font-semibold text-ink-700">{label}</label>
       <input
+        id={id}
         type={type}
         value={value}
         disabled={disabled}
@@ -246,17 +266,36 @@ export function SelectField({
   disabled?: boolean;
   placeholder: string;
 }) {
+  const id = useId();
   return (
     <div>
-      <label className="mb-1.5 block text-xs font-semibold text-ink-700">{label}</label>
-      <select value={value} disabled={disabled} onChange={(e) => onChange(e.target.value)} className={CONTROL}>
-        <option value="">{placeholder}</option>
-        {options.map((option) => (
-          <option key={option.value} value={option.value}>
-            {option.label}
-          </option>
-        ))}
-      </select>
+      <label htmlFor={id} className="mb-1.5 block text-xs font-semibold text-ink-700">{label}</label>
+      <div className="relative">
+        <select
+          id={id}
+          value={value}
+          disabled={disabled}
+          onChange={(e) => onChange(e.target.value)}
+          className={`${CONTROL} appearance-none pr-9 ${value ? "" : "text-ink-500"}`}
+        >
+          <option value="">{placeholder}</option>
+          {options.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
+        </select>
+        <svg
+          viewBox="0 0 16 16"
+          className="pointer-events-none absolute right-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-500"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.8"
+          aria-hidden
+        >
+          <path d="M4 6l4 4 4-4" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </div>
     </div>
   );
 }
@@ -289,6 +328,8 @@ export function SearchSelect({
   const [active, setActive] = useState(0);
   const listRef = useRef<HTMLUListElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const id = useId();
+  const listId = `${id}-list`;
 
   const selected = options.find((o) => o.value === value);
   const q = query.trim().toLowerCase();
@@ -314,13 +355,16 @@ export function SearchSelect({
 
   return (
     <div className="relative">
-      <label className="mb-1.5 block text-xs font-semibold text-ink-700">{label}</label>
+      <label htmlFor={id} className="mb-1.5 block text-xs font-semibold text-ink-700">{label}</label>
       <div className="relative">
         <input
           ref={inputRef}
+          id={id}
           type="text"
           role="combobox"
           aria-expanded={open}
+          aria-controls={listId}
+          aria-activedescendant={open ? `${listId}-${active}` : undefined}
           aria-autocomplete="list"
           disabled={disabled}
           value={open ? query : (selected?.label ?? "")}
@@ -375,7 +419,7 @@ export function SearchSelect({
               openList();
             }
           }}
-          className="absolute inset-y-0 right-0 flex w-9 items-center justify-center text-ink-400 transition hover:text-ink-700 disabled:cursor-not-allowed disabled:text-ink-300"
+          className="absolute inset-y-0 right-0 flex w-9 items-center justify-center text-ink-500 transition hover:text-ink-700 disabled:cursor-not-allowed disabled:text-ink-300"
         >
           <svg
             viewBox="0 0 16 16"
@@ -392,12 +436,15 @@ export function SearchSelect({
       {open && (
         <ul
           ref={listRef}
+          id={listId}
           role="listbox"
+          aria-label={label}
           className="absolute z-20 mt-1 max-h-64 w-full overflow-y-auto rounded-lg border border-ink-200 bg-white py-1 text-sm shadow-lg"
         >
           {shown.map((option, i) => (
             <li
               key={option.value || "__any"}
+              id={`${listId}-${i}`}
               role="option"
               aria-selected={option.value === value}
               // mousedown, not click: it fires before the input's blur closes the list.
@@ -406,7 +453,7 @@ export function SearchSelect({
                 pick(option.value);
               }}
               onMouseEnter={() => setActive(i)}
-              className={`cursor-pointer px-3 py-1.5 ${i === active ? "bg-gold-50 text-ink-900" : "text-ink-700"} ${
+              className={`cursor-pointer px-3 py-1.5 ${i === active ? "bg-intaglio-50 text-ink-950" : "text-ink-700"} ${
                 option.value === "" ? "text-ink-500" : ""
               }`}
             >
@@ -414,11 +461,11 @@ export function SearchSelect({
             </li>
           ))}
           {matches.length > SEARCH_LIMIT && (
-            <li className="px-3 py-1.5 text-xs text-ink-400">
+            <li className="px-3 py-1.5 text-xs text-ink-500">
               {(matches.length - SEARCH_LIMIT).toLocaleString()} more — keep typing to narrow
             </li>
           )}
-          {q && matches.length === 0 && <li className="px-3 py-1.5 text-xs text-ink-400">No match</li>}
+          {q && matches.length === 0 && <li className="px-3 py-1.5 text-xs text-ink-500">No match</li>}
         </ul>
       )}
     </div>
@@ -436,24 +483,24 @@ export function DataTable({
   children: ReactNode;
 }) {
   return (
-    <div className="overflow-hidden rounded-xl border border-ink-200/70 bg-white shadow-sm shadow-ink-900/[0.03]">
+    <div className="overflow-hidden rounded-xl border border-ink-200 bg-sheet shadow-sm shadow-ink-900/[0.03]">
       {caption && (
-        <div className="border-b border-ink-100 px-5 py-4">
-          <h3 className="font-display text-base text-ink-900">{caption}</h3>
+        <div className="border-b border-ink-200 px-5 py-3.5">
+          <h3 className="font-display text-[15px] text-ink-950">{caption}</h3>
         </div>
       )}
       <div className="overflow-x-auto">
-        <table className="w-full text-sm">
+        <table className="w-full text-[13px]">
           <thead>
-            <tr className="border-b border-ink-200 bg-ink-50/70 text-left text-xs font-semibold text-ink-600">
-              {headers.map((h) => (
-                <th key={h.label} className={`whitespace-nowrap px-4 py-3 ${h.className ?? ""}`}>
+            <tr className="border-b border-ink-200 text-left text-[11px] font-semibold uppercase tracking-[0.06em] text-ink-600">
+              {headers.map((h, i) => (
+                <th key={h.label || i} className={`whitespace-nowrap px-4 py-2.5 ${h.className ?? ""}`}>
                   {h.label}
                 </th>
               ))}
             </tr>
           </thead>
-          <tbody className="divide-y divide-ink-100">{children}</tbody>
+          <tbody className="divide-y divide-ink-100 bg-white/60">{children}</tbody>
         </table>
       </div>
     </div>
@@ -480,15 +527,15 @@ export function RunBadge({
     // pending is the instant between the run being registered and the pool
     // accepting it; queued is waiting for a slot. Both read as "Queued" to a
     // user — the distinction only matters inside the server.
-    pending: { cls: "border-ink-200 bg-ink-50 text-ink-600", label: "Queued" },
-    queued: { cls: "border-ink-200 bg-ink-50 text-ink-600", label: "Queued" },
-    running: { cls: "border-gold-300 bg-gold-50 text-gold-700", label: "Running" },
-    completed: { cls: "border-emerald-200 bg-emerald-50 text-emerald-700", label: "Completed" },
-    failed: { cls: "border-red-200 bg-red-50 text-red-700", label: "Failed" },
+    pending: { cls: "border-ink-200 bg-ink-50 text-ink-700", label: "Queued" },
+    queued: { cls: "border-ink-200 bg-ink-50 text-ink-700", label: "Queued" },
+    running: { cls: "border-serial-200 bg-serial-50 text-serial-700", label: "Running" },
+    completed: { cls: "border-intaglio-200 bg-intaglio-50 text-intaglio-900", label: "Completed" },
+    failed: { cls: "border-red-200 bg-red-50 text-red-800", label: "Failed" },
     stopped: { cls: "border-ink-300 bg-ink-100 text-ink-700", label: "Stopped" },
     // Amber, and deliberately not pulsing: a parked run is holding, not
     // working, and a badge that throbbed would say the opposite.
-    paused: { cls: "border-amber-300 bg-amber-50 text-amber-700", label: "Paused" },
+    paused: { cls: "border-amber-300 bg-amber-50 text-amber-800", label: "Paused" },
   }[status];
   const live = status === "running" || status === "pending" || status === "queued";
   // Amber rather than the neutral stopped grey: there is something to collect,
@@ -511,10 +558,101 @@ export function RunBadge({
  */
 export function LaunchBar({ summary, children }: { summary: ReactNode; children: ReactNode }) {
   return (
-    <div className="sticky bottom-4 z-10 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-ink-200/70 bg-white/95 px-5 py-4 shadow-lg shadow-ink-900/[0.06] backdrop-blur">
-      <div className="min-w-0 text-sm text-ink-500">{summary}</div>
+    <div className="sticky bottom-[var(--jobs-bar-h,0px)] z-10 flex flex-wrap items-center justify-between gap-3 rounded-b-xl border-t border-ink-200 bg-ink-50/95 px-4 py-3 backdrop-blur sm:px-5 lg:static">
+      {/* The summary is context, the buttons are the job: on a phone the bar
+          keeps only the buttons so it doesn't cover half the form. */}
+      <div className="hidden min-w-0 basis-full text-xs text-ink-600 sm:block">{summary}</div>
+      <div className="flex min-w-0 basis-full flex-wrap items-center justify-end gap-2">{children}</div>
+    </div>
+  );
+}
+
+/**
+ * "Min. days until closing" plus the portal's own exclusion checkbox: the
+ * last row of each search form. An empty box means the filter is off.
+ */
+export function ClosingRunwayField({
+  days,
+  onChange,
+  disabled,
+  children,
+}: {
+  days: number | null;
+  onChange: (days: number | null) => void;
+  disabled?: boolean;
+  /** The portal-specific exclusion, usually a `CheckboxField`. */
+  children?: ReactNode;
+}) {
+  const id = useId();
+  return (
+    <div className="mt-4 flex flex-wrap items-center gap-3 border-t border-ink-100 pt-4">
+      <label htmlFor={id} className="shrink-0 text-xs font-semibold text-ink-700">
+        Min. days until closing
+      </label>
+      <input
+        id={id}
+        type="number"
+        inputMode="numeric"
+        min={0}
+        max={365}
+        value={days ?? ""}
+        onChange={(e) => {
+          const v = e.target.value;
+          onChange(v === "" ? null : Math.min(365, Math.max(0, parseInt(v, 10) || 0)));
+        }}
+        disabled={disabled}
+        placeholder="off"
+        aria-describedby={`${id}-hint`}
+        className={`${CONTROL.replace("w-full ", "")} w-24 py-1.5 tabular-nums`}
+      />
+      <span id={`${id}-hint`} className="min-w-0 flex-1 basis-40 text-xs text-ink-500">
+        {days === null
+          ? "Filter off — all tenders included"
+          : days === 0
+            ? "All tenders (0-day minimum)"
+            : `Skip tenders closing in < ${days} day${days !== 1 ? "s" : ""}`}
+      </span>
       {children}
     </div>
+  );
+}
+
+export function CheckboxField({
+  label,
+  checked,
+  onChange,
+  disabled,
+}: {
+  label: string;
+  checked: boolean;
+  onChange: (checked: boolean) => void;
+  disabled?: boolean;
+}) {
+  return (
+    <label className="flex min-h-9 cursor-pointer items-center gap-2 text-xs font-semibold text-ink-700 has-[:disabled]:cursor-not-allowed has-[:disabled]:text-ink-400">
+      <input
+        type="checkbox"
+        checked={checked}
+        onChange={(e) => onChange(e.target.checked)}
+        disabled={disabled}
+        className="h-4 w-4 rounded border-ink-300"
+      />
+      {label}
+    </label>
+  );
+}
+
+/** Narrows a results table already on screen; nothing is re-fetched. */
+export function TableFilter({ value, onChange, label }: { value: string; onChange: (v: string) => void; label: string }) {
+  return (
+    <input
+      type="search"
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      placeholder="Filter rows…"
+      aria-label={label}
+      className={`${CONTROL} py-1.5 sm:w-60`}
+    />
   );
 }
 

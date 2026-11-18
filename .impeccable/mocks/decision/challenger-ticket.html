@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<title>PK-Hub · Ticket Wallet</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;800&family=Courier+Prime:wght@700&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#1c2b5a;--stock:#fbfbf8;--red:#c8102e;--carbon:#4b3a8c;--ground:#e9ecf2;--ink:#151b2e;--ink-2:#4b5470;--hair:#c9cfdc}
+*{box-sizing:border-box;margin:0}
+body{width:1440px;height:900px;overflow:hidden;background:var(--ground);color:var(--ink);font:14px/1.45 Archivo,sans-serif}
+.carbon{font-family:"Courier Prime",monospace;color:var(--carbon);font-weight:700}
+header{background:var(--navy);color:#fff;display:flex;align-items:center;gap:28px;padding:0 36px;height:64px}
+header .brand{font-weight:800;letter-spacing:.14em;font-size:18px}
+header nav{display:flex;gap:4px}
+header nav span{padding:8px 14px;border-radius:6px;font-weight:600;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:#c4cbe3}
+header nav .on{background:#fff;color:var(--navy)}
+header .sp{flex:1}
+.tabs{display:flex;gap:8px;padding:16px 36px 0}
+.tab{padding:9px 16px;border-radius:8px 8px 0 0;background:#d7dce8;font-weight:600;font-size:13px;letter-spacing:.06em;text-transform:uppercase}
+.tab.on{background:var(--stock)}
+main{display:grid;grid-template-columns:1fr 470px;gap:24px;padding:0 36px}
+.form{background:var(--stock);border-radius:0 10px 10px 10px;padding:20px 22px;border:1px solid var(--hair)}
+.form h2{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);margin-bottom:12px}
+.boxes{display:grid;grid-template-columns:repeat(4,1fr);border:1.5px solid var(--navy)}
+.box{padding:8px 12px;border-right:1px solid var(--hair);border-bottom:1px solid var(--hair);min-height:62px}
+.box:nth-child(4n){border-right:0}
+.box.w2{grid-column:span 2}.box.w4{grid-column:span 4;border-right:0}
+.box small{display:block;font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2)}
+.box div{margin-top:6px;font-size:15px}
+.actions{display:flex;justify-content:flex-end;gap:10px;margin-top:16px}
+.b{padding:10px 18px;border-radius:6px;font-weight:600;border:1.5px solid var(--navy);background:#fff;color:var(--navy);font-size:13px;letter-spacing:.04em;text-transform:uppercase}
+.b.pri{background:var(--red);border-color:var(--red);color:#fff}
+.wallet h2{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);margin:6px 0 10px}
+.coupon{position:relative;display:grid;grid-template-columns:1fr 120px;background:var(--stock);border:1px solid var(--hair);border-radius:10px;margin-bottom:12px;overflow:hidden}
+.coupon .main{padding:14px 16px}
+.coupon .stub{border-left:2px dashed var(--hair);padding:14px;text-align:center;display:grid;place-content:center;gap:2px}
+.coupon .stub b{font-size:30px;line-height:1}
+.coupon .stub small{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2)}
+.coupon .top{display:flex;justify-content:space-between;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2)}
+.coupon h3{font-size:18px;font-weight:800;margin:4px 0}
+.coupon p{font-size:12px;color:var(--ink-2)}
+.stamp{position:absolute;right:140px;top:16px;transform:rotate(-8deg);border:3px solid currentColor;border-radius:6px;padding:2px 10px;font-weight:800;letter-spacing:.14em;font-size:18px}
+.void{color:var(--red)}.ok{color:#1f7a4d}.partial{color:#8f5400}
+.bar{height:6px;background:#e1e5ee;border-radius:3px;margin-top:10px;overflow:hidden}.bar i{display:block;height:100%;width:75%;background:var(--carbon)}
+table{width:100%;border-collapse:collapse;font-size:12.5px;background:var(--stock);border:1px solid var(--hair);margin-top:18px}
+th{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-2);text-align:left;padding:8px 12px;border-bottom:1.5px solid var(--navy)}
+td{padding:7px 12px;border-bottom:1px solid #e1e5ee;white-space:nowrap}
+</style></head>
+<body>
+<header><span class="brand">PK-HUB</span><nav><span class="on">Console</span><span>History</span><span>Downloads</span></nav><span class="sp"></span><span style="font-size:12px;color:#c4cbe3">2 runs in flight · 1 slot free</span></header>
+<div class="tabs"><span class="tab">PPRA Pakistan</span><span class="tab on">PPRA Punjab</span></div>
+<main>
+  <section>
+    <div class="form">
+      <h2>Punjab search · fare boxes</h2>
+      <div class="boxes">
+        <div class="box"><small>Type</small><div>Goods</div></div>
+        <div class="box"><small>Title</small><div>All titles</div></div>
+        <div class="box"><small>Published from</small><div class="carbon">06 NOV 2026</div></div>
+        <div class="box"><small>Published to</small><div class="carbon">18 NOV 2026</div></div>
+        <div class="box w2"><small>Department</small><div>All departments</div></div>
+        <div class="box"><small>Min. days to close</small><div class="carbon">9</div></div>
+        <div class="box"><small>Auctions</small><div>Excluded</div></div>
+      </div>
+      <div class="actions"><span class="b">Stop</span><span class="b">Pause</span><span class="b">Live preview</span><span class="b pri">Issue Punjab run</span></div>
+    </div>
+    <table><thead><tr><th>Tender ID</th><th>Title</th><th>Department</th><th>Closing</th></tr></thead><tbody>
+      <tr><td class="carbon">259234</td><td>Framework Contract for the Procurement of Stationery</td><td>University of Health Sciences, Lahore</td><td class="carbon">02 DEC 2026</td></tr>
+      <tr><td class="carbon">259232</td><td>Procurement of Echocardiography Machine</td><td>Pakistan Kidney Liver Institute</td><td class="carbon">01 DEC 2026</td></tr>
+      <tr><td class="carbon">259227</td><td>Supply of I.T Equipments for WASA Khanewal</td><td>Water and Sanitation Agency, Khanewal</td><td class="carbon">28 NOV 2026</td></tr>
+    </tbody></table>
+  </section>
+  <section class="wallet">
+    <h2>Run wallet</h2>
+    <div class="coupon"><div class="main"><div class="top"><span>Run PB-0042</span><span>Punjab</span></div><h3>Reading page 6 of 8</h3><p>612 read · 14 auctions removed · 2m 41s</p><div class="bar"><i></i></div></div><div class="stub"><b class="carbon">31</b><small>Kept</small></div></div>
+    <div class="coupon"><div class="main"><div class="top"><span>Run FD-0118</span><span>Federal</span></div><h3>Road works, Islamabad</h3><p>Stopped at page 3 · Excel ready</p></div><div class="stub"><b class="carbon">57</b><small>Kept</small></div><span class="stamp partial">PARTIAL</span></div>
+    <div class="coupon"><div class="main"><div class="top"><span>Run PB-0041</span><span>Punjab</span></div><h3>All live tenders</h3><p>8 of 8 pages · Excel ready</p></div><div class="stub"><b class="carbon">39</b><small>Kept</small></div><span class="stamp ok">USED</span></div>
+    <div class="coupon"><div class="main"><div class="top"><span>Run FD-0117</span><span>Federal</span></div><h3>Medical equipment</h3><p>Portal timed out on page 1</p></div><div class="stub"><b class="carbon">0</b><small>Kept</small></div><span class="stamp void">VOID</span></div>
+  </section>
+</main>
+</body></html>

@@ -8,7 +8,7 @@ import RunStatusPanel from "@/components/RunStatus";
 import { Button, DataTable, EmptyState, ErrorBanner, IconButton, LinkButton, RunBadge, Spinner } from "@/components/ui";
 import { runDownloadUrl, type RunStatus } from "@/lib/api";
 import { fetchRunsState, formatDuration, formatTimestamp, runDownloadable, runTarget, RUNS_LOADING, type RunsState } from "@/lib/runs";
-import type { PortalMeta } from "@/lib/portals";
+import { runSerial, type PortalMeta } from "@/lib/portals";
 
 /**
  * Every run the backend holds for this portal (`GET /{portal}/scrape/runs`).
@@ -42,8 +42,8 @@ export default function RunHistory({ meta }: { meta: PortalMeta }) {
             </svg>
           </IconButton>
           <div className="min-w-0">
-            <h2 className="font-display text-xl text-ink-900">Run detail</h2>
-            <p className="truncate font-mono text-xs text-ink-500">{selected.run_id}</p>
+            <h1 className="font-display text-xl text-ink-950">Run detail</h1>
+            <p className="truncate text-xs text-ink-600">Opened from the {meta.label} register</p>
           </div>
         </div>
         <RunStatusPanel run={selected} />
@@ -58,10 +58,10 @@ export default function RunHistory({ meta }: { meta: PortalMeta }) {
 
   return (
     <div className="space-y-5">
-      <div className="flex items-center justify-between gap-3">
+      <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h2 className="font-display text-2xl text-ink-900">Run history</h2>
-          <p className="mt-1 text-sm text-ink-500">
+          <h1 className="font-display text-2xl text-ink-950">Run history</h1>
+          <p className="mt-1 text-sm text-ink-600">
             Every {meta.label} run currently held by the server. Select a row to inspect it.
           </p>
         </div>
@@ -82,7 +82,7 @@ export default function RunHistory({ meta }: { meta: PortalMeta }) {
       {error && <ErrorBanner message={error} />}
 
       {runs === null && loading && (
-        <div className="flex items-center justify-center gap-2 rounded-xl border border-ink-200 bg-white py-14 text-sm text-ink-500">
+        <div className="flex items-center justify-center gap-2 rounded-xl border border-ink-200 bg-sheet py-14 text-sm text-ink-600">
           <Spinner />
           Loading run history…
         </div>
@@ -105,6 +105,7 @@ export default function RunHistory({ meta }: { meta: PortalMeta }) {
         <DataTable
           caption={`${runs.length} ${runs.length === 1 ? "run" : "runs"}`}
           headers={[
+            { label: "Serial" },
             { label: "Status" },
             { label: "Started" },
             { label: "Duration" },
@@ -117,20 +118,35 @@ export default function RunHistory({ meta }: { meta: PortalMeta }) {
             <tr
               key={run.run_id}
               onClick={() => setSelected(run)}
-              className="cursor-pointer transition hover:bg-ink-50"
+              className="cursor-pointer transition hover:bg-intaglio-50"
             >
-              <td className="px-4 py-3">
+              <td className="whitespace-nowrap px-4 py-2.5">
+                {/* The serial is the run's name. The row is clickable for the
+                    mouse; this button is the same action for the keyboard and
+                    for screen readers. */}
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelected(run);
+                  }}
+                  className="rounded font-mono text-[13px] font-bold text-ink-950 underline decoration-ink-300 underline-offset-4 hover:decoration-intaglio-800"
+                >
+                  {runSerial(run.scraper, run.run_id)}
+                </button>
+              </td>
+              <td className="px-4 py-2.5">
                 <RunBadge status={run.status} partial={run.partial_results} />
               </td>
-              <td className="tabular-nums whitespace-nowrap px-4 py-3 text-xs text-ink-600">
+              <td className="whitespace-nowrap px-4 py-2.5 font-mono text-xs text-ink-700">
                 {formatTimestamp(run.started_at)}
               </td>
-              <td className="tabular-nums whitespace-nowrap px-4 py-3 text-xs text-ink-600">{formatDuration(run)}</td>
-              <td className="max-w-xs truncate px-4 py-3 text-sm text-ink-700" title={runTarget(run)}>
+              <td className="whitespace-nowrap px-4 py-2.5 font-mono text-xs text-ink-700">{formatDuration(run)}</td>
+              <td className="max-w-xs truncate px-4 py-2.5 text-ink-800" title={runTarget(run)}>
                 {runTarget(run)}
               </td>
-              <td className="tabular-nums px-4 py-3 text-right text-sm text-ink-700">{run.bids_found}</td>
-              <td className="px-4 py-3 text-right">
+              <td className="px-4 py-2.5 text-right font-mono text-ink-900">{run.bids_found.toLocaleString()}</td>
+              <td className="px-4 py-2.5 text-right">
                 <span className="inline-flex items-center gap-2">
                   {run.errors.length > 0 && (
                     <span

@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { TableFilter } from "@/components/ui";
 import { listPpraBids, type PpraBid } from "@/lib/api";
+import { formatDay } from "@/lib/runs";
 
 const PAGE_SIZE = 500;
 
@@ -67,84 +69,78 @@ export default function PpraResults({ runId }: { runId: string }) {
   });
 
   return (
-    <div className="space-y-4 rounded-xl border border-ink-200/70 bg-white p-6 shadow-sm shadow-ink-900/[0.03]">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+    <section className="overflow-hidden rounded-xl border border-ink-200 bg-sheet shadow-sm shadow-ink-900/[0.03]">
+      <div className="flex flex-col gap-3 border-b border-ink-200 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 className="font-display text-xl text-ink-900">
-            Live tender results ({bids.length})
+          <h2 className="font-display text-[15px] text-ink-950">
+            Live tender results <span className="font-mono text-ink-600">{bids.length.toLocaleString()}</span>
           </h2>
-          <p className="text-xs text-ink-500">
+          <p className="mt-0.5 text-xs text-ink-600">
             Real-time feed of active federal tenders and corrigendums from PPRA.
           </p>
         </div>
 
-        <input
-          type="text"
-          value={filterQuery}
-          onChange={(e) => setFilterQuery(e.target.value)}
-          placeholder="Filter live rows..."
-          className="rounded-lg border border-ink-200 px-3 py-1.5 text-xs text-ink-800 focus:border-ink-400 focus:outline-none"
-        />
+        <TableFilter value={filterQuery} onChange={setFilterQuery} label="Filter tender results" />
       </div>
 
-      <div className="overflow-x-auto rounded-lg border border-ink-100">
-        <table className="w-full text-left text-xs">
-          <thead className="border-b border-ink-100 bg-ink-50/70 font-medium text-ink-600">
+      <div className="max-h-[70vh] overflow-auto">
+        <table className="w-full text-left text-[13px]">
+          <thead className="sticky top-0 z-[1] whitespace-nowrap border-b border-ink-200 bg-sheet text-[11px] font-semibold uppercase tracking-[0.06em] text-ink-600">
             <tr>
-              <th className="px-3 py-2.5">Tender No</th>
-              <th className="px-3 py-2.5">Title</th>
-              <th className="px-3 py-2.5">Organization</th>
-              <th className="px-3 py-2.5">Sector</th>
-              <th className="px-3 py-2.5">Status</th>
-              <th className="px-3 py-2.5">Closing (PKT)</th>
-              <th className="px-3 py-2.5">Link</th>
+              <th className="px-3 py-2">Tender No</th>
+              <th className="px-3 py-2">Title</th>
+              <th className="px-3 py-2">Organization</th>
+              <th className="px-3 py-2">Sector</th>
+              <th className="px-3 py-2">Status</th>
+              <th className="px-3 py-2">Closing (PKT)</th>
+              <th className="px-3 py-2">Link</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-ink-100/70 text-ink-800">
+          <tbody className="divide-y divide-ink-100 bg-white/60 text-ink-800">
             {displayed.length === 0 ? (
               <tr>
-                <td colSpan={7} className="p-8 text-center text-ink-400">
-                  No tenders saved for this run yet.
+                <td colSpan={7} className="p-8 text-center text-ink-500">
+                  {bids.length > 0 ? `No rows match “${filterQuery}”.` : "No tenders saved for this run yet."}
                 </td>
               </tr>
             ) : (
               displayed.map((b) => (
-                <tr key={b.id} className="hover:bg-ink-50/40">
-                  <td className="whitespace-nowrap px-3 py-2.5 font-mono font-medium text-ink-900">
+                <tr key={b.id} className="hover:bg-intaglio-50">
+                  <td className="whitespace-nowrap px-3 py-2 font-mono font-medium text-ink-900">
                     {b.tender_no}
                   </td>
-                  <td className="max-w-xs truncate px-3 py-2.5" title={b.title}>
+                  <td className="max-w-xs truncate px-3 py-2" title={b.title}>
                     {b.title}
                   </td>
-                  <td className="max-w-xs truncate px-3 py-2.5 text-ink-600" title={b.organization ?? undefined}>
+                  <td className="max-w-xs truncate px-3 py-2 text-ink-600" title={b.organization ?? undefined}>
                     {b.organization || "—"}
                   </td>
-                  <td className="whitespace-nowrap px-3 py-2.5 text-ink-500">
+                  <td className="whitespace-nowrap px-3 py-2 text-ink-500">
                     {b.sector || "—"}
                   </td>
-                  <td className="whitespace-nowrap px-3 py-2.5">
+                  <td className="whitespace-nowrap px-3 py-2">
                     <span
-                      className={`inline-flex items-center rounded px-1.5 py-0.5 text-[10px] font-medium ${
+                      className={`inline-flex items-center rounded px-1.5 py-0.5 text-[11px] font-semibold ${
                         b.status?.toLowerCase().includes("corrigendum")
                           ? "bg-amber-50 text-amber-700 ring-1 ring-amber-200"
                           : b.status?.toLowerCase().includes("cancelled")
                           ? "bg-rose-50 text-rose-700 ring-1 ring-rose-200"
-                          : "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200"
+                          : "bg-intaglio-50 text-intaglio-900 ring-1 ring-intaglio-200"
                       }`}
                     >
                       {b.status || "Published"}
                     </span>
                   </td>
-                  <td className="whitespace-nowrap px-3 py-2.5 font-mono text-ink-600">
-                    {b.closing_at || "—"}
+                  <td className="whitespace-nowrap px-3 py-2 font-mono text-ink-600">
+                    {formatDay(b.closing_at)}
                   </td>
-                  <td className="whitespace-nowrap px-3 py-2.5">
+                  <td className="whitespace-nowrap px-3 py-2">
                     {b.detail_url ? (
                       <a
                         href={b.detail_url}
                         target="_blank"
                         rel="noreferrer"
-                        className="text-emerald-600 underline hover:text-emerald-700"
+                        className="font-medium text-ink-800 underline decoration-intaglio-300 underline-offset-2 hover:text-ink-950 hover:decoration-intaglio-800"
                       >
                         View
                       </a>
@@ -158,7 +154,7 @@ export default function PpraResults({ runId }: { runId: string }) {
           </tbody>
         </table>
       </div>
-    </div>
+    </section>
   );
 }
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
 import {
   getJobLogs,
@@ -45,6 +45,26 @@ export default function ActiveJobs() {
   const [expanded, setExpanded] = useState(false);
   const [openLog, setOpenLog] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  // Publish the bar's height so the search sheet's sticky launch row can sit
+  // on top of it instead of sliding underneath.
+  const bar = useRef<HTMLDivElement>(null);
+  const visible = jobs.length > 0 || stopped.length > 0;
+  useLayoutEffect(() => {
+    const el = bar.current;
+    const root = document.documentElement;
+    if (!el) {
+      root.style.removeProperty("--jobs-bar-h");
+      return;
+    }
+    const sync = () => root.style.setProperty("--jobs-bar-h", `${el.offsetHeight}px`);
+    sync();
+    const ro = new ResizeObserver(sync);
+    ro.observe(el);
+    return () => {
+      ro.disconnect();
+      root.style.removeProperty("--jobs-bar-h");
+    };
+  }, [visible]);
 
   // A stopped run keeps working for a moment after it leaves the active list:
   // it finishes the page it was on, writes its rows and packages them. The
@@ -89,35 +109,35 @@ export default function ActiveJobs() {
     setStopped((held) => held.filter((j) => j.run_id !== runId));
 
   return (
-    <div className="sticky bottom-0 z-30 border-t border-ink-200 bg-white/95 shadow-[0_-2px_12px_rgba(15,23,42,0.06)] backdrop-blur">
+    <div ref={bar} data-surface="dark" className="sticky bottom-0 z-30 border-t border-intaglio-800 bg-intaglio-900 text-intaglio-100 shadow-[0_-4px_16px_rgba(11,46,33,0.18)]">
       <button
         type="button"
         onClick={() => setExpanded((v) => !v)}
         aria-expanded={expanded}
-        className="flex w-full items-center gap-3 px-5 py-2.5 text-left transition hover:bg-ink-50 sm:px-8"
+        className="flex w-full items-center gap-3 px-4 py-2.5 text-left transition hover:bg-intaglio-800 sm:px-8"
       >
         <span className="relative flex h-2 w-2 shrink-0">
-          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-gold-400 opacity-75" />
-          <span className="relative inline-flex h-2 w-2 rounded-full bg-gold-500" />
+          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-serial-600/70" />
+          <span className="relative inline-flex h-2 w-2 rounded-full bg-serial-600" />
         </span>
-        <span className="text-sm font-medium text-ink-900">
+        <span className="text-sm font-semibold text-white">
           {running} running
-          {parked > 0 && <span className="text-ink-500"> · {parked} paused</span>}
-          {queued > 0 && <span className="text-ink-500"> · {queued} queued</span>}
+          {parked > 0 && <span className="font-medium text-intaglio-300"> · {parked} paused</span>}
+          {queued > 0 && <span className="font-medium text-intaglio-300"> · {queued} queued</span>}
           {held.length > 0 && (
-            <span className="text-amber-700"> · {held.length} stopped</span>
+            <span className="font-medium text-ochre-300"> · {held.length} stopped</span>
           )}
         </span>
         {capacity && (
-          <span className="text-xs text-ink-400">
+          <span className="hidden font-mono text-xs text-intaglio-300 sm:inline">
             {capacity.running}/{capacity.capacity} slots in use
           </span>
         )}
-        <span className="ml-auto text-xs text-ink-500">{expanded ? "Hide" : "Show"}</span>
+        <span className="ml-auto text-xs font-semibold text-intaglio-200">{expanded ? "Hide" : "Show"}</span>
       </button>
 
       {expanded && (
-        <div className="max-h-80 overflow-y-auto border-t border-ink-100 px-5 py-3 sm:px-8">
+        <div className="max-h-80 overflow-y-auto border-t border-intaglio-800 bg-stamp px-4 py-3 text-ink-900 sm:px-8">
           {error && <p className="mb-2 text-xs text-red-600">{error}</p>}
           <ul className="space-y-1.5">
             {jobs.map((job) => (
@@ -161,18 +181,18 @@ function JobRow({
   const subject = job.search ?? "";
 
   return (
-    <li className="rounded-lg border border-ink-200 bg-white px-3 py-2">
+    <li className="rounded-lg border border-ink-200 bg-sheet px-3 py-2">
       <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
         <span
           className={`h-1.5 w-1.5 shrink-0 rounded-full ${
-            queued ? "bg-ink-300" : parked ? "bg-amber-500" : "bg-emerald-500"
+            queued ? "bg-ink-300" : parked ? "bg-amber-500" : "bg-serial-600"
           }`}
           aria-hidden
         />
         <span className="text-sm font-medium text-ink-900">{portal?.label ?? job.scraper}</span>
         {subject && <span className="truncate text-xs text-ink-500">{subject}</span>}
         <span className="truncate font-mono text-xs text-ink-500">{job.step}</span>
-        <span className="tabular-nums ml-auto text-xs text-ink-400">
+        <span className="tabular-nums ml-auto text-xs text-ink-500">
           {job.bids_found > 0 && `${job.bids_found} found · `}
           {/* The clock stops for a parked job as well as a queued one — a
               paused run is not spending time on the portal, and a timer that
@@ -189,14 +209,14 @@ function JobRow({
         <button
           type="button"
           onClick={onToggleLog}
-          className="rounded border border-ink-200 px-2 py-0.5 text-xs text-ink-600 transition hover:bg-ink-50"
+          className="inline-flex min-h-8 items-center rounded-md border border-ink-200 bg-white px-2.5 text-xs font-medium text-ink-700 transition hover:bg-ink-50"
         >
           {logOpen ? "Hide log" : "Log"}
         </button>
         <button
           type="button"
           onClick={onStop}
-          className="rounded border border-red-200 px-2 py-0.5 text-xs font-medium text-red-700 transition hover:bg-red-50"
+          className="inline-flex min-h-8 items-center rounded-md border border-red-200 bg-white px-2.5 text-xs font-medium text-red-700 transition hover:bg-red-50"
         >
           {/* A queued job has not started, so ending it is a cancel, not a stop. */}
           {queued ? "Cancel" : "Stop"}
@@ -240,7 +260,7 @@ function LogTail({ runId }: { runId: string }) {
   return (
     <pre
       ref={box}
-      className="mt-2 max-h-40 overflow-y-auto rounded bg-ink-900 px-3 py-2 font-mono text-[11px] leading-relaxed text-ink-100"
+      className="mt-2 max-h-40 overflow-y-auto rounded-md bg-intaglio-950 px-3 py-2 font-mono text-[11.5px] leading-relaxed text-intaglio-100"
     >
       {lines.length === 0
         ? "waiting for output…"
@@ -298,7 +318,7 @@ function StoppedRow({
           <button
             type="button"
             onClick={onDismiss}
-            className="rounded border border-ink-200 px-2 py-0.5 text-xs text-ink-600 transition hover:bg-white"
+            className="inline-flex min-h-8 items-center rounded-md border border-ink-200 bg-white px-2.5 text-xs font-medium text-ink-700 transition hover:bg-ink-50"
           >
             Dismiss
           </button>

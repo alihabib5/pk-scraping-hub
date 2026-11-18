@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { TableFilter } from "@/components/ui";
 import { listPunjabBids, type PunjabBid } from "@/lib/api";
+import { formatDay } from "@/lib/runs";
 
 const PAGE_SIZE = 500;
 
@@ -61,68 +63,62 @@ export default function PunjabResults({ runId }: { runId: string }) {
   );
 
   return (
-    <div className="space-y-4 rounded-xl border border-ink-200/70 bg-white p-6 shadow-sm shadow-ink-900/[0.03]">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+    <section className="overflow-hidden rounded-xl border border-ink-200 bg-sheet shadow-sm shadow-ink-900/[0.03]">
+      <div className="flex flex-col gap-3 border-b border-ink-200 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 className="font-display text-xl text-ink-900">Live tender results ({bids.length})</h2>
-          <p className="text-xs text-ink-500">
+          <h2 className="font-display text-[15px] text-ink-950">Live tender results <span className="font-mono text-ink-600">{bids.length.toLocaleString()}</span></h2>
+          <p className="mt-0.5 text-xs text-ink-600">
             Live tenders from the Punjab e-Procurement portal, with their notice and bidding documents.
           </p>
         </div>
 
-        <input
-          type="text"
-          value={filterQuery}
-          onChange={(e) => setFilterQuery(e.target.value)}
-          placeholder="Filter live rows..."
-          className="rounded-lg border border-ink-200 px-3 py-1.5 text-xs text-ink-800 focus:border-ink-400 focus:outline-none"
-        />
+        <TableFilter value={filterQuery} onChange={setFilterQuery} label="Filter tender results" />
       </div>
 
-      <div className="overflow-x-auto rounded-lg border border-ink-100">
-        <table className="w-full text-left text-xs">
-          <thead className="border-b border-ink-100 bg-ink-50/70 font-medium text-ink-600">
+      <div className="max-h-[70vh] overflow-auto">
+        <table className="w-full text-left text-[13px]">
+          <thead className="sticky top-0 z-[1] whitespace-nowrap border-b border-ink-200 bg-sheet text-[11px] font-semibold uppercase tracking-[0.06em] text-ink-600">
             <tr>
-              <th className="px-3 py-2.5">Tender ID</th>
-              <th className="px-3 py-2.5">Title</th>
-              <th className="px-3 py-2.5">Department</th>
-              <th className="px-3 py-2.5">Type</th>
-              <th className="px-3 py-2.5">Notice</th>
-              <th className="px-3 py-2.5">Status</th>
-              <th className="px-3 py-2.5">Closing</th>
-              <th className="px-3 py-2.5">Documents</th>
+              <th className="px-3 py-2">Tender ID</th>
+              <th className="px-3 py-2">Title</th>
+              <th className="px-3 py-2">Department</th>
+              <th className="px-3 py-2">Type</th>
+              <th className="px-3 py-2">Notice</th>
+              <th className="px-3 py-2">Status</th>
+              <th className="px-3 py-2">Closing</th>
+              <th className="px-3 py-2">Documents</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-ink-100/70 text-ink-800">
+          <tbody className="divide-y divide-ink-100 bg-white/60 text-ink-800">
             {displayed.length === 0 ? (
               <tr>
-                <td colSpan={8} className="p-8 text-center text-ink-400">
-                  No tenders saved for this run yet.
+                <td colSpan={8} className="p-8 text-center text-ink-500">
+                  {bids.length > 0 ? `No rows match “${filterQuery}”.` : "No tenders saved for this run yet."}
                 </td>
               </tr>
             ) : (
               displayed.map((b) => (
-                <tr key={b.id} className="hover:bg-ink-50/40">
-                  <td className="whitespace-nowrap px-3 py-2.5 font-mono font-medium text-ink-900">{b.tender_no}</td>
-                  <td className="max-w-xs truncate px-3 py-2.5" title={b.title}>
+                <tr key={b.id} className="hover:bg-intaglio-50">
+                  <td className="whitespace-nowrap px-3 py-2 font-mono font-medium text-ink-900">{b.tender_no}</td>
+                  <td className="max-w-xs truncate px-3 py-2" title={b.title}>
                     {b.title}
                   </td>
-                  <td className="max-w-xs truncate px-3 py-2.5 text-ink-600" title={b.department ?? undefined}>
+                  <td className="max-w-xs truncate px-3 py-2 text-ink-600" title={b.department ?? undefined}>
                     {b.department || "—"}
                   </td>
-                  <td className="whitespace-nowrap px-3 py-2.5 text-ink-500">{b.procurement_type || "—"}</td>
-                  <td className="whitespace-nowrap px-3 py-2.5 text-ink-500">{b.notice_type || "—"}</td>
-                  <td className="whitespace-nowrap px-3 py-2.5">
+                  <td className="whitespace-nowrap px-3 py-2 text-ink-500">{b.procurement_type || "—"}</td>
+                  <td className="whitespace-nowrap px-3 py-2 text-ink-500">{b.notice_type || "—"}</td>
+                  <td className="whitespace-nowrap px-3 py-2">
                     {b.status ? (
-                      <span className="inline-flex items-center rounded bg-amber-50 px-1.5 py-0.5 text-[10px] font-medium text-amber-700 ring-1 ring-amber-200">
+                      <span className="inline-flex items-center rounded bg-amber-50 px-1.5 py-0.5 text-[11px] font-semibold text-amber-800 ring-1 ring-amber-200">
                         {b.status}
                       </span>
                     ) : (
                       "—"
                     )}
                   </td>
-                  <td className="whitespace-nowrap px-3 py-2.5 font-mono text-ink-600">{b.closing_on || "—"}</td>
-                  <td className="space-x-2 whitespace-nowrap px-3 py-2.5">
+                  <td className="whitespace-nowrap px-3 py-2 font-mono text-ink-600">{formatDay(b.closing_on)}</td>
+                  <td className="space-x-2 whitespace-nowrap px-3 py-2">
                     <PdfLink href={b.notice_url} label="Notice" />
                     <PdfLink href={b.document_url} label="Bidding" />
                   </td>
@@ -132,7 +128,7 @@ export default function PunjabResults({ runId }: { runId: string }) {
           </tbody>
         </table>
       </div>
-    </div>
+    </section>
   );
 }
 
@@ -140,7 +136,7 @@ export default function PunjabResults({ runId }: { runId: string }) {
 function PdfLink({ href, label }: { href: string | null; label: string }) {
   if (!href) return null;
   return (
-    <a href={href} target="_blank" rel="noreferrer" className="text-emerald-600 underline hover:text-emerald-700">
+    <a href={href} target="_blank" rel="noreferrer" className="font-medium text-ink-800 underline decoration-intaglio-300 underline-offset-2 hover:text-ink-950 hover:decoration-intaglio-800">
       {label}
     </a>
   );

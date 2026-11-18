@@ -1,20 +1,20 @@
 import type { Metadata } from "next";
-import { Newsreader, Inter } from "next/font/google";
+import { Hanken_Grotesk, Red_Hat_Mono } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({
+const hanken = Hanken_Grotesk({
   subsets: ["latin"],
-  variable: "--font-sans",
+  variable: "--font-hanken",
 });
 
-const newsreader = Newsreader({
+const redHatMono = Red_Hat_Mono({
   subsets: ["latin"],
-  variable: "--font-serif",
-  style: ["normal", "italic"],
+  weight: ["500", "700"],
+  variable: "--font-redhat-mono",
 });
 
 export const metadata: Metadata = {
-  title: "Scraping Hub — Pakistan Procurement Intelligence",
+  title: "PK-Hub — Pakistan Procurement Intelligence",
   description: "Automated public bid discovery across Pakistani government portals",
 };
 
@@ -24,11 +24,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${inter.variable} ${newsreader.variable}`}>
-      <body
-        className="bg-[#faf8f5] text-zinc-900 antialiased min-h-screen font-sans"
-        suppressHydrationWarning
-      >
+    <html lang="en" className={`${hanken.variable} ${redHatMono.variable}`}>
+      <body className="min-h-screen bg-stamp font-sans text-ink-900 antialiased" suppressHydrationWarning>
         {children}
       </body>
     </html>

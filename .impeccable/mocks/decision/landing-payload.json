@@ -1,0 +1,46 @@
+{
+  "title": "Choose the landing page's structure",
+  "question": "The Stamp Paper world is fixed; this choice is the page's composition. The roll dealt three structures, all built from real run figures.",
+  "options": [
+    {
+      "id": "issue-form",
+      "kind": "assigned",
+      "label": "Issue a run",
+      "kicker": "THE ROLL",
+      "lineage": "a blank stamp paper with its printed fields",
+      "thesis": "The first viewport is a stamp-paper sheet with blank fields: pick the portal and the scope, press Issue run, and you land in that console.",
+      "palette": ["#12402f", "#eef2e6", "#f8faf4", "#c4262e", "#d9a441"],
+      "materials": ["guilloché border", "printed form fields", "red serial"],
+      "viewport": "Green rail-coloured masthead with seal and nav; centre-left, one large stamp-paper sheet with a guilloché border, the headline set on it, two portal choices as the sheet's 'denomination' boxes and an Issue run button; the latest real run's serial and counts printed in its corner.",
+      "risk": "Pre-filling a form on the landing page promises more than it does if the console does not carry the chosen portal through.",
+      "html": ".impeccable/mocks/decision/landing-issue-form.html"
+    },
+    {
+      "id": "register",
+      "kind": "dealt",
+      "label": "The register",
+      "lineage": "a stamp vendor's serial register",
+      "thesis": "The first viewport is the register of real runs: serial, portal, tenders read, kept, closing pages, each row openable in the console.",
+      "palette": ["#12402f", "#eef2e6", "#f8faf4", "#c4262e", "#18231d"],
+      "materials": ["ruled register", "mono serials", "rosette seal"],
+      "viewport": "Headline and Open console across the top band; below it, a full-width ruled register of the six latest real runs with live serials, read/kept counts at poster scale on the newest row.",
+      "risk": "A table above the fold reads as the app, not a pitch, to a first-time client.",
+      "html": ".impeccable/mocks/decision/landing-register.html"
+    },
+    {
+      "id": "eight-pages",
+      "kind": "dealt",
+      "label": "Eight pages, one workbook",
+      "lineage": "a stack of portal printouts stamped into one document",
+      "thesis": "The portal's eight pages fan out on the left; a single validated workbook with 765 read and 101 kept sits on the right, the rosette between them.",
+      "palette": ["#12402f", "#eef2e6", "#f8faf4", "#c4262e", "#9fd6b6"],
+      "materials": ["fanned sheets", "rosette", "validated seal"],
+      "viewport": "Headline over a wide stage: eight thin numbered sheets fanned at left, the rosette at the centre fully drawn, one stamp-paper workbook at right with its counts and Open console under it.",
+      "risk": "The fanned sheets are illustration; if they read as decoration the proof weakens.",
+      "html": ".impeccable/mocks/decision/landing-eight-pages.html"
+    }
+  ],
+  "reroll": { "registers": ["safer", "bolder"] },
+  "buildPath": { "value": "code" },
+  "steer": true
+}

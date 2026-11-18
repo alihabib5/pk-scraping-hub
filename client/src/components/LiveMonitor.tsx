@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
 import { getRunScreenshot, isRunActive, type Portal, type RunStatus } from "@/lib/api";
-import { Button, RunBadge } from "@/components/ui";
+import { Button, IconButton, RunBadge } from "@/components/ui";
 import { stepLabel } from "@/components/RunStatus";
 
 /**
@@ -61,6 +61,14 @@ function LiveMonitorModal({
   const seenErrors = useRef(0);
   const seenWarnings = useRef(0);
   const logEndRef = useRef<HTMLDivElement | null>(null);
+  const dialogRef = useRef<HTMLDivElement | null>(null);
+
+  // Focus moves into the dialog on open and back to whatever opened it on close.
+  useEffect(() => {
+    const opener = document.activeElement as HTMLElement | null;
+    dialogRef.current?.querySelector<HTMLElement>("button")?.focus();
+    return () => opener?.focus();
+  }, []);
 
   // Escape closes the modal.
   useEffect(() => {
@@ -127,31 +135,32 @@ function LiveMonitorModal({
       role="dialog"
       aria-modal="true"
       aria-label="Live scrape preview"
-      className="fixed inset-0 z-50 flex items-center justify-center bg-ink-900/50 p-4 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-intaglio-950/55 p-4 backdrop-blur-sm"
       onClick={onClose}
     >
       <div
-        className="flex max-h-[85vh] w-full max-w-3xl flex-col overflow-hidden rounded-2xl border border-ink-200 bg-white shadow-2xl"
+        ref={dialogRef}
+        className="flex max-h-[85vh] w-full max-w-3xl flex-col overflow-hidden rounded-2xl border border-ink-200 bg-sheet shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
-        <header className="flex items-center justify-between gap-3 border-b border-ink-100 px-5 py-3.5">
+        <header className="flex items-center justify-between gap-3 border-b border-ink-100 py-2.5 pl-5 pr-3">
           <div className="flex min-w-0 items-center gap-2.5">
-            <span className="h-3.5 w-3.5 shrink-0 animate-spin rounded-full border-2 border-gold-200 border-t-gold-600" />
+            {/* Same rule as the run panel: a parked run gets no spinner. */}
+            {run.status === "paused" ? (
+              <span className="h-3.5 w-3.5 shrink-0 rounded-full border-2 border-amber-400" aria-hidden />
+            ) : (
+              <span className="h-3.5 w-3.5 shrink-0 animate-spin rounded-full border-2 border-serial-200 border-t-serial-600" aria-hidden />
+            )}
             <h3 className="text-sm font-semibold text-ink-900">Live preview</h3>
             <span className="truncate text-sm text-ink-500">{stepLabel(run.step)}</span>
           </div>
           <div className="flex items-center gap-2.5">
             <RunBadge status={run.status} partial={run.partial_results} />
-            <button
-              type="button"
-              onClick={onClose}
-              aria-label="Close live preview"
-              className="rounded-md p-1 text-ink-400 transition hover:bg-ink-50 hover:text-ink-700"
-            >
+            <IconButton label="Close live preview" onClick={onClose}>
               <svg viewBox="0 0 16 16" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden>
                 <path d="M4 4l8 8M12 4l-8 8" strokeLinecap="round" />
               </svg>
-            </button>
+            </IconButton>
           </div>
         </header>
 
@@ -175,7 +184,7 @@ function LiveMonitorModal({
                 className="w-full rounded-lg border border-ink-200"
               />
             ) : (
-              <div className="flex h-40 items-center justify-center rounded-lg border border-dashed border-ink-200 text-xs text-ink-400">
+              <div className="flex h-40 items-center justify-center rounded-lg border border-dashed border-ink-200 text-xs text-ink-500">
                 Waiting for the first frame…
               </div>
             )}
@@ -184,7 +193,7 @@ function LiveMonitorModal({
           <p className="mb-1.5 text-xs font-medium text-ink-500">Activity</p>
           <div className="space-y-1.5 rounded-lg border border-ink-100 bg-ink-50/60 p-3 font-mono text-xs">
             {log.length === 0 ? (
-              <p className="text-ink-400">Waiting for the scraper to report progress…</p>
+              <p className="text-ink-500">Waiting for the scraper to report progress…</p>
             ) : (
               log.map((entry) => (
                 <div
@@ -216,8 +225,8 @@ function LiveMonitorModal({
 function Stat({ label, value }: { label: string; value: string | number }) {
   return (
     <div className="px-4 py-3">
-      <div className="text-xs font-medium text-ink-500">{label}</div>
-      <div className="tabular-nums mt-0.5 text-xl font-semibold text-ink-900">{value}</div>
+      <div className="text-[11px] font-semibold uppercase tracking-[0.08em] text-ink-600">{label}</div>
+      <div className="mt-0.5 font-mono text-2xl font-bold text-ink-950">{value}</div>
     </div>
   );
 }
